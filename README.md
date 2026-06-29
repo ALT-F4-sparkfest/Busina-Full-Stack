@@ -1,4 +1,4 @@
-# Jeepney Backend
+# SmartRoute Backend
 
 Backend service for real-time jeepney tracking. It simulates GPS pings from a vehicle, streams them over MQTT, stores them in Firestore, and exposes a REST API (including ETA calculations and geofencing) for the frontend to consume.
 
