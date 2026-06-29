@@ -1,4 +1,7 @@
 // subscriber.js
+const { isOnRoute } = require('./geofence');
+const geofenceData = require('./routes/geofence.json');
+
 require('dotenv').config();
 const mqtt = require('mqtt');
 const db = require('./firebase');
@@ -18,6 +21,8 @@ client.on('message', async (topic, message) => {
     const data = JSON.parse(message.toString());
     const { vehicleId, lat, lng, speed, heading, timestamp } = data;
 
+    const onRoute = isOnRoute(lat, lng, geofenceData.coordinates);
+
     const vehicleRef = db.collection('vehicles').doc(vehicleId);
     const vehicleDoc = await vehicleRef.get();
     const existing = vehicleDoc.exists ? vehicleDoc.data() : {};
@@ -36,15 +41,17 @@ client.on('message', async (topic, message) => {
       lastUpdated: timestamp,
       recentSpeeds,
       stationarySince,
+      onRoute,
     }, { merge: true });
 
-    await vehicleRef.collection('history').add({ lat, lng, speed, heading, timestamp });
+    await vehicleRef.collection('history').add({ lat, lng, speed, heading, timestamp, onRoute });
 
-    console.log(`Saved ping for ${vehicleId}`);
+    console.log(`Saved ping for ${vehicleId} (onRoute: ${onRoute})`);
   } catch (err) {
     console.error('Error processing message:', err);
   }
 });
+
 
 client.on('error', (err) => {
   console.error('MQTT connection error:', err);
