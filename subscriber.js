@@ -1,6 +1,7 @@
 // subscriber.js
 const { isOnRoute } = require('./geofence');
-const geofenceData = require('./routes/geofence.json');
+const geofenceByRoute = require('./routes/geofence.json');
+const vehicleRoutes = require('./routes/vehicleRoutes.json');
 
 require('dotenv').config();
 const mqtt = require('mqtt');
@@ -21,7 +22,9 @@ client.on('message', async (topic, message) => {
     const data = JSON.parse(message.toString());
     const { vehicleId, lat, lng, speed, heading, timestamp } = data;
 
-    const onRoute = isOnRoute(lat, lng, geofenceData.coordinates);
+    const routeId = vehicleRoutes[vehicleId];
+    const geofenceData = geofenceByRoute[routeId];
+    const onRoute = geofenceData ? isOnRoute(lat, lng, geofenceData.coordinates) : null;
 
     const vehicleRef = db.collection('vehicles').doc(vehicleId);
     const vehicleDoc = await vehicleRef.get();

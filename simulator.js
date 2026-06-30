@@ -7,7 +7,6 @@ const route = [
   { lat: 14.5780, lng: 121.0870 },
   { lat: 14.5800, lng: 121.0890 },
   { lat: 14.5820, lng: 121.0910 },
-  // add more points along your demo route
 ];
 
 const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
@@ -15,7 +14,7 @@ const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT
   password: process.env.MQTT_PUB_PASS,
 });
 
-const vehicleId = 'jeep01';
+const vehicleId = 'CUBAO-MAKATI-V1';
 let index = 0;
 
 client.on('connect', () => {
