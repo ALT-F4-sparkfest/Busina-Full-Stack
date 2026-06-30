@@ -3,9 +3,9 @@ require('dotenv').config();
 const mqtt = require('mqtt');
 
 const route = [
-  { lat: 14.5786, lng: 121.0930 },
-  { lat: 14.5780, lng: 121.0950 },
-  { lat: 14.5770, lng: 121.0970 },
+  { lat: 14.5787, lng: 121.0931 },
+  { lat: 14.5781, lng: 121.0951 },
+  { lat: 14.5771, lng: 121.0971 },
 ];
 
 const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
@@ -13,7 +13,7 @@ const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT
   password: process.env.MQTT_PUB_PASS,
 });
 
-const vehicleId = 'CUBAO-MAKATI-V1';
+const vehicleId = 'CUBAO-MAKATI-V2';
 let index = 0;
 
 client.on('connect', () => {

@@ -4,10 +4,16 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./firebase');
 const { calculateEtaToStop, calculateEtasForAllStops } = require('./eta');
+const { startBunchingMonitor, activeAlerts } = require('./bunching');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// GET /alerts — currently active bunching alerts
+app.get('/alerts', (req, res) => {
+  res.json(Object.values(activeAlerts));
+});
 
 // GET /vehicles — list active vehicles with latest position
 app.get('/vehicles', async (req, res) => {
@@ -44,4 +50,5 @@ app.get('/vehicles/:id/etas', async (req, res) => {
 });
 
 const PORT = 3000;
+startBunchingMonitor(30000); // checks every 30 seconds
 app.listen(PORT, () => console.log(`API running on port ${PORT}`));
