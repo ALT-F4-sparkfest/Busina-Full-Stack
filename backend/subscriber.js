@@ -12,13 +12,12 @@ console.log("MQTT_PORT:", process.env.MQTT_PORT);
 const mqtt = require("mqtt");
 const db = require("./firebase");
 
-const client = mqtt.connect(
-  `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
-  {
-    username: process.env.MQTT_SUB_USER,
-    password: process.env.MQTT_SUB_PASS,
-  },
-);
+const host = process.env.MQTT_HOST || "broker.hivemq.com";
+const port = process.env.MQTT_PORT || 1883;
+const client = mqtt.connect(`mqtt://${host}:${port}`, {
+  username: process.env.MQTT_SUB_USER || "",
+  password: process.env.MQTT_SUB_PASS || "",
+});
 
 client.on("connect", () => {
   console.log("Subscriber connected to MQTT");

@@ -3,11 +3,9 @@ require('dotenv').config();
 const mqtt = require('mqtt');
 
 const route = [
-  { lat: 14.5764, lng: 121.0851 },
-  { lat: 14.5780, lng: 121.0870 },
-  { lat: 14.5800, lng: 121.0890 },
-  { lat: 14.5820, lng: 121.0910 },
-  // add more points along your demo route
+  { lat: 14.5787, lng: 121.0931 },
+  { lat: 14.5781, lng: 121.0951 },
+  { lat: 14.5771, lng: 121.0971 },
 ];
 
 const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
@@ -15,14 +13,14 @@ const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT
   password: process.env.MQTT_PUB_PASS,
 });
 
-const vehicleId = 'jeep01';
+const vehicleId = 'CUBAO-MAKATI-V2';
 let index = 0;
 
 client.on('connect', () => {
   console.log('Simulator connected to MQTT');
 
   setInterval(() => {
-    const point = route[index % route.length];
+    const point = route[index % route.length];``
     const payload = {
       vehicleId,
       lat: point.lat + (Math.random() - 0.5) * 0.0005, // small jitter
