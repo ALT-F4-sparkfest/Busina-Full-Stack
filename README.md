@@ -1,4 +1,4 @@
-# Jeepney Backend
+# SmartRoute Backend
 
 Backend service for real-time jeepney tracking. It simulates GPS pings from a vehicle, streams them over MQTT, stores them in Firestore, and exposes a REST API (including ETA calculations and geofencing) for the frontend to consume.
 
@@ -156,12 +156,6 @@ curl http://localhost:3000/vehicles/jeep01/history
 curl http://localhost:3000/vehicles/jeep01/eta/stop1
 curl http://localhost:3000/vehicles/jeep01/etas
 ```
-
-## Known placeholders / outstanding TODOs
-
-- `routes/stops.json` and `routes/geofence.json` currently contain placeholder coordinates. Replace with real stop locations and route boundary polygons from the Hardware/AI Lead.
-- Firestore is currently in **test mode** (open read/write). Lock down security rules before any production/public deployment.
-- `demo_history.json` is sample data for `seedHistory.js`; swap for a real historical dataset when available from the AI Lead.
 
 ## Security notes
 
