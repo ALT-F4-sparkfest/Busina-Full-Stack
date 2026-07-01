@@ -1,5 +1,5 @@
 // bunching.js
-const db = require('./firebase');
+const supabase = require('./supabase');
 const stopsByRoute = require('./routes/stops.json');
 const vehicleRoutes = require('./routes/vehicleRoutes.json');
 
@@ -21,7 +21,6 @@ function haversineMeters(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.asin(Math.sqrt(a));
 }
 
-// Nearest stop on the vehicle's route, used as "current stop" for terminal checks + alert messages
 function getNearestStop(lat, lng, routeId) {
   const stops = stopsByRoute[routeId] || [];
   let nearest = null;
@@ -36,8 +35,6 @@ function getNearestStop(lat, lng, routeId) {
   return nearest;
 }
 
-// Treat the first and last stop in each route's stop list as terminals
-// (the stop list is built in route-progression order from the GPS data)
 function isAtTerminal(stopName, routeId) {
   if (!stopName) return false;
   const stops = stopsByRoute[routeId] || [];
@@ -53,7 +50,6 @@ function isGpsFresh(lastUpdated, nowMs, maxAgeSeconds = GPS_STALE_SECONDS) {
   return ageSeconds >= 0 && ageSeconds <= maxAgeSeconds;
 }
 
-// Combinations helper (pairs of an array)
 function* pairs(arr) {
   for (let i = 0; i < arr.length; i++) {
     for (let j = i + 1; j < arr.length; j++) {
@@ -64,24 +60,30 @@ function* pairs(arr) {
 
 async function detectBunching() {
   const nowMs = Date.now();
-  const snapshot = await db.collection('vehicles').get();
 
-  const vehicles = snapshot.docs.map(doc => {
-    const data = doc.data();
-    const vehicleId = doc.id;
-    const routeId = vehicleRoutes[vehicleId];
-    const nearestStop = getNearestStop(data.lat, data.lng, routeId);
+  // Fetch all vehicles from Supabase
+  const { data: vehicleRows, error } = await supabase
+    .from('vehicles')
+    .select('*');
+
+  if (error) {
+    console.error('Supabase fetch error in detectBunching:', error.message);
+    return { newAlerts: [], resolvedAlerts: [], active: [] };
+  }
+
+  const vehicles = vehicleRows.map(row => {
+    const routeId = vehicleRoutes[row.id];
+    const nearestStop = getNearestStop(row.lat, row.lng, routeId);
     return {
-      vehicleId,
+      vehicleId: row.id,
       routeId,
-      lat: data.lat,
-      lng: data.lng,
-      speed: data.speed || 0,
-      lastUpdated: data.lastUpdated,
+      lat: row.lat,
+      lng: row.lng,
+      speed: row.speed || 0,
+      lastUpdated: row.last_updated,   // snake_case from Supabase
       stopName: nearestStop ? nearestStop.name : null,
     };
   });
-
 
   // Group by route
   const byRoute = {};
@@ -95,11 +97,6 @@ async function detectBunching() {
   const resolvedAlerts = [];
 
   for (const [routeId, routeVehicles] of Object.entries(byRoute)) {
-  console.log(routeId, routeVehicles.map(v => ({
-    id: v.vehicleId, stop: v.stopName, speed: v.speed.toFixed(1),
-    atTerminal: isAtTerminal(v.stopName, v.routeId)
-  })));
-
     const eligible = routeVehicles.filter(v =>
       isGpsFresh(v.lastUpdated, nowMs) &&
       !isAtTerminal(v.stopName, v.routeId) &&
@@ -141,11 +138,28 @@ async function detectBunching() {
         }
         activeAlerts[pairKey] = alert;
 
-        await db.collection('bunching_alerts').doc(alert.alert_id).set(alert);
+        // Write alert to Supabase
+        const { error: alertError } = await supabase
+          .from('bunching_alerts')
+          .upsert(alert);
+
+        if (alertError) console.error('Supabase alert write error:', alertError.message);
+
       } else if (activeAlerts[pairKey] && distanceM > RESOLUTION_THRESHOLD_METERS) {
-        const resolved = { ...activeAlerts[pairKey], status: 'RESOLVED', resolved_at: new Date(nowMs).toISOString() };
+        const resolved = {
+          ...activeAlerts[pairKey],
+          status: 'RESOLVED',
+          resolved_at: new Date(nowMs).toISOString(),
+        };
         resolvedAlerts.push(resolved);
-        await db.collection('bunching_alerts').doc(resolved.alert_id).set(resolved);
+
+        // Update resolved alert in Supabase
+        const { error: resolveError } = await supabase
+          .from('bunching_alerts')
+          .upsert(resolved);
+
+        if (resolveError) console.error('Supabase resolve write error:', resolveError.message);
+
         delete activeAlerts[pairKey];
       }
     }
