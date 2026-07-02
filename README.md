@@ -1,31 +1,42 @@
 # Jeepney Backend
 
-Backend service for real-time jeepney tracking. It simulates GPS pings from jeepneys, streams them over MQTT, stores them in Firestore, and exposes a REST API (including ETA calculations, geofencing, and bunching detection) for the frontend to consume.
+Backend service for real-time jeepney tracking. It simulates GPS pings from jeepneys, streams them over MQTT, stores them in Supabase PostgreSQL, and exposes a REST API (including ETA calculations, geofencing, and bunching detection) for the frontend to consume.
 
 ## Architecture / Data Flow
 
 ```
-simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscribe-->  subscriber.js  -->  Firestore
+simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscribe-->  subscriber.js  -->  Supabase PostgreSQL
                                                                                                                 |
                                                                                                                 v
                                                                                   bunching.js (every 30s)  <--  server.js (REST API)
                                                                                           |                         |
                                                                                           v                         v
                                                                                    bunching_alerts            Frontend team
-                                                                                    (Firestore)
+                                                                                    (Supabase)
 ```
 
 1. **`simulator.js`** acts as a single fake ESP32 device, publishing GPS pings for one vehicle to `jeepney/{vehicleId}/location` every 3 seconds.
 2. **`replaySimulator.js`** replays real multi-vehicle GPS data (from the AI Lead's `simulated_trips_multiroute.csv`) over MQTT — publishing all 8 vehicles across 4 routes at their real recorded positions, compressed to a fast tick interval for testing. This is the preferred way to test bunching detection, since it uses actual two-vehicle-per-route traces instead of made-up coordinates.
 3. **`subscriber.js`** listens to `jeepney/+/location` (all vehicles), and on each message:
-   - Updates the vehicle's latest position in Firestore (single write, no read-before-write)
-   - Maintains a rolling window of the last 4 speed readings (`recentSpeeds`) in local memory (not re-fetched from Firestore each time, to stay within Firestore free-tier quota)
-   - Tracks how long a vehicle has been stationary (`stationarySince`)
-   - Checks whether the vehicle is within its route's geofence (`onRoute`), using the correct route per vehicle via `routes/vehicleRoutes.json`
-   - History subcollection writes are currently disabled by default to conserve Firestore write quota at high message volume
-4. **`server.js`** exposes REST endpoints that read from Firestore, including computed ETAs, and starts the bunching detection monitor on a 30-second interval.
-5. **`bunching.js`** implements the bunching detection spec (per `BUNCHING_RULE_md.docx` / `bunching_detection.py` reference from the AI Lead): every 30 seconds, it groups vehicles by route, filters out stale GPS / terminal stops / stopped vehicles, and flags any same-route pair under 200m apart (resolving the alert once they are over 500m apart again). Alerts are written to Firestore's `bunching_alerts` collection and exposed via `/alerts`.
-6. **`seedHistory.js`** is a one-off script to backfill Firestore with real historical data (`demo_history.json`, sourced from `simulated_trips.csv`) for testing `/history` without waiting on a live feed.
+   - Updates the vehicle's latest position in Supabase (`vehicles` table, upsert)
+   - Maintains a rolling window of the last 4 speed readings (`recent_speeds`) in local memory to avoid per-message database reads
+   - Tracks how long a vehicle has been stationary (`stationary_since`)
+   - Checks whether the vehicle is within its route's geofence (`on_route`), using the correct route per vehicle via `routes/vehicleRoutes.json`
+4. **`server.js`** exposes REST endpoints that read from Supabase, including computed ETAs, and starts the bunching detection monitor on a 30-second interval. Also requires `subscriber.js` directly so both run in a single process.
+5. **`bunching.js`** implements the bunching detection spec (per `BUNCHING_RULE_md.docx` / `bunching_detection.py` reference from the AI Lead): every 30 seconds, it groups vehicles by route, filters out stale GPS / terminal stops / stopped vehicles, and flags any same-route pair under 200m apart (resolving the alert once they are over 500m apart again). Alerts are written to Supabase's `bunching_alerts` table and exposed via `/alerts`.
+6. **`seedHistory.js`** is a one-off script to backfill Supabase with real historical data (`demo_history.json`, sourced from `simulated_trips.csv`) for testing `/history` without waiting on a live feed.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express |
+| Database | Supabase (PostgreSQL) |
+| MQTT Broker | HiveMQ Cloud (Serverless free tier) |
+| Geofencing | @turf/turf |
 
 ---
 
@@ -35,20 +46,19 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
 |---|---|
 | `simulator.js` | Fakes a single ESP32 device, publishes GPS pings for one vehicle |
 | `replaySimulator.js` | Replays real multi-vehicle GPS data over MQTT for realistic multi-vehicle testing including bunching scenarios |
-| `subscriber.js` | Subscribes to MQTT, writes pings to Firestore, computes onRoute/speed history/stationary status (optimized: no read-before-write) |
-| `firebase.js` | Initializes Firebase Admin SDK (modular API, compatible with firebase-admin v14) and exports the Firestore `db` instance |
+| `subscriber.js` | Subscribes to MQTT, writes pings to Supabase, computes onRoute/speed history/stationary status |
+| `supabase.js` | Initializes the Supabase client and exports it |
 | `eta.js` | ETA heuristic: haversine distance, 7-band traffic multiplier, effective speed smoothing, waiting/arrival detection — route-aware via `vehicleRoutes.json` |
 | `geofence.js` | Point-in-polygon check via `@turf/turf` to determine if a vehicle is on its route |
-| `bunching.js` | Bunching detection: pairwise distance checks per route, terminal/stationary/staleness filtering, alert hysteresis (200m detect / 500m resolve), writes to `bunching_alerts` |
-| `server.js` | Express REST API; starts bunching monitor on startup |
-| `seedHistory.js` | Seeds Firestore with real historical ping data from `demo_history.json` |
+| `bunching.js` | Bunching detection: pairwise distance checks per route, terminal/stationary/staleness filtering, alert hysteresis (200m detect / 500m resolve), writes to Supabase `bunching_alerts` table |
+| `server.js` | Express REST API; starts bunching monitor and subscriber on startup |
+| `seedHistory.js` | Seeds Supabase with real historical ping data from `demo_history.json` |
 | `demo_history.json` | Real historical GPS data (11,914 records) converted from `simulated_trips.csv` |
 | `routes/stops.json` | Real stop coordinates per route, derived from the AI Lead's CSV data (5 routes) |
 | `routes/geofence.json` | Real route boundary polygons per route, computed as convex hull with buffer around each route's GPS points |
 | `routes/vehicleRoutes.json` | Maps each vehicle ID to its route ID |
 | `routes/multiroute_data.json` | Full real GPS dataset (56,966 records, 8 vehicles, 4 routes, 30s cadence) used by `replaySimulator.js` |
-| `.env` | MQTT credentials (not committed) |
-| `serviceAccountKey.json` | Firebase Admin service account key (not committed) |
+| `.env` | MQTT and Supabase credentials (not committed) |
 
 ---
 
@@ -66,31 +76,68 @@ All route/stop/geofence/vehicle-route mapping data was derived from `simulated_t
 
 ---
 
-## Firestore Data Model
+## Database Schema (Supabase PostgreSQL)
 
-```
-vehicles (collection)
-  {vehicleId} (doc)
-    lat, lng, speed, heading        -- latest known position
-    lastUpdated                     -- timestamp of last ping
-    recentSpeeds                    -- array of last 4 speed readings (maintained in memory, written per ping)
-    stationarySince                 -- timestamp when vehicle first stopped moving, or null
-    onRoute                         -- boolean, whether vehicle is inside its route's geofence
-    history (subcollection)         -- currently disabled to conserve write quota
-      {auto-id} -> { lat, lng, speed, heading, timestamp, onRoute }
+```sql
+-- Latest position per vehicle
+CREATE TABLE vehicles (
+  id TEXT PRIMARY KEY,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  speed DOUBLE PRECISION,
+  heading INTEGER,
+  last_updated BIGINT,
+  recent_speeds DOUBLE PRECISION[],
+  stationary_since BIGINT,
+  on_route BOOLEAN,
+  route_id TEXT
+);
 
-etas (collection)
-  {vehicleId} (doc)
-    stops (subcollection)
-      {stopId} (doc) -> { eta_minutes, status, display_text, confidence, distance_km, timestamp, last_updated }
+-- All GPS pings per vehicle (history)
+CREATE TABLE history (
+  id BIGSERIAL PRIMARY KEY,
+  vehicle_id TEXT REFERENCES vehicles(id),
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  speed DOUBLE PRECISION,
+  heading INTEGER,
+  timestamp BIGINT,
+  on_route BOOLEAN
+);
 
-bunching_alerts (collection)
-  {alert_id} (doc) -> {
-    route_id, vehicle_a, vehicle_b, distance_meters,
-    vehicle_a_lat, vehicle_a_lon, vehicle_b_lat, vehicle_b_lon,
-    nearest_stop, speed_a_kmh, speed_b_kmh,
-    status ("ACTIVE" | "RESOLVED"), detected_at, resolved_at, message
-  }
+-- Cached ETA per vehicle+stop
+CREATE TABLE etas (
+  vehicle_id TEXT,
+  stop_id TEXT,
+  eta_minutes INTEGER,
+  status TEXT,
+  display_text TEXT,
+  confidence TEXT,
+  distance_km DOUBLE PRECISION,
+  timestamp TEXT,
+  last_updated BIGINT,
+  PRIMARY KEY (vehicle_id, stop_id)
+);
+
+-- Bunching alerts
+CREATE TABLE bunching_alerts (
+  alert_id TEXT PRIMARY KEY,
+  route_id TEXT,
+  vehicle_a TEXT,
+  vehicle_b TEXT,
+  distance_meters DOUBLE PRECISION,
+  vehicle_a_lat DOUBLE PRECISION,
+  vehicle_a_lon DOUBLE PRECISION,
+  vehicle_b_lat DOUBLE PRECISION,
+  vehicle_b_lon DOUBLE PRECISION,
+  nearest_stop TEXT,
+  speed_a_kmh DOUBLE PRECISION,
+  speed_b_kmh DOUBLE PRECISION,
+  status TEXT,
+  detected_at TEXT,
+  resolved_at TEXT,
+  message TEXT
+);
 ```
 
 ---
@@ -181,7 +228,7 @@ Broker: HiveMQ Cloud (Serverless, free tier). Two separate credentials are used,
 - **Waiting detection**: status set to `"waiting"` if speed < 1 km/h for more than 3 minutes
 - **Arrival detection**: status set to `"arriving"` if distance to stop is under 100m
 - **Route-aware**: looks up the correct stop list for each vehicle via `routes/vehicleRoutes.json` + `routes/stops.json`
-- Each calculated ETA is cached to Firestore under `etas/{vehicleId}/stops/{stopId}` for optional frontend push via Firestore listeners
+- Each calculated ETA is cached to Supabase `etas` table for optional frontend push via Supabase Realtime
 
 ---
 
@@ -197,8 +244,35 @@ Ported from the AI Lead's Python reference (`bunching_detection.py`) per spec (`
 - **Bunching threshold**: < 200m between two same-route vehicles → `ACTIVE` alert
 - **Resolution threshold**: > 500m → `RESOLVED` (hysteresis to prevent flickering)
 - Active alerts are kept in memory and served via `GET /alerts`
-- All alerts (active and resolved) are persisted to Firestore `bunching_alerts` collection
+- All alerts (active and resolved) are persisted to Supabase `bunching_alerts` table
 - Validated against the real AI Lead dataset: the Python reference confirmed **1,102 bunching events** across the 4 routes in `simulated_trips_multiroute.csv`
+
+---
+
+## Frontend Integration
+
+The frontend can sync with the backend in two ways:
+
+**REST API polling** — call any endpoint on a timer:
+```javascript
+const res = await fetch('https://your-api-url/vehicles');
+const vehicles = await res.json();
+```
+
+**Supabase Realtime** — subscribe directly to the `vehicles` table for live push updates without polling:
+```javascript
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+supabase
+  .channel('vehicles')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, (payload) => {
+    console.log('Vehicle updated:', payload.new);
+    // update map marker here
+  })
+  .subscribe();
+```
+
+Give the frontend team the API base URL and the Supabase `anon` public key (safe to expose in frontend code — different from the `service_role` key used in the backend).
 
 ---
 
@@ -216,27 +290,28 @@ MQTT_PUB_USER=your_publish_username
 MQTT_PUB_PASS=your_publish_password
 MQTT_SUB_USER=your_subscribe_username
 MQTT_SUB_PASS=your_subscribe_password
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your_service_role_key
 ```
-
-Place your Firebase service account key as `serviceAccountKey.json` in the project root (Firebase Console → Project Settings → Service Accounts → Generate new private key). Not committed.
 
 ---
 
 ## Running the System
 
-Run each in its own terminal, in this order:
-
 ```bash
-node subscriber.js       # MQTT -> Firestore
-node server.js           # REST API on port 3000 + starts bunching monitor
-node replaySimulator.js  # recommended: replays real 8-vehicle GPS data over MQTT
-# OR for single-vehicle testing:
-node simulator.js
+npm start         # starts server.js (which also starts subscriber + bunching monitor)
+```
+
+Or run each separately for development:
+```bash
+node subscriber.js       # MQTT -> Supabase
+node server.js           # REST API on port 3000 + bunching monitor
+node replaySimulator.js  # replays real 8-vehicle GPS data over MQTT
 ```
 
 Optional one-off:
 ```bash
-node seedHistory.js      # backfill Firestore with real historical data
+node seedHistory.js      # backfill Supabase with real historical data
 ```
 
 ---
@@ -255,22 +330,9 @@ To verify the broker is receiving messages independently of your Node code, use 
 
 ---
 
-## Known Limitations / Outstanding TODOs
-
-**Firestore free-tier quota:** The Spark (free) plan caps at 50,000 reads / 20,000 writes per day. High-frequency testing with `replaySimulator.js` (especially at low `TICK_MS` values) combined with the 30-second bunching poll can exhaust this quota within a single session, returning `RESOURCE_EXHAUSTED` errors until the daily reset (~midnight Pacific Time). Upgrading to the Blaze (pay-as-you-go) plan keeps the same free daily allowance but removes the hard cap — recommended for active development.
-
-**History writes disabled:** The `history` subcollection write in `subscriber.js` is commented out to conserve write quota during testing. Re-enable (and consider batching every Nth message) once quota headroom allows.
-
-**In-memory speed state resets on restart:** `subscriber.js` tracks `recentSpeeds`/`stationarySince` in a local `localState` object instead of reading from Firestore (to avoid per-message reads that rapidly exhaust quota). This means a subscriber restart clears that state and the speed window starts fresh — acceptable for now.
-
-**`replaySimulator.js` tick rate:** Adjust `TICK_MS` based on testing needs vs. quota. `150` = full dataset in ~16 min but write-heavy. `1000` = gentler on quota. `3000` = matches original simulator speed.
-
-**Firestore security rules:** Currently in test mode (open read/write). Lock down before any public/production deployment.
-
----
-
 ## Security Notes
 
-- `.env`, `serviceAccountKey.json`, and `node_modules/` are git-ignored and must never be committed
-- MQTT credentials are split into publish-only and subscribe-only accounts so no single credential has more access than it needs
-- The HiveMQ Serverless free plan allows up to 100 concurrent connections and 10 GB/month of traffic
+- `.env` and `node_modules/` are git-ignored and must never be committed
+- MQTT credentials are split into publish-only and subscribe-only accounts
+- Use the Supabase `service_role` key only in the backend — never expose it to the frontend
+- Give the frontend only the Supabase `anon` public key
