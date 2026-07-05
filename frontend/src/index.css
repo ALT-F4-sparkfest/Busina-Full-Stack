@@ -1,19 +1,24 @@
 /* ===========================
+   FONTS
+=========================== */
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+/* ===========================
    GLOBAL DESIGN SYSTEM
 =========================== */
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
+  --primary: #2e9e3d;
+  --primary-dark: #1fa82e;
 
-  --success: #16a34a;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --success: #3bea4c;
+  --warning: #ff8a1d;
+  --danger: #ff4a3d;
 
-  --background: #f5f7fb;
+  --background: #f6f7f9;
   --surface: #ffffff;
 
-  --text: #0f172a;
+  --text: #111111;
   --muted: #64748b;
 
   --radius: 20px;
@@ -23,6 +28,31 @@
   --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
 
   --transition: 0.25s ease;
+
+  /* Typography */
+  --font-display: "Bebas Neue", "Archivo Black", sans-serif;
+  --font-body:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-numeric: "Space Grotesk", "Inter", sans-serif;
+}
+
+/* Headings use the display font, wide letter-spacing to counter
+   Bebas Neue's tight condensed default */
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+  font-weight: 400; /* Bebas Neue has no weight variance, don't force 700/800 */
+  line-height: 1.05;
+}
+
+/* Numbers/metrics/KPIs — anywhere a big stat is displayed */
+.font-numeric {
+  font-family: var(--font-numeric);
+  font-weight: 700;
 }
 
 /* ===========================
@@ -44,7 +74,7 @@ body,
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   background: var(--background);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -66,7 +96,7 @@ button:hover {
 }
 
 input {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d9d9d9;
   border-radius: 14px;
   padding: 14px;
   font-size: 15px;
@@ -76,7 +106,7 @@ input {
 
 input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(46, 158, 61, 0.15);
 }
 
 .card {

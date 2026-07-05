@@ -13,37 +13,37 @@ export default function Stats() {
       icon: <Bus size={28} />,
       value: "18",
       label: "Active Vehicles",
-      color: "#2563EB",
+      color: "#3BEA4C",
     },
     {
       icon: <Users size={28} />,
       value: "245",
       label: "Passengers Tracked",
-      color: "#22C55E",
+      color: "#FFD93B",
     },
     {
       icon: <Clock3 size={28} />,
       value: "5 min",
       label: "Average ETA",
-      color: "#F59E0B",
+      color: "#FFD93B",
     },
     {
       icon: <Brain size={28} />,
       value: "97%",
       label: "AI Confidence",
-      color: "#8B5CF6",
+      color: "#FF8A1D",
     },
     {
       icon: <TrendingUp size={28} />,
       value: "99.4%",
       label: "Fleet Uptime",
-      color: "#06B6D4",
+      color: "#00C2FF",
     },
     {
       icon: <ShieldCheck size={28} />,
       value: "Live",
       label: "System Status",
-      color: "#10B981",
+      color: "#3BEA4C",
     },
   ];
 
@@ -70,19 +70,19 @@ export default function Stats() {
               borderRadius: 24,
               padding: 28,
               border: "1px solid rgba(255,255,255,.45)",
-              boxShadow: "0 18px 40px rgba(15,23,42,.08)",
+              boxShadow: "0 18px 40px rgba(17,17,17,.08)",
               transition: "all .25s ease",
               cursor: "pointer",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-8px)";
               e.currentTarget.style.boxShadow =
-                "0 28px 55px rgba(37,99,235,.18)";
+                "0 28px 55px rgba(59,234,76,.18)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow =
-                "0 18px 40px rgba(15,23,42,.08)";
+                "0 18px 40px rgba(17,17,17,.08)";
             }}
           >
             <div
@@ -102,10 +102,10 @@ export default function Stats() {
             </div>
 
             <div
+              className="font-numeric"
               style={{
                 fontSize: 38,
-                fontWeight: 800,
-                color: "#0F172A",
+                color: "#111111",
               }}
             >
               {stat.value}

@@ -1,9 +1,11 @@
 // src/pages/LandingPage.jsx
 import { useEffect, useState } from "react";
+import { Radio, Cpu, Smartphone, BarChart3, Wrench } from "lucide-react";
 import Navbar from "../components/landing/Navbar";
 import Hero from "../components/layout/Hero";
 import Stats from "../components/landing/Stats";
 import Features from "../components/landing/Features";
+import businaIcon from "../assets/busina-icon-transparent.png";
 
 export default function LandingPage({ setActiveView }) {
   const [loaded, setLoaded] = useState(false);
@@ -24,7 +26,7 @@ export default function LandingPage({ setActiveView }) {
         minHeight: "100vh",
         overflowX: "hidden",
         background:
-          "linear-gradient(180deg,#F8FBFF 0%,#F1F5F9 40%,#FFFFFF 100%)",
+          "linear-gradient(180deg,#FAFAFA 0%,#F6F7F9 40%,#FFFFFF 100%)",
         position: "relative",
       }}
     >
@@ -37,7 +39,7 @@ export default function LandingPage({ setActiveView }) {
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 9999,
-            background: "#0F172A",
+            background: "#111111",
             color: "white",
             padding: "12px 24px",
             borderRadius: 14,
@@ -47,7 +49,11 @@ export default function LandingPage({ setActiveView }) {
             animation: "fadeInDown 0.3s ease",
           }}
         >
-          🚧 {toast}
+          <Wrench
+            size={15}
+            style={{ display: "inline", marginRight: 6, verticalAlign: -2 }}
+          />
+          {toast}
           <style>{`@keyframes fadeInDown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}`}</style>
         </div>
       )}
@@ -62,7 +68,7 @@ export default function LandingPage({ setActiveView }) {
           height: 620,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(37,99,235,.18),transparent 70%)",
+            "radial-gradient(circle,rgba(59,234,76,.18),transparent 70%)",
           filter: "blur(80px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -77,7 +83,7 @@ export default function LandingPage({ setActiveView }) {
           height: 700,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(59,130,246,.10),transparent 70%)",
+            "radial-gradient(circle,rgba(59,234,76,.10),transparent 70%)",
           filter: "blur(100px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -162,9 +168,7 @@ export default function LandingPage({ setActiveView }) {
         <section
           style={{ maxWidth: 1100, margin: "0 auto 100px", padding: "0 8%" }}
         >
-          <AboutUs
-            onDemoClick={() => showToast("Feature coming in a future update")}
-          />
+          <AboutUs />
         </section>
 
         {/* Footer */}
@@ -172,8 +176,8 @@ export default function LandingPage({ setActiveView }) {
           style={{
             marginTop: 60,
             padding: "60px 8%",
-            borderTop: "1px solid #E2E8F0",
-            background: "linear-gradient(180deg,#FFFFFF,#F8FAFC)",
+            borderTop: "1px solid #D9D9D9",
+            background: "linear-gradient(180deg,#FFFFFF,#F6F7F9)",
           }}
         >
           <div
@@ -187,8 +191,22 @@ export default function LandingPage({ setActiveView }) {
             }}
           >
             <div>
-              <div style={{ fontWeight: 800, fontSize: 28, color: "#0F172A" }}>
-                🚌 BUSINA
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  fontWeight: 800,
+                  fontSize: 28,
+                  color: "#111111",
+                }}
+              >
+                <img
+                  src={businaIcon}
+                  alt="BUSINA logo"
+                  style={{ width: 34, height: 34, objectFit: "contain" }}
+                />
+                BUSINA
               </div>
               <div
                 style={{
@@ -202,43 +220,10 @@ export default function LandingPage({ setActiveView }) {
                 Assistance System powered by real-time GPS, AI analytics and
                 live fleet management.
               </div>
-              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                <a
-                  href="https://github.com/ALT-F4-sparkfest"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    padding: "8px 18px",
-                    borderRadius: 10,
-                    background: "#F1F5F9",
-                    color: "#0F172A",
-                    textDecoration: "none",
-                    fontWeight: 600,
-                    fontSize: 13,
-                  }}
-                >
-                  ⭐ Source Code
-                </a>
-                <button
-                  onClick={() => showToast("Feature coming in a future update")}
-                  style={{
-                    padding: "8px 18px",
-                    borderRadius: 10,
-                    background: "#2563EB",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    fontWeight: 600,
-                    fontSize: 13,
-                  }}
-                >
-                  🚀 Live Demo
-                </button>
-              </div>
             </div>
             <div style={{ textAlign: "right", color: "#64748B" }}>
               <div
-                style={{ fontWeight: 700, color: "#0F172A", marginBottom: 10 }}
+                style={{ fontWeight: 700, color: "#111111", marginBottom: 10 }}
               >
                 BUSINA Platform
               </div>
@@ -260,22 +245,22 @@ export default function LandingPage({ setActiveView }) {
 /* ── How It Works ─────────────────────────────────────────────────────────── */
 const HOW_STEPS = [
   {
-    icon: "📡",
+    icon: <Radio size={30} color="#2E9E3D" />,
     title: "GPS Data Captured",
     body: "Each jeepney broadcasts its real-time GPS position via MQTT every few seconds.",
   },
   {
-    icon: "⚙️",
+    icon: <Cpu size={30} color="#2E9E3D" />,
     title: "AI Processes the Feed",
     body: "Our backend normalises position data, detects bunching & delays, and calculates ETAs.",
   },
   {
-    icon: "📱",
+    icon: <Smartphone size={30} color="#2E9E3D" />,
     title: "Commuters Get Updates",
     body: "Riders see live vehicle positions and accurate arrival times on their phone.",
   },
   {
-    icon: "📊",
+    icon: <BarChart3 size={30} color="#2E9E3D" />,
     title: "Operators Stay in Control",
     body: "Fleet managers get a live dashboard with alerts, demand hotspots, and dispatch recommendations.",
   },
@@ -288,8 +273,8 @@ function HowItWorks() {
         <div
           style={{
             display: "inline-block",
-            background: "#EFF6FF",
-            color: "#2563EB",
+            background: "#E9FBEA",
+            color: "#2E9E3D",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
@@ -300,7 +285,7 @@ function HowItWorks() {
           HOW IT WORKS
         </div>
         <h2
-          style={{ fontSize: 32, fontWeight: 800, color: "#0F172A", margin: 0 }}
+          style={{ fontSize: 32, fontWeight: 800, color: "#111111", margin: 0 }}
         >
           From GPS ping to your screen in seconds
         </h2>
@@ -319,7 +304,7 @@ function HowItWorks() {
               background: "white",
               borderRadius: 20,
               padding: 28,
-              border: "1px solid #E2E8F0",
+              border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
             }}
@@ -332,8 +317,8 @@ function HowItWorks() {
                 width: 28,
                 height: 28,
                 borderRadius: "50%",
-                background: "#EFF6FF",
-                color: "#2563EB",
+                background: "#E9FBEA",
+                color: "#2E9E3D",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -343,12 +328,12 @@ function HowItWorks() {
             >
               {i + 1}
             </div>
-            <div style={{ fontSize: 36, marginBottom: 14 }}>{step.icon}</div>
+            <div style={{ marginBottom: 14 }}>{step.icon}</div>
             <div
               style={{
                 fontWeight: 700,
                 fontSize: 16,
-                color: "#0F172A",
+                color: "#111111",
                 marginBottom: 8,
               }}
             >
@@ -365,14 +350,14 @@ function HowItWorks() {
 }
 
 /* ── About Us ─────────────────────────────────────────────────────────────── */
-function AboutUs({ onDemoClick }) {
+function AboutUs() {
   return (
     <div
       style={{
         background: "white",
         borderRadius: 28,
         padding: "52px 48px",
-        border: "1px solid #E2E8F0",
+        border: "1px solid #D9D9D9",
         boxShadow: "0 8px 32px rgba(0,0,0,0.05)",
         display: "flex",
         gap: 48,
@@ -384,8 +369,8 @@ function AboutUs({ onDemoClick }) {
         <div
           style={{
             display: "inline-block",
-            background: "#EFF6FF",
-            color: "#2563EB",
+            background: "#E9FBEA",
+            color: "#2E9E3D",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
@@ -399,7 +384,7 @@ function AboutUs({ onDemoClick }) {
           style={{
             fontSize: 30,
             fontWeight: 800,
-            color: "#0F172A",
+            color: "#111111",
             margin: "0 0 18px",
           }}
         >
@@ -428,39 +413,6 @@ function AboutUs({ onDemoClick }) {
         >
           We believe public infrastructure data should be public.
         </p>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <a
-            href="https://github.com/ALT-F4-sparkfest"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              padding: "10px 22px",
-              borderRadius: 12,
-              background: "#0F172A",
-              color: "white",
-              textDecoration: "none",
-              fontWeight: 600,
-              fontSize: 14,
-            }}
-          >
-            ⭐ View on GitHub
-          </a>
-          <button
-            onClick={onDemoClick}
-            style={{
-              padding: "10px 22px",
-              borderRadius: 12,
-              background: "#EFF6FF",
-              color: "#2563EB",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: 14,
-            }}
-          >
-            🚀 Try Live Demo
-          </button>
-        </div>
       </div>
       <div
         style={{
@@ -472,21 +424,24 @@ function AboutUs({ onDemoClick }) {
       >
         {[
           { label: "Team Members", value: "4" },
-          { label: "Routes Tracked", value: "4+" },
+          { label: "Routes Tracked", value: "5" },
           { label: "Vehicles Live", value: "8" },
-          { label: "Built in", value: "72hrs" },
+          { label: "Built in", value: "200hrs" },
         ].map((s) => (
           <div
             key={s.label}
             style={{
-              background: "#F8FAFC",
+              background: "#F6F7F9",
               borderRadius: 16,
               padding: 20,
               textAlign: "center",
-              border: "1px solid #E2E8F0",
+              border: "1px solid #D9D9D9",
             }}
           >
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#2563EB" }}>
+            <div
+              className="font-numeric"
+              style={{ fontSize: 28, color: "#2E9E3D" }}
+            >
               {s.value}
             </div>
             <div style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>
@@ -510,17 +465,17 @@ function GlassBanner() {
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
         border: "1px solid rgba(255,255,255,.5)",
-        boxShadow: "0 24px 70px rgba(15,23,42,.08)",
+        boxShadow: "0 24px 70px rgba(17,17,17,.08)",
         display: "flex",
         justifyContent: "space-between",
         flexWrap: "wrap",
         gap: 30,
       }}
     >
-      <Metric title="Fleet Status" value="LIVE" color="#22C55E" />
-      <Metric title="GPS Updates" value="Real-Time" color="#2563EB" />
-      <Metric title="Analytics" value="AI Enabled" color="#8B5CF6" />
-      <Metric title="Platform" value="Online" color="#F59E0B" />
+      <Metric title="Fleet Status" value="LIVE" color="#3BEA4C" />
+      <Metric title="GPS Updates" value="Real-Time" color="#2E9E3D" />
+      <Metric title="Analytics" value="AI Enabled" color="#FFD93B" />
+      <Metric title="Platform" value="Online" color="#FF8A1D" />
     </div>
   );
 }
@@ -542,7 +497,10 @@ function Metric({ title, value, color }) {
             animation: "pulse 2s infinite",
           }}
         />
-        <div style={{ fontWeight: 800, fontSize: 20, color: "#0F172A" }}>
+        <div
+          className="font-numeric"
+          style={{ fontSize: 20, color: "#111111" }}
+        >
           {value}
         </div>
       </div>
@@ -559,7 +517,7 @@ function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
           width: size,
           height: size,
           borderRadius: "50%",
-          background: "#2563EB",
+          background: "#2E9E3D",
           opacity,
           top,
           left,

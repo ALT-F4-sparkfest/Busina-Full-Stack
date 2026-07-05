@@ -7,42 +7,42 @@ export default function Features() {
       title: "Live Vehicle Tracking",
       description:
         "Track every vehicle on an interactive map with smooth real-time updates.",
-      color: "#2563EB",
+      color: "#2E9E3D",
     },
     {
       icon: <Clock3 size={34} />,
       title: "Accurate ETA",
       description:
         "Predict arrival times using live fleet positions and traffic-aware estimates.",
-      color: "#F59E0B",
+      color: "#FFD93B",
     },
     {
       icon: <Brain size={34} />,
       title: "AI Dispatch",
       description:
         "Receive intelligent dispatch recommendations based on commuter demand.",
-      color: "#8B5CF6",
+      color: "#00C2FF",
     },
     {
       icon: <Bus size={34} />,
       title: "Fleet Monitoring",
       description:
         "Monitor active vehicles, passenger loads, delays, and operational health.",
-      color: "#22C55E",
+      color: "#3BEA4C",
     },
     {
       icon: <Route size={34} />,
       title: "Demand Hotspots",
       description:
         "Identify high-demand pickup areas and optimize vehicle allocation instantly.",
-      color: "#06B6D4",
+      color: "#FF8A1D",
     },
     {
       icon: <BarChart3 size={34} />,
       title: "Operational Analytics",
       description:
         "Visualize KPIs, travel trends, and fleet performance through smart dashboards.",
-      color: "#EF4444",
+      color: "#111111",
     },
   ];
 
@@ -62,7 +62,7 @@ export default function Features() {
           style={{
             fontSize: 46,
             fontWeight: 800,
-            color: "#0F172A",
+            color: "#111111",
             marginBottom: 16,
           }}
         >
@@ -101,19 +101,19 @@ export default function Features() {
               borderRadius: 26,
               padding: 34,
               border: "1px solid rgba(255,255,255,.45)",
-              boxShadow: "0 20px 45px rgba(15,23,42,.08)",
+              boxShadow: "0 20px 45px rgba(17,17,17,.08)",
               transition: ".25s",
               cursor: "pointer",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-10px)";
               e.currentTarget.style.boxShadow =
-                "0 30px 60px rgba(37,99,235,.16)";
+                "0 30px 60px rgba(59,234,76,.16)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow =
-                "0 20px 45px rgba(15,23,42,.08)";
+                "0 20px 45px rgba(17,17,17,.08)";
             }}
           >
             <div
@@ -136,7 +136,7 @@ export default function Features() {
               style={{
                 fontSize: 24,
                 marginBottom: 14,
-                color: "#0F172A",
+                color: "#111111",
               }}
             >
               {feature.title}

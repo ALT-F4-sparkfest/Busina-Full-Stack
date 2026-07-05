@@ -31,7 +31,7 @@ export default function SearchOverlay({
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           borderRadius: 22,
-          boxShadow: "0 22px 50px rgba(15,23,42,.18)",
+          boxShadow: "0 22px 50px rgba(17,17,17,.18)",
           border: "1px solid rgba(255,255,255,.45)",
         }}
       >
@@ -48,7 +48,7 @@ export default function SearchOverlay({
             outline: "none",
             background: "transparent",
             fontSize: 16,
-            color: "#0F172A",
+            color: "#111111",
           }}
         />
 
@@ -59,13 +59,13 @@ export default function SearchOverlay({
             height: 48,
             borderRadius: 16,
             border: "none",
-            background: "#2563EB",
+            background: "#2E9E3D",
             color: "white",
             cursor: "pointer",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 10px 24px rgba(37,99,235,.28)",
+            boxShadow: "0 10px 24px rgba(46,158,61,.28)",
           }}
         >
           {loading ? "..." : <MapPin size={20} />}
@@ -92,11 +92,11 @@ export default function SearchOverlay({
                 borderRadius: 999,
                 background: "rgba(255,255,255,.92)",
                 backdropFilter: "blur(18px)",
-                color: "#2563EB",
+                color: "#2E9E3D",
                 fontWeight: 700,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
-                boxShadow: "0 8px 18px rgba(15,23,42,.10)",
+                boxShadow: "0 8px 18px rgba(17,17,17,.10)",
               }}
             >
               {route}

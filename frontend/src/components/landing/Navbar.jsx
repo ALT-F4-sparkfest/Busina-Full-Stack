@@ -1,4 +1,5 @@
-import { Bus, GitBranch, Sparkles } from "lucide-react";
+import { GitBranch, Sparkles } from "lucide-react";
+import businaIcon from "../../assets/busina-icon-transparent.png";
 
 export default function Navbar() {
   return (
@@ -17,7 +18,7 @@ export default function Navbar() {
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,.45)",
-        boxShadow: "0 20px 45px rgba(15,23,42,.12)",
+        boxShadow: "0 20px 45px rgba(17,17,17,.12)",
       }}
     >
       {/* LEFT */}
@@ -33,22 +34,31 @@ export default function Navbar() {
             width: 56,
             height: 56,
             borderRadius: 18,
-            background: "linear-gradient(135deg,#2563EB,#60A5FA)",
-            color: "white",
+            background: "linear-gradient(135deg,#2E9E3D,#6EE87C)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 10px 30px rgba(37,99,235,.35)",
+            boxShadow: "0 10px 30px rgba(59,234,76,.35)",
+            overflow: "hidden",
           }}
         >
-          <Bus size={28} />
+          <img
+            src={businaIcon}
+            alt="BUSINA logo"
+            style={{
+              width: "78%",
+              height: "78%",
+              objectFit: "contain",
+              filter: "brightness(0) invert(1)", // renders the black linework as white on the green badge
+            }}
+          />
         </div>
         <div>
           <div
             style={{
               fontSize: 28,
               fontWeight: 800,
-              color: "#0F172A",
+              color: "#111111",
             }}
           >
             BUSINA
@@ -66,9 +76,9 @@ export default function Navbar() {
 
       {/* CENTER — hidden under 768px via .navbar-badges media query */}
       <div className="navbar-badges">
-        <Badge text="Real-Time Tracking" color="#2563EB" />
-        <Badge text="AI Dispatch" color="#7C3AED" />
-        <Badge text="Real-Time ETA" color="#22C55E" />
+        <Badge text="Real-Time Tracking" color="#2E9E3D" />
+        <Badge text="AI Dispatch" color="#00C2FF" />
+        <Badge text="Real-Time ETA" color="#FFD93B" />
       </div>
 
       {/* RIGHT – now links to GitHub */}
@@ -81,14 +91,14 @@ export default function Navbar() {
           alignItems: "center",
           gap: 10,
           border: "none",
-          background: "#2563EB",
+          background: "#2E9E3D",
           color: "white",
           padding: "13px 22px",
           borderRadius: 14,
           cursor: "pointer",
           fontWeight: 700,
           fontSize: 15,
-          boxShadow: "0 10px 24px rgba(37,99,235,.25)",
+          boxShadow: "0 10px 24px rgba(59,234,76,.25)",
           textDecoration: "none",
         }}
       >

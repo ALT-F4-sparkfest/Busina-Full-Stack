@@ -12,7 +12,9 @@ import LiveMap from "../components/map/LiveMap";
 import BottomSheet from "../components/commuter/BottomSheet";
 import SearchOverlay from "../components/commuter/SearchOverlay";
 import ConnectionStatusPill from "../components/ConnectionStatusPill";
+import LiveSyncBadge from "../components/LiveSyncBadge";
 import useLiveVehicles from "../hooks/useLiveVehicles";
+import businaIcon from "../assets/busina-icon-transparent.png";
 
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -152,7 +154,7 @@ export default function CommuterView({ onBack }) {
     <div
       style={{
         height: "100vh",
-        background: "#F8FAFC",
+        background: "#F6F7F9",
         display: "flex",
         flexDirection: "column",
       }}
@@ -162,7 +164,7 @@ export default function CommuterView({ onBack }) {
         style={{
           height: 64,
           background: "white",
-          borderBottom: "1px solid #E2E8F0",
+          borderBottom: "1px solid #D9D9D9",
           display: "flex",
           alignItems: "center",
           padding: "0 20px",
@@ -175,7 +177,7 @@ export default function CommuterView({ onBack }) {
           onClick={onBack}
           style={{
             border: "none",
-            background: "#F1F5F9",
+            background: "#F6F7F9",
             width: 38,
             height: 38,
             borderRadius: 10,
@@ -186,8 +188,22 @@ export default function CommuterView({ onBack }) {
           ←
         </button>
         <div>
-          <div style={{ fontWeight: 800, fontSize: 18, color: "#0F172A" }}>
-            🚌 BUSINA
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              fontWeight: 800,
+              fontSize: 18,
+              color: "#111111",
+            }}
+          >
+            <img
+              src={businaIcon}
+              alt="BUSINA"
+              style={{ width: 22, height: 22, objectFit: "contain" }}
+            />
+            BUSINA
           </div>
           <div style={{ fontSize: 11, color: "#64748B" }}>Commuter View</div>
         </div>
@@ -199,6 +215,7 @@ export default function CommuterView({ onBack }) {
             gap: 10,
           }}
         >
+          <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
           <ConnectionStatusPill status={live.connected ? "live" : "offline"} />
         </div>
       </header>
@@ -224,20 +241,29 @@ export default function CommuterView({ onBack }) {
           connected={live.connected}
         />
 
-        {/* Route filter — top left */}
-        <div style={{ position: "absolute", top: 130, left: 16, zIndex: 100 }}>
+        {/* Route filter — centered, directly under the search bar + route chips */}
+        <div
+          style={{
+            position: "absolute",
+            top: 172,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 100,
+          }}
+        >
           <select
             value={routeFilter}
             onChange={(e) => setRouteFilter(e.target.value)}
             style={{
-              border: "none",
+              border: "1px solid #D9D9D9",
               outline: "none",
-              padding: "10px 14px",
+              padding: "10px 16px",
               borderRadius: 14,
               background: "white",
               boxShadow: "0 4px 16px rgba(0,0,0,.10)",
               fontWeight: 600,
               fontSize: 13,
+              color: "#111111",
               cursor: "pointer",
             }}
           >
@@ -270,7 +296,7 @@ export default function CommuterView({ onBack }) {
               height: 44,
               borderRadius: 12,
               background: "white",
-              border: "1px solid #E2E8F0",
+              border: "1px solid #D9D9D9",
               boxShadow: "0 4px 12px rgba(0,0,0,.10)",
               display: "flex",
               alignItems: "center",
@@ -278,7 +304,7 @@ export default function CommuterView({ onBack }) {
               cursor: "pointer",
             }}
           >
-            <LocateFixed size={18} color="#2563EB" />
+            <LocateFixed size={18} color="#2E9E3D" />
           </button>
           <button
             onClick={refresh}
@@ -288,7 +314,7 @@ export default function CommuterView({ onBack }) {
               height: 44,
               borderRadius: 12,
               background: "white",
-              border: "1px solid #E2E8F0",
+              border: "1px solid #D9D9D9",
               boxShadow: "0 4px 12px rgba(0,0,0,.10)",
               display: "flex",
               alignItems: "center",
@@ -327,14 +353,13 @@ export default function CommuterView({ onBack }) {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    background: "#DBEAFE",
+                    background: "#E9FBEA",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    fontSize: 22,
                   }}
                 >
-                  🚌
+                  <Bus size={22} color="#2E9E3D" />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 16 }}>
@@ -394,10 +419,10 @@ export default function CommuterView({ onBack }) {
                     borderRadius: "50%",
                     background:
                       selectedVehicle.status === "On Route"
-                        ? "#22C55E"
+                        ? "#3BEA4C"
                         : selectedVehicle.status === "Delayed"
-                          ? "#F59E0B"
-                          : "#EF4444",
+                          ? "#FF8A1D"
+                          : "#FF4A3D",
                     display: "inline-block",
                   }}
                 />
@@ -437,10 +462,10 @@ export default function CommuterView({ onBack }) {
                 <Clock3 size={14} /> ETA to {eta.destination}
               </div>
               <div
+                className="font-numeric"
                 style={{
                   fontSize: 38,
-                  fontWeight: 800,
-                  color: "#0F172A",
+                  color: "#111111",
                   lineHeight: 1.1,
                   marginTop: 4,
                 }}
@@ -479,7 +504,7 @@ export default function CommuterView({ onBack }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 200,
-              background: "#16A34A",
+              background: "#2E9E3D",
               color: "white",
               padding: "10px 20px",
               borderRadius: 12,
@@ -488,7 +513,11 @@ export default function CommuterView({ onBack }) {
               boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
             }}
           >
-            📍 Waiting registered!
+            <MapPin
+              size={14}
+              style={{ display: "inline", marginRight: 6, verticalAlign: -2 }}
+            />
+            Waiting registered!
           </div>
         )}
 
@@ -509,13 +538,13 @@ function MiniInfo({ label, value }) {
   return (
     <div
       style={{
-        background: "#F8FAFC",
+        background: "#F6F7F9",
         borderRadius: 10,
         padding: "8px 10px",
         textAlign: "center",
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>
         {value}
       </div>
       <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 2 }}>
