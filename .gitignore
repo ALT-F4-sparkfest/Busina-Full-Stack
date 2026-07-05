@@ -1,3 +1,16 @@
+<<<<<<< HEAD
 node_modules/
 .env
 serviceAccountKey.json
+=======
+serviceAccountKey.json
+# Firebase
+backend/backendserviceAccountKey.json
+
+# Environment files
+*.env
+*.env.local
+
+
+echo "backend/backendserviceAccountKey.json" >> .gitignore
+>>>>>>> b50150faa299343ad4a1ffab43f9e5833f0ce3f9
