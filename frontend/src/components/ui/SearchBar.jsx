@@ -1,3 +1,5 @@
+//frontend/src/components/ui/SearchBar.jsx
+
 export default function SearchBar({
   placeholder = "Search...",
   value,

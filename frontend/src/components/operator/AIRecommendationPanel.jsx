@@ -1,3 +1,5 @@
+//AIRecommendationPanel.jsx
+
 import {
   Brain,
   Sparkles,

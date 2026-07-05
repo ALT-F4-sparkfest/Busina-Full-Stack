@@ -686,7 +686,9 @@
   height: 46px;
   width: 100%;
   max-width: 640px;
-  overflow: hidden;
+  padding-top: 36px;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .hero-road-line {
@@ -711,12 +713,69 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 6px;
+  cursor: pointer;
   animation: hero-drive 6s linear infinite;
 }
 
 .hero-road-jeepney svg {
   filter: drop-shadow(0 6px 6px rgba(46, 158, 61, 0.35));
   animation: hero-bounce 0.5s ease-in-out infinite;
+}
+
+.hero-road-jeepney.is-stopped {
+  animation-play-state: paused;
+}
+
+.hero-road-jeepney.is-stopped svg {
+  animation-play-state: paused;
+}
+
+.hero-para-po {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  background: #111111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 10px;
+  animation: hero-para-po-pop 1.5s ease forwards;
+  pointer-events: none;
+}
+
+.hero-para-po::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #111111;
+}
+
+@keyframes hero-para-po-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px) scale(0.9);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px) scale(0.95);
+  }
 }
 
 @keyframes hero-drive {

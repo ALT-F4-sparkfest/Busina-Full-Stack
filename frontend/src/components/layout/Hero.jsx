@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Bus,
   Building2,
@@ -10,7 +11,14 @@ import {
 } from "lucide-react";
 import Button from "../ui/Button";
 
-export default function Hero({ setActiveView }) {
+export default function Hero({ setActiveView, onDemoClick }) {
+  const [paraPo, setParaPo] = useState(false);
+
+  const handleJeepneyClick = () => {
+    setParaPo(true);
+    setTimeout(() => setParaPo(false), 1500);
+  };
+
   return (
     <section
       className="hero-grid"
@@ -99,11 +107,17 @@ export default function Hero({ setActiveView }) {
         </div>
 
         {/* Animated jeepney road strip */}
-        <div className="hero-road" aria-hidden="true">
+        <div className="hero-road">
           <div className="hero-road-line" />
-          <div className="hero-road-jeepney">
+          <button
+            type="button"
+            className={`hero-road-jeepney${paraPo ? " is-stopped" : ""}`}
+            onClick={handleJeepneyClick}
+            aria-label="Honk the jeepney"
+          >
+            {paraPo && <span className="hero-para-po">Para po!</span>}
             <Bus size={26} color="#2E9E3D" />
-          </div>
+          </button>
         </div>
       </div>
 
@@ -217,9 +231,9 @@ export default function Hero({ setActiveView }) {
           </small>
         </div>
 
-        {/* ✅ Only change: added onClick to this button */}
+        {/* Uses the app's own toast system instead of a raw browser alert */}
         <button
-          onClick={() => alert("Feature coming in a future update")}
+          onClick={() => onDemoClick && onDemoClick()}
           style={{
             width: "100%",
             marginTop: 28,

@@ -51,21 +51,8 @@ export default function LiveSyncBadge({ vehicles = [], connected }) {
         whiteSpace: "nowrap",
       }}
     >
-      <Radio
-        size={13}
-        style={{
-          animation: connected
-            ? "busina-pulse-ring 1.6s ease-in-out infinite"
-            : "none",
-        }}
-      />
+      <Radio size={13} className={connected ? "busina-live-breathe" : ""} />
       {vehicles.length} vehicles synced · {freshnessLabel}
-      <style>{`
-        @keyframes busina-pulse-ring {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-      `}</style>
     </div>
   );
 }

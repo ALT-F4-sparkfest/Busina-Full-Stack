@@ -1,3 +1,5 @@
+//frontend/src/utils/geolocation.js
+
 export function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {

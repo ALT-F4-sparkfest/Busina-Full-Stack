@@ -56,6 +56,45 @@ h4,
 }
 
 /* ===========================
+   LIVE PULSE — one canonical animation used everywhere something
+   is marked "live." Keeps that visual language consistent across
+   Landing, Hero, Operator, Commuter instead of every component
+   reinventing its own pulse timing/easing.
+=========================== */
+@keyframes busina-live-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+.busina-live-dot {
+  display: inline-block;
+  border-radius: 50%;
+  animation: busina-live-pulse 2s ease-in-out infinite;
+}
+
+/* For text/icon-based live badges (no dot shape) — a gentler opacity
+   breathe instead of a scale pulse, so text doesn't visually jitter */
+@keyframes busina-live-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.busina-live-breathe {
+  animation: busina-live-breathe 2s ease-in-out infinite;
+}
+
+/* ===========================
    RESET
 =========================== */
 

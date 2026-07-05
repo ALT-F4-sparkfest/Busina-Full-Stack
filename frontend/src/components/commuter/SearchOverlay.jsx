@@ -18,9 +18,7 @@ export default function SearchOverlay({
         zIndex: 50,
       }}
     >
-      {/* 🚫 Removed the "LIVE / OFFLINE" badge here */}
-
-      {/* Search - unchanged */}
+      {/* Search */}
       <div
         style={{
           display: "flex",
@@ -72,7 +70,7 @@ export default function SearchOverlay({
         </button>
       </div>
 
-      {/* Route Chips - unchanged */}
+      {/* Route Chips */}
       <div
         style={{
           display: "flex",
@@ -81,7 +79,7 @@ export default function SearchOverlay({
           overflowX: "auto",
         }}
       >
-        {["Cubao", "Makati", "Marikina", "Pasig", "San Juan", "Divisoria"].map(
+        {["Cubao", "Divisoria", "Makati", "Marikina", "Pasig", "San Juan"].map(
           (route) => (
             <button
               key={route}

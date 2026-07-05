@@ -4,7 +4,9 @@ import { Radio, Cpu, Smartphone, BarChart3, Wrench } from "lucide-react";
 import Navbar from "../components/landing/Navbar";
 import Hero from "../components/layout/Hero";
 import Stats from "../components/landing/Stats";
+import ProblemSpace from "../components/landing/ProblemSpace";
 import Features from "../components/landing/Features";
+import TodaysCommute from "../components/landing/TodaysCommute";
 import businaIcon from "../assets/busina-icon-transparent.png";
 
 export default function LandingPage({ setActiveView }) {
@@ -138,6 +140,19 @@ export default function LandingPage({ setActiveView }) {
           />
         </section>
 
+        {/* Today's Commute */}
+        <section
+          style={{
+            maxWidth: 1450,
+            margin: "0 auto 40px",
+            padding: "0 8%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <TodaysCommute />
+        </section>
+
         {/* Glass Banner */}
         <section style={{ maxWidth: 1450, margin: "0 auto", padding: "0 8%" }}>
           <GlassBanner />
@@ -148,6 +163,13 @@ export default function LandingPage({ setActiveView }) {
           style={{ maxWidth: 1500, margin: "50px auto", padding: "0 8%" }}
         >
           <Stats />
+        </section>
+
+        {/* Problem Space */}
+        <section
+          style={{ maxWidth: 1500, margin: "70px auto", padding: "0 8%" }}
+        >
+          <ProblemSpace />
         </section>
 
         {/* Features */}

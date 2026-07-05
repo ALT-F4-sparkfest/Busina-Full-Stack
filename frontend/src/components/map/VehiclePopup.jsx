@@ -1,3 +1,5 @@
+//VehiclePopup.jsx
+
 import { Bus, Route, Clock3, Gauge, Navigation, MapPin, X } from "lucide-react";
 
 export default function VehiclePopup({ vehicle, onClose }) {

@@ -32,6 +32,34 @@ function distance(lat1, lon1, lat2, lon2) {
 
 const DEFAULT_LOCATION = { lat: 14.625, lng: 121.048 };
 
+// --- Route scope config -----------------------------------------------
+// BUSINA's live MVP scope is fixed to these 6 anchor points and 5 routes.
+// Any destination search outside this set should be rejected with a
+// clear "Route unmapped" message instead of silently failing.
+const SERVICE_POINTS = [
+  "Cubao",
+  "Divisoria",
+  "Marikina",
+  "Pasig",
+  "San Juan",
+  "Makati",
+];
+
+const VALID_ROUTES = [
+  ["Cubao", "Divisoria"],
+  ["Cubao", "Marikina"],
+  ["Cubao", "Pasig"],
+  ["Cubao", "San Juan"],
+  ["Cubao", "Makati"],
+];
+
+function isDestinationInScope(text) {
+  if (!text) return false;
+  const norm = text.trim().toLowerCase();
+  return SERVICE_POINTS.some((p) => norm.includes(p.toLowerCase()));
+}
+// ------------------------------------------------------------------------
+
 export default function CommuterView({ onBack }) {
   const live = useLiveVehicles();
 
@@ -40,6 +68,7 @@ export default function CommuterView({ onBack }) {
   const [loadingEta, setLoadingEta] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [waitingToast, setWaitingToast] = useState(false);
+  const [routeError, setRouteError] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [routeFilter, setRouteFilter] = useState("all");
   const [userLocation, setUserLocation] = useState(DEFAULT_LOCATION);
@@ -86,12 +115,29 @@ export default function CommuterView({ onBack }) {
 
   const selectedVehicle = nearest.find((v) => v.id === selectedVehicleId);
 
-  // ETA fetch with demo fallback
+  // ETA fetch with demo fallback + route-scope validation
   const handleDestinationSubmit = async (dest) => {
-    const target = dest || destination;
-    if (!target.trim() || !selectedVehicle) return;
+    const target = (dest || destination).trim();
+    if (!target) return;
+
+    setRouteError(null);
+
+    // Validate against service scope BEFORE anything else. This check used
+    // to happen after `!selectedVehicle`, which meant the button did
+    // nothing at all when offline/no vehicle was selected — it looked dead.
+    if (!isDestinationInScope(target)) {
+      setRouteError(
+        `"${target}" is outside our current coverage. BUSINA currently serves Cubao ↔ Divisoria, Marikina, Pasig, San Juan, and Makati.`,
+      );
+      setTimeout(() => setRouteError(null), 4000);
+      return;
+    }
+
     setLoadingEta(true);
     try {
+      if (!selectedVehicle) {
+        throw new Error("no-vehicle-selected");
+      }
       const res = await fetch(
         `${API}/vehicles/${selectedVehicle.id}/eta/stop1`,
       );
@@ -104,13 +150,15 @@ export default function CommuterView({ onBack }) {
         display_text: data.display_text,
       });
     } catch {
+      // Offline / backend unreachable / no vehicle selected — mock fallback.
+      // Only reached now if the destination is actually in scope.
       const mockEta = selectedVehicle?.eta ?? Math.round(Math.random() * 8 + 3);
       setEta({
         eta_minutes: mockEta,
         destination: target,
-        route: selectedVehicle.route_id,
+        route: selectedVehicle?.route_id ?? "Nearest route",
         status: "on_route",
-        display_text: `~${mockEta} min estimated`,
+        display_text: `~${mockEta} min estimated (offline estimate)`,
       });
     } finally {
       setLoadingEta(false);
@@ -518,6 +566,30 @@ export default function CommuterView({ onBack }) {
               style={{ display: "inline", marginRight: 6, verticalAlign: -2 }}
             />
             Waiting registered!
+          </div>
+        )}
+
+        {/* Route-unmapped toast */}
+        {routeError && (
+          <div
+            style={{
+              position: "absolute",
+              top: 16,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 200,
+              background: "#FF4A3D",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: 12,
+              fontWeight: 600,
+              fontSize: 13,
+              maxWidth: "88%",
+              textAlign: "center",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+            }}
+          >
+            Route unmapped — {routeError}
           </div>
         )}
 

@@ -1,3 +1,5 @@
+//VehicleDetailsPanel.jsx
+
 import {
   Bus,
   Gauge,
