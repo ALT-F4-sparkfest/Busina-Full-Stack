@@ -16,7 +16,7 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
 ```
 
 1. **`simulator.js`** acts as a single fake ESP32 device, publishing GPS pings for one vehicle to `jeepney/{vehicleId}/location` every 3 seconds.
-2. **`replaySimulator.js`** replays real multi-vehicle GPS data (from the AI Lead's `simulated_trips_multiroute.csv`) over MQTT — publishing all 8 vehicles across 4 routes at their real recorded positions, compressed to a fast tick interval for testing. This is the preferred way to test bunching detection, since it uses actual two-vehicle-per-route traces instead of made-up coordinates.
+2. **`replaySimulator.js`** replays real multi-vehicle GPS data (from the AI Lead's `simulated_trips_roadsnapped.csv`) over MQTT — publishing all 10 vehicles across 5 routes at their real road-snapped positions, compressed to a fast tick interval for testing. This is the preferred way to test bunching detection.
 3. **`subscriber.js`** listens to `jeepney/+/location` (all vehicles), and on each message:
    - Updates the vehicle's latest position in Supabase (`vehicles` table, upsert)
    - Maintains a rolling window of the last 4 speed readings (`recent_speeds`) in local memory to avoid per-message database reads
@@ -24,7 +24,7 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
    - Checks whether the vehicle is within its route's geofence (`on_route`), using the correct route per vehicle via `routes/vehicleRoutes.json`
 4. **`server.js`** exposes REST endpoints that read from Supabase, including computed ETAs, and starts the bunching detection monitor on a 30-second interval. Also requires `subscriber.js` directly so both run in a single process.
 5. **`bunching.js`** implements the bunching detection spec (per `BUNCHING_RULE_md.docx` / `bunching_detection.py` reference from the AI Lead): every 30 seconds, it groups vehicles by route, filters out stale GPS / terminal stops / stopped vehicles, and flags any same-route pair under 200m apart (resolving the alert once they are over 500m apart again). Alerts are written to Supabase's `bunching_alerts` table and exposed via `/alerts`.
-6. **`seedHistory.js`** is a one-off script to backfill Supabase with real historical data (`demo_history.json`, sourced from `simulated_trips.csv`) for testing `/history` without waiting on a live feed.
+6. **`seedHistory.js`** is a one-off script to backfill Supabase with real historical data (`demo_history.json`, sourced from `simulated_trips_roadsnapped.csv`) for testing `/history` without waiting on a live feed.
 
 ---
 
@@ -45,7 +45,7 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
 | File | Purpose |
 |---|---|
 | `simulator.js` | Fakes a single ESP32 device, publishes GPS pings for one vehicle |
-| `replaySimulator.js` | Replays real multi-vehicle GPS data over MQTT for realistic multi-vehicle testing including bunching scenarios |
+| `replaySimulator.js` | Replays real multi-vehicle road-snapped GPS data over MQTT for realistic testing including bunching scenarios |
 | `subscriber.js` | Subscribes to MQTT, writes pings to Supabase, computes onRoute/speed history/stationary status |
 | `supabase.js` | Initializes the Supabase client and exports it |
 | `eta.js` | ETA heuristic: haversine distance, 7-band traffic multiplier, effective speed smoothing, waiting/arrival detection — route-aware via `vehicleRoutes.json` |
@@ -53,11 +53,11 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
 | `bunching.js` | Bunching detection: pairwise distance checks per route, terminal/stationary/staleness filtering, alert hysteresis (200m detect / 500m resolve), writes to Supabase `bunching_alerts` table |
 | `server.js` | Express REST API; starts bunching monitor and subscriber on startup |
 | `seedHistory.js` | Seeds Supabase with real historical ping data from `demo_history.json` |
-| `demo_history.json` | Real historical GPS data (11,914 records) converted from `simulated_trips.csv` |
-| `routes/stops.json` | Real stop coordinates per route, derived from the AI Lead's CSV data (5 routes) |
-| `routes/geofence.json` | Real route boundary polygons per route, computed as convex hull with buffer around each route's GPS points |
+| `demo_history.json` | Real historical GPS data (51,864 records) converted from `simulated_trips_roadsnapped.csv` |
+| `routes/stops.json` | Real stop coordinates per route, derived from `simulated_trips_roadsnapped.csv` (5 routes) |
+| `routes/geofence.json` | Real route boundary polygons per route, computed as convex hull with buffer around each route's road-snapped GPS points |
 | `routes/vehicleRoutes.json` | Maps each vehicle ID to its route ID |
-| `routes/multiroute_data.json` | Full real GPS dataset (56,966 records, 8 vehicles, 4 routes, 30s cadence) used by `replaySimulator.js` |
+| `routes/multiroute_data.json` | Full road-snapped GPS dataset (51,864 records, 10 vehicles, 5 routes, 30s cadence) used by `replaySimulator.js` |
 | `.env` | MQTT and Supabase credentials (not committed) |
 
 ---
@@ -66,13 +66,13 @@ simulator.js / replaySimulator.js  --publish-->  HiveMQ Cloud (MQTT)  --subscrib
 
 | Route ID | Vehicles | Stops |
 |---|---|---|
-| CUBAO-MAKATI | CUBAO-MAKATI-V1, CUBAO-MAKATI-V2 | 10 stops |
-| CUBAO-MARIKINA | CUBAO-MARIKINA-V1, CUBAO-MARIKINA-V2 | 9 stops |
-| CUBAO-PASIG | CUBAO-PASIG-V1, CUBAO-PASIG-V2 | 7 stops |
-| CUBAO-SANJUAN | CUBAO-SANJUAN-V1, CUBAO-SANJUAN-V2 | 5 stops |
-| CUBAO-DIVISORIA | JEEP-01, JEEP-02 | 15 stops |
+| CUBAO-MAKATI | CUBAO-MAKATI-V1, CUBAO-MAKATI-V2 | 4 stops |
+| CUBAO-MARIKINA | CUBAO-MARIKINA-V1, CUBAO-MARIKINA-V2 | 5 stops |
+| CUBAO-PASIG | CUBAO-PASIG-V1, CUBAO-PASIG-V2 | 3 stops |
+| CUBAO-SANJUAN | CUBAO-SANJUAN-V1, CUBAO-SANJUAN-V2 | 2 stops |
+| CUBAO-DIVISORIA | CUBAO-DIVISORIA-V1, CUBAO-DIVISORIA-V2 | 6 stops |
 
-All route/stop/geofence/vehicle-route mapping data was derived from `simulated_trips.csv` and `simulated_trips_multiroute.csv` provided by the AI Lead.
+All route/stop/geofence/vehicle-route mapping data was derived from `simulated_trips_roadsnapped.csv` provided by the AI Lead. GPS coordinates are road-snapped for accurate route tracing and distance calculations.
 
 ---
 
@@ -245,7 +245,6 @@ Ported from the AI Lead's Python reference (`bunching_detection.py`) per spec (`
 - **Resolution threshold**: > 500m → `RESOLVED` (hysteresis to prevent flickering)
 - Active alerts are kept in memory and served via `GET /alerts`
 - All alerts (active and resolved) are persisted to Supabase `bunching_alerts` table
-- Validated against the real AI Lead dataset: the Python reference confirmed **1,102 bunching events** across the 4 routes in `simulated_trips_multiroute.csv`
 
 ---
 
@@ -306,7 +305,7 @@ Or run each separately for development:
 ```bash
 node subscriber.js       # MQTT -> Supabase
 node server.js           # REST API on port 3000 + bunching monitor
-node replaySimulator.js  # replays real 8-vehicle GPS data over MQTT
+node replaySimulator.js  # replays real 10-vehicle road-snapped GPS data over MQTT
 ```
 
 Optional one-off:
