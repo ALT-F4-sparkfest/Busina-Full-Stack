@@ -97,6 +97,14 @@ export default function Hero({ setActiveView }) {
             <Timer size={15} color="#2E9E3D" /> Real-Time ETA
           </span>
         </div>
+
+        {/* Animated jeepney road strip */}
+        <div className="hero-road" aria-hidden="true">
+          <div className="hero-road-line" />
+          <div className="hero-road-jeepney">
+            <Bus size={26} color="#2E9E3D" />
+          </div>
+        </div>
       </div>
 
       {/* RIGHT */}

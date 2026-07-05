@@ -1,39 +1,63 @@
 :root {
-  /* Brand */
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary: #38bdf8;
+  /* ============================================================
+     Brand — updated from generic blue to BUSINA Jeepney Green
+     (names kept identical to avoid breaking buttons.css, cards.css,
+     commuter.css, global.css, landing.css)
+     ============================================================ */
+  --primary: #2e9e3d; /* was #2563eb */
+  --primary-dark: #237a30; /* was #1d4ed8 */
+  --secondary: #6ee87c; /* was #38bdf8 — now primary-light green, not blue */
 
   /* Status */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --success: #3bea4c; /* was #10b981 — aligned to brand green */
+  --warning: #ffd93b; /* was #f59e0b — Warning Yellow */
+  --danger: #e53e3e; /* was #ef4444 — Emergency Red */
+
+  /* New accent, not in old file: Alert Orange (Smart Dispatch) */
+  --alert: #ff8a1d;
 
   /* Background */
-  --background: #f5f7fb;
+  --background: #fafafa; /* was #f5f7fb */
   --surface: #ffffff;
-  --surface-alt: #f9fafb;
+  --surface-alt: #f6f7f9; /* was #f9fafb */
 
   /* Text */
-  --text: #111827;
-  --text-light: #6b7280;
+  --text: #111111; /* was #111827 */
+  --text-light: #64748b; /* was #6b7280 */
 
   /* Borders */
-  --border: #e5e7eb;
+  --border: #d9d9d9; /* was #e5e7eb */
 
-  /* Radius */
+  /* Tints (new — used for pill backgrounds / icon bg across landing) */
+  --primary-tint: #e9fbea;
+  --alert-tint: rgba(255, 138, 29, 0.15);
+  --warning-tint: rgba(255, 217, 59, 0.15);
+  --danger-tint: rgba(229, 62, 62, 0.15);
+
+  /* Radius — unchanged, already fine */
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
 
-  /* Shadows */
+  /* Shadows — unchanged base, added brand-tinted variants */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-primary: 0 10px 24px rgba(46, 158, 61, 0.25);
+  --shadow-primary-glow: 0 10px 30px rgba(59, 234, 76, 0.35);
+  --shadow-danger-glow: 0 0 18px rgba(229, 62, 62, 0.35);
 
-  /* Spacing */
+  /* Spacing — unchanged */
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
+
+  /* New: Animation timing tokens (Section 1 asked for these, didn't exist yet) */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 250ms;
+  --duration-base: 300ms;
+  --duration-page-in: 1000ms;
+  --anim-float: 8s;
+  --anim-pulse: 2s;
 }
