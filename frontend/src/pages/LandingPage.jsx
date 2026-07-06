@@ -28,7 +28,7 @@ export default function LandingPage({ setActiveView }) {
         minHeight: "100vh",
         overflowX: "hidden",
         background:
-          "linear-gradient(180deg,#FAFAFA 0%,#F6F7F9 40%,#FFFFFF 100%)",
+          "linear-gradient(180deg,#FAFAFA 0%,#FBF4C6 40%,#FFFFFF 100%)",
         position: "relative",
       }}
     >
@@ -60,7 +60,7 @@ export default function LandingPage({ setActiveView }) {
         </div>
       )}
 
-      {/* Background glows */}
+      {/* Background glows – navy + coral */}
       <div
         style={{
           position: "fixed",
@@ -70,7 +70,7 @@ export default function LandingPage({ setActiveView }) {
           height: 620,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(59,234,76,.18),transparent 70%)",
+            "radial-gradient(circle,rgba(5,38,117,0.15),transparent 70%)",
           filter: "blur(80px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -85,29 +85,38 @@ export default function LandingPage({ setActiveView }) {
           height: 700,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(59,234,76,.10),transparent 70%)",
+            "radial-gradient(circle,rgba(253,72,71,0.10),transparent 70%)",
           filter: "blur(100px)",
           zIndex: 0,
           pointerEvents: "none",
         }}
       />
-      <FloatingCircle size={120} top="18%" left="6%" delay={0} opacity={0.1} />
+      <FloatingCircle
+        size={120}
+        top="18%"
+        left="6%"
+        delay={0}
+        opacity={0.08}
+        color="#052675"
+      />
       <FloatingCircle
         size={70}
         top="58%"
         right="12%"
         delay={2}
-        opacity={0.14}
+        opacity={0.12}
+        color="#FCA307"
       />
       <FloatingCircle
         size={48}
         bottom="18%"
         left="28%"
         delay={4}
-        opacity={0.12}
+        opacity={0.1}
+        color="#FD4847"
       />
 
-      {/* Navbar */}
+      {/* Navbar – now passes setActiveView for the toggle */}
       <div
         style={{
           position: "sticky",
@@ -119,17 +128,23 @@ export default function LandingPage({ setActiveView }) {
           borderBottom: "1px solid rgba(226,232,240,.55)",
         }}
       >
-        <Navbar />
+        <Navbar setActiveView={setActiveView} currentView="commuter" />
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
-        {/* Hero — now includes the live map directly, so no separate
-            map-preview section is needed right after it */}
+        {/* Glass Banner – moved ABOVE the Hero */}
+        <section
+          style={{ maxWidth: 1450, margin: "0 auto", padding: "20px 8% 0" }}
+        >
+          <GlassBanner />
+        </section>
+
+        {/* Hero */}
         <section
           style={{
             maxWidth: 1550,
             margin: "0 auto",
-            padding: "40px 6% 20px",
+            padding: "20px 6% 20px",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(30px)",
             transition: "1s",
@@ -139,11 +154,6 @@ export default function LandingPage({ setActiveView }) {
             setActiveView={setActiveView}
             onDemoClick={() => showToast("Feature coming in a future update")}
           />
-        </section>
-
-        {/* Glass Banner */}
-        <section style={{ maxWidth: 1450, margin: "0 auto", padding: "0 8%" }}>
-          <GlassBanner />
         </section>
 
         {/* Stats */}
@@ -164,7 +174,7 @@ export default function LandingPage({ setActiveView }) {
           </Reveal>
         </section>
 
-        {/* How BUSINA Solves It */}
+        {/* How BUSINA Solves It – localized inside this file */}
         <section
           style={{ maxWidth: 1100, margin: "50px auto 56px", padding: "0 8%" }}
         >
@@ -197,7 +207,7 @@ export default function LandingPage({ setActiveView }) {
             marginTop: 60,
             padding: "60px 8%",
             borderTop: "1px solid #D9D9D9",
-            background: "linear-gradient(180deg,#FFFFFF,#F6F7F9)",
+            background: "linear-gradient(180deg,#FFFFFF,#FBF4C6)",
           }}
         >
           <div
@@ -262,59 +272,68 @@ export default function LandingPage({ setActiveView }) {
   );
 }
 
-/* ── How It Works ─────────────────────────────────────────────────────────── */
+/* ── How It Works (localized) ────────────────────────────────────────── */
 const HOW_STEPS = [
   {
-    icon: <Radio size={30} color="#2E9E3D" />,
-    title: "Vehicle sends its location",
-    body: "Every jeepney shares where it is, every few seconds — no driver action needed.",
+    icon: <Radio size={28} color="#052675" />,
+    title: "Nagpadala ng location ang sasakyan",
+    body: "Bawat jeepney ay nagbabahagi ng kanyang lokasyon bawat ilang segundo — walang kailangang gawin ang driver.",
+    tag: "GPS",
   },
   {
-    icon: <Cpu size={30} color="#2E9E3D" />,
-    title: "BUSINA predicts arrival",
-    body: "Live position plus traffic conditions turn into an ETA you can actually trust.",
+    icon: <Cpu size={28} color="#052675" />,
+    title: "Pinaplano ng BUSINA ang pagdating",
+    body: "Ang live na posisyon plus trapiko ay nagiging ETA na maaari mong pagkatiwalaan.",
+    tag: "AI",
   },
   {
-    icon: <Smartphone size={30} color="#2E9E3D" />,
-    title: "Passengers see the ETA",
-    body: "Riders check the app and know whether to wait, walk, or pick another route.",
+    icon: <Smartphone size={28} color="#052675" />,
+    title: "Nakikita ng pasahero ang ETA",
+    body: "Tingnan ng mga sakay ang app at alamin kung maghihintay, lalakad, o ibang ruta ang pipiliin.",
+    tag: "Mobile",
   },
   {
-    icon: <BarChart3 size={30} color="#2E9E3D" />,
-    title: "Operators get the alert",
-    body: "Delays, bunching, and demand spikes surface on the dashboard before commuters complain.",
+    icon: <BarChart3 size={28} color="#052675" />,
+    title: "Nag-aalert ang operator",
+    body: "Ang mga pagkaantala, pagsisikip, at demand spikes ay lumalabas sa dashboard bago pa magreklamo ang mga pasahero.",
+    tag: "Alert",
   },
 ];
 
 function HowItWorks() {
   return (
     <div>
-      <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
         <div
           style={{
             display: "inline-block",
-            background: "#E9FBEA",
-            color: "#2E9E3D",
+            background: "#E7ECFB",
+            color: "#052675",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
             fontWeight: 600,
-            marginBottom: 16,
+            marginBottom: 14,
           }}
         >
-          HOW IT WORKS
+          PAANO ITO GUMAGANA
         </div>
         <h2
-          style={{ fontSize: 32, fontWeight: 800, color: "#111111", margin: 0 }}
+          style={{
+            fontSize: "clamp(28px, 3vw, 36px)",
+            fontWeight: 800,
+            color: "#111111",
+            margin: 0,
+          }}
         >
-          From GPS ping to your screen in seconds
+          Mula GPS ping hanggang sa screen mo sa loob ng ilang segundo
         </h2>
       </div>
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 24,
+          gap: 20,
         }}
         className="how-it-works-grid"
       >
@@ -323,8 +342,8 @@ function HowItWorks() {
             key={i}
             style={{
               background: "white",
-              borderRadius: 20,
-              padding: 28,
+              borderRadius: 18,
+              padding: 24,
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
@@ -333,10 +352,10 @@ function HowItWorks() {
               cursor: "default",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-6px)";
+              e.currentTarget.style.transform = "translateY(-5px)";
               e.currentTarget.style.boxShadow =
-                "0 20px 40px rgba(46,158,61,.14)";
-              e.currentTarget.style.borderColor = "#3BEA4C";
+                "0 18px 36px rgba(5,38,117,0.12)";
+              e.currentTarget.style.borderColor = "#052675";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
@@ -347,35 +366,55 @@ function HowItWorks() {
             <div
               style={{
                 position: "absolute",
-                top: 16,
-                right: 16,
-                width: 28,
-                height: 28,
+                top: 14,
+                right: 14,
+                width: 24,
+                height: 24,
                 borderRadius: "50%",
-                background: "#E9FBEA",
-                color: "#2E9E3D",
+                background: "#E7ECFB",
+                color: "#052675",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 800,
-                fontSize: 13,
+                fontSize: 12,
               }}
             >
               {i + 1}
             </div>
-            <div style={{ marginBottom: 14 }}>{step.icon}</div>
+            <div style={{ marginBottom: 12 }}>{step.icon}</div>
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: 15,
                 color: "#111111",
-                marginBottom: 8,
+                marginBottom: 6,
               }}
             >
               {step.title}
             </div>
-            <div style={{ fontSize: 14, color: "#64748B", lineHeight: 1.6 }}>
+            <div
+              style={{
+                fontSize: 14,
+                color: "#64748B",
+                lineHeight: 1.6,
+                marginBottom: 10,
+              }}
+            >
               {step.body}
+            </div>
+            <div
+              style={{
+                display: "inline-block",
+                background: "#E7ECFB",
+                color: "#052675",
+                padding: "2px 12px",
+                borderRadius: 999,
+                fontSize: 11,
+                fontWeight: 600,
+              }}
+            >
+              {step.tag}
             </div>
           </div>
         ))}
@@ -389,7 +428,7 @@ function HowItWorks() {
   );
 }
 
-/* ── About Us ─────────────────────────────────────────────────────────────── */
+/* ── About Us ──────────────────────────────────────────────────────────── */
 function AboutUs() {
   return (
     <div
@@ -409,8 +448,8 @@ function AboutUs() {
         <div
           style={{
             display: "inline-block",
-            background: "#E9FBEA",
-            color: "#2E9E3D",
+            background: "#E7ECFB",
+            color: "#052675",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
@@ -418,7 +457,7 @@ function AboutUs() {
             marginBottom: 20,
           }}
         >
-          ABOUT US
+          TUNGKOL SA AMIN
         </div>
         <h2
           style={{
@@ -428,7 +467,7 @@ function AboutUs() {
             margin: "0 0 18px",
           }}
         >
-          Built for Filipino commuters, by Filipino students
+          Binuo para sa mga Pilipinong commuter, ng mga Pilipinong estudyante
         </h2>
         <p
           style={{
@@ -438,10 +477,11 @@ function AboutUs() {
             fontSize: 15,
           }}
         >
-          BUSINA started as a hackathon project with one goal: make jeepney
-          routes predictable. We combined real-time GPS tracking, Socket.IO live
-          updates, and AI-assisted dispatch to give both commuters and operators
-          the visibility they've never had.
+          Nagsimula ang BUSINA bilang isang hackathon project na may iisang
+          layunin: gawing predictable ang mga ruta ng jeepney. Pinagsama namin
+          ang real‑time GPS tracking, Socket.IO live updates, at AI‑assisted
+          dispatch upang bigyan ang parehong commuter at operator ng visibility
+          na hindi pa nila naranasan.
         </p>
         <p
           style={{
@@ -451,11 +491,10 @@ function AboutUs() {
             fontSize: 15,
           }}
         >
-          We believe public infrastructure data should be public.
+          Naniniwala kami na ang data ng pampublikong imprastraktura ay dapat
+          maging publiko.
         </p>
 
-        {/* Team links — replace the href placeholders below with each
-            member's real GitHub/LinkedIn URLs */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {[
             {
@@ -530,7 +569,7 @@ function AboutUs() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#2E9E3D",
+                  color: "#052675",
                 }}
               >
                 <LinkedinIcon size={13} />
@@ -568,7 +607,7 @@ function AboutUs() {
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-4px)";
               e.currentTarget.style.boxShadow =
-                "0 14px 28px rgba(46,158,61,.15)";
+                "0 14px 28px rgba(5,38,117,0.15)";
               e.currentTarget.style.background = "#FFFFFF";
             }}
             onMouseLeave={(e) => {
@@ -579,7 +618,7 @@ function AboutUs() {
           >
             <div
               className="font-numeric"
-              style={{ fontSize: 28, color: "#2E9E3D" }}
+              style={{ fontSize: 28, color: "#052675" }}
             >
               {s.value}
             </div>
@@ -593,7 +632,7 @@ function AboutUs() {
   );
 }
 
-/* ── Glass Banner ─────────────────────────────────────────────────────────── */
+/* ── Glass Banner ──────────────────────────────────────────────────────── */
 function GlassBanner() {
   return (
     <div
@@ -611,10 +650,10 @@ function GlassBanner() {
         gap: 30,
       }}
     >
-      <Metric title="Fleet Status" value="LIVE" color="#3BEA4C" />
-      <Metric title="GPS Updates" value="Real-Time" color="#2E9E3D" />
-      <Metric title="Analytics" value="AI Enabled" color="#FFD93B" />
-      <Metric title="Platform" value="Online" color="#FF8A1D" />
+      <Metric title="Fleet Status" value="LIVE" color="#FD4847" />
+      <Metric title="GPS Updates" value="Real-Time" color="#052675" />
+      <Metric title="Analytics" value="AI Enabled" color="#FCA307" />
+      <Metric title="Platform" value="Online" color="#052675" />
     </div>
   );
 }
@@ -646,7 +685,17 @@ function Metric({ title, value, color }) {
   );
 }
 
-function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
+/* ── Floating Circles ──────────────────────────────────────────────────── */
+function FloatingCircle({
+  size,
+  top,
+  left,
+  right,
+  bottom,
+  delay,
+  opacity,
+  color,
+}) {
   return (
     <>
       <div
@@ -655,7 +704,7 @@ function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
           width: size,
           height: size,
           borderRadius: "50%",
-          background: "#2E9E3D",
+          background: color || "#052675",
           opacity,
           top,
           left,
@@ -674,10 +723,7 @@ function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
   );
 }
 
-/* ── Inline brand icons ───────────────────────────────────────────────────
-   lucide-react deprecated logo/brand icons (GitHub, LinkedIn, etc.) since
-   they're trademarked marks, not generic icons — so these are plain inline
-   SVGs instead of a lucide import, immune to future package version churn. */
+/* ── Inline brand icons ────────────────────────────────────────────────── */
 function GithubIcon({ size = 14 }) {
   return (
     <svg

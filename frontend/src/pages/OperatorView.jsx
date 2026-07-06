@@ -1,5 +1,4 @@
 // src/pages/OperatorView.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
@@ -12,6 +11,8 @@ import {
   Radio,
   CheckCircle2,
   Bot,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import LiveMap from "../components/map/LiveMap";
@@ -35,6 +36,7 @@ export default function OperatorView({ onBack }) {
   const [waitingList, setWaitingList] = useState([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filterRoute, setFilterRoute] = useState("all");
+  const [showAnalytics, setShowAnalytics] = useState(false); // 👈 NEW: progressive disclosure toggle
 
   useEffect(() => {
     if (!live.socket) return;
@@ -71,8 +73,6 @@ export default function OperatorView({ onBack }) {
     ...new Set(vehicleList.map((v) => v.route_id).filter(Boolean)),
   ];
 
-  // True only during the initial connect — once we've ever seen a vehicle,
-  // an empty list means "genuinely no vehicles," not "still loading."
   const isLoading = !live.connected && vehicleList.length === 0;
 
   const filteredVehicles =
@@ -171,6 +171,7 @@ export default function OperatorView({ onBack }) {
         </div>
       </header>
 
+      {/* KPICards – kept intact */}
       <div style={{ padding: "16px 32px", flexShrink: 0 }}>
         <KPICards vehicles={filteredVehicles} />
       </div>
@@ -221,26 +222,67 @@ export default function OperatorView({ onBack }) {
             )}
           </div>
 
-          <div className="operator-charts-row">
-            <div style={{ flex: 1 }}>
-              <TravelTimeChart />
+          {/* ─── Progressive Disclosure Toggle ─── */}
+          <button
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            style={{
+              marginTop: 16,
+              padding: "12px 20px",
+              width: "100%",
+              border: "1px solid #D9D9D9",
+              borderRadius: 14,
+              background: "white",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "#111111",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#2E9E3D";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(46,158,61,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#D9D9D9";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <span>📊 {showAnalytics ? "Hide" : "Show"} Advanced Analytics</span>
+            {showAnalytics ? (
+              <ChevronDown size={18} color="#64748B" />
+            ) : (
+              <ChevronRight size={18} color="#64748B" />
+            )}
+          </button>
+
+          {/* ─── Analytics Section – conditionally rendered ─── */}
+          {showAnalytics && (
+            <div className="operator-charts-row" style={{ marginTop: 16 }}>
+              <div style={{ flex: 1 }}>
+                <TravelTimeChart />
+              </div>
+              <div style={{ flex: 1 }}>
+                <AIRecommendationPanel
+                  vehicles={filteredVehicles}
+                  waitingCommuters={waitingList}
+                />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <AIRecommendationPanel
-                vehicles={filteredVehicles}
-                waitingCommuters={waitingList}
-              />
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="operator-side">
+          {/* VehicleDetailsPanel – kept intact */}
           <VehicleDetailsPanel
             vehicle={selectedVehicle}
             status={selectedVehicle ? getStatus(selectedVehicle.speed) : null}
           />
 
-          {/* Vehicle list */}
+          {/* Vehicle list – kept intact */}
           <section
             style={{
               background: "white",
@@ -404,7 +446,7 @@ export default function OperatorView({ onBack }) {
             </div>
           </section>
 
-          {/* Alerts feed */}
+          {/* Alerts feed – kept intact */}
           <section
             style={{
               background: "white",
@@ -526,6 +568,7 @@ export default function OperatorView({ onBack }) {
             </div>
           </section>
 
+          {/* OperationsPanel – kept intact */}
           <OperationsPanel
             alerts={alerts}
             hotspots={topHotspots}

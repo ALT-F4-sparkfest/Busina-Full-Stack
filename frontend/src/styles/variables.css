@@ -1,50 +1,59 @@
+/**
+ * BUSINA Color Palette – Usage Ratio
+ * -----------------------------------
+ *   - 70% Cream / White (backgrounds, surfaces)
+ *   - 20% Navy (primary actions, headers, nav)
+ *   -  8% Orange (ETA, KPIs, active tabs, moderate alerts)
+ *   -  2% Coral Red (critical alerts, errors only)
+ */
+
 :root {
   /* ============================================================
-     Brand — updated from generic blue to BUSINA Jeepney Green
-     (names kept identical to avoid breaking buttons.css, cards.css,
-     commuter.css, global.css, landing.css)
+     Brand — updated to BUSINA Navy + Orange + Coral identity
+     (names kept identical to avoid breaking components)
      ============================================================ */
-  --primary: #2e9e3d; /* was #2563eb */
-  --primary-dark: #237a30; /* was #1d4ed8 */
-  --secondary: #6ee87c; /* was #38bdf8 — now primary-light green, not blue */
+  --primary: #052675; /* Navy — Trust, Reliability, Primary CTAs */
+  --primary-dark: #03164a; /* Darker Navy — Text-safe variant on white */
 
-  /* Status */
-  --success: #3bea4c; /* was #10b981 — aligned to brand green */
-  --warning: #ffd93b; /* was #f59e0b — Warning Yellow */
-  --danger: #e53e3e; /* was #ef4444 — Emergency Red */
+  --secondary: #fca307; /* Orange — ETA, KPIs, Active tabs, Optimism */
 
-  /* New accent, not in old file: Alert Orange (Smart Dispatch) */
-  --alert: #ff8a1d;
+  /* Status — now aligned to new brand */
+  --success: #052675; /* Navy — Confirmed/on‑track states (keeps UI calm) */
+  --warning: #fca307; /* Orange — Moderation, Caution, Highlights */
+  --danger: #fd4847; /* Coral Red — Critical alerts, Errors only */
 
-  /* Background */
-  --background: #fafafa; /* was #f5f7fb */
-  --surface: #ffffff;
-  --surface-alt: #f6f7f9; /* was #f9fafb */
+  /* New accent: Alert Orange (Smart Dispatch) */
+  --alert: #fca307; /* Consolidated with secondary orange */
+
+  /* Backgrounds */
+  --background: #fafafa; /* Off‑white page background (neutral base) */
+  --surface: #ffffff; /* White cards, modals, surfaces */
+  --surface-alt: #fbf4c6; /* Cream — Warm section backgrounds, hero, empty states */
 
   /* Text */
-  --text: #111111; /* was #111827 */
-  --text-light: #64748b; /* was #6b7280 */
+  --text: #111111; /* Headings, logo, footer */
+  --text-light: #64748b; /* Secondary / caption text */
 
   /* Borders */
-  --border: #d9d9d9; /* was #e5e7eb */
+  --border: #d9d9d9; /* Card borders, dividers */
 
-  /* Tints (new — used for pill backgrounds / icon bg across landing) */
-  --primary-tint: #e9fbea;
-  --alert-tint: rgba(255, 138, 29, 0.15);
-  --warning-tint: rgba(255, 217, 59, 0.15);
-  --danger-tint: rgba(229, 62, 62, 0.15);
+  /* Tints (pill backgrounds, icon backgrounds) */
+  --primary-tint: #e7ecfb; /* Navy tint (was green tint) */
+  --alert-tint: rgba(252, 163, 7, 0.15); /* Orange tint */
+  --warning-tint: rgba(252, 163, 7, 0.15); /* Orange tint (unified) */
+  --danger-tint: rgba(253, 72, 71, 0.15); /* Coral tint */
 
-  /* Radius — unchanged, already fine */
+  /* Radius — unchanged */
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
 
-  /* Shadows — unchanged base, added brand-tinted variants */
+  /* Shadows — updated to match brand colors */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-primary: 0 10px 24px rgba(46, 158, 61, 0.25);
-  --shadow-primary-glow: 0 10px 30px rgba(59, 234, 76, 0.35);
-  --shadow-danger-glow: 0 0 18px rgba(229, 62, 62, 0.35);
+  --shadow-primary: 0 10px 24px rgba(5, 38, 117, 0.25); /* Navy shadow */
+  --shadow-primary-glow: 0 10px 30px rgba(5, 38, 117, 0.35); /* Navy glow */
+  --shadow-danger-glow: 0 0 18px rgba(253, 72, 71, 0.35); /* Coral glow */
 
   /* Spacing — unchanged */
   --space-xs: 0.5rem;
@@ -53,7 +62,7 @@
   --space-lg: 1.5rem;
   --space-xl: 2rem;
 
-  /* New: Animation timing tokens (Section 1 asked for these, didn't exist yet) */
+  /* Animation timing tokens */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 250ms;
   --duration-base: 300ms;

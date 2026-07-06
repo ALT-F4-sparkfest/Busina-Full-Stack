@@ -1,93 +1,114 @@
+// src/components/landing/Features.jsx
 import { Bus, MapPinned, Clock3, Brain, Route, BarChart3 } from "lucide-react";
 
 export default function Features() {
   const features = [
     {
-      icon: <MapPinned size={34} />,
+      icon: <MapPinned size={30} />,
       title: "See every jeepney, live",
       description:
         "Watch vehicles move on an interactive map instead of standing at a stop hoping one shows up.",
-      color: "#2E9E3D",
+      tag: "Live tracking",
+      color: "#052675",
     },
     {
-      icon: <Clock3 size={34} />,
+      icon: <Clock3 size={30} />,
       title: "Know before you wait",
       description:
         "Traffic-aware ETAs mean you decide whether to wait, walk, or grab a different route — before committing.",
-      color: "#FFD93B",
+      tag: "Accurate ETA",
+      color: "#FCA307",
     },
     {
-      icon: <Brain size={34} />,
+      icon: <Brain size={30} />,
       title: "Vehicles sent where they're needed",
       description:
         "When commuter demand spikes on a route, dispatch recommendations flag it before a bottleneck forms.",
-      color: "#00C2FF",
+      tag: "AI dispatch",
+      color: "#052675",
     },
     {
-      icon: <Bus size={34} />,
+      icon: <Bus size={30} />,
       title: "Fleets that don't fly blind",
       description:
         "Operators see every active vehicle, passenger load, and delay — instead of finding out after commuters complain.",
-      color: "#3BEA4C",
+      tag: "Full visibility",
+      color: "#FD4847",
     },
     {
-      icon: <Route size={34} />,
+      icon: <Route size={30} />,
       title: "Send more jeeps where it's busy",
       description:
         "Spot high-demand pickup areas as they happen and reallocate vehicles instantly, not after the fact.",
-      color: "#FF8A1D",
+      tag: "Smart routing",
+      color: "#FCA307",
     },
     {
-      icon: <BarChart3 size={34} />,
+      icon: <BarChart3 size={30} />,
       title: "Understand delays before they escalate",
       description:
         "Travel trends and fleet KPIs surface the pattern behind a bad commute day, not just the symptom.",
-      color: "#8B5CF6",
+      tag: "Analytics",
+      color: "#052675",
     },
   ];
 
   return (
     <section
       style={{
-        padding: "56px 8% 70px",
+        padding: "40px 8% 60px",
       }}
     >
       <div
         style={{
           textAlign: "center",
-          marginBottom: 44,
+          marginBottom: 40,
         }}
       >
-        <h2
+        <div
           style={{
-            fontSize: 46,
-            fontWeight: 800,
-            color: "#111111",
-            marginBottom: 16,
+            display: "inline-block",
+            background: "#E7ECFB",
+            color: "#052675",
+            padding: "6px 18px",
+            borderRadius: 999,
+            fontSize: 13,
+            fontWeight: 600,
+            marginBottom: 14,
           }}
         >
-          Everything You Need
+          MGA TAMPOK
+        </div>
+        <h2
+          style={{
+            fontSize: "clamp(30px, 3.5vw, 44px)",
+            fontWeight: 800,
+            color: "#111111",
+            marginBottom: 12,
+          }}
+        >
+          Lahat ng kailangan mo
         </h2>
 
         <p
           style={{
-            maxWidth: 760,
+            maxWidth: 700,
             margin: "0 auto",
-            fontSize: 18,
-            lineHeight: 1.8,
+            fontSize: "clamp(15px, 1.1vw, 18px)",
+            lineHeight: 1.7,
             color: "#64748B",
           }}
         >
-          Built around what jeepney commuters and Metro Manila TODAs actually
-          need — not generic fleet-management jargon.
+          Binuo para sa mga jeepney commuter at TODA sa Metro Manila — hindi
+          generic na fleet‑management jargon.
         </p>
       </div>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
-          gap: 28,
+          gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+          gap: 24,
         }}
       >
         {features.map((feature) => (
@@ -96,36 +117,35 @@ export default function Features() {
             style={{
               background: "rgba(255,255,255,.85)",
               backdropFilter: "blur(18px)",
-              WebkitBackdropFilter: "blur(18px)",
-              borderRadius: 26,
-              padding: 34,
+              borderRadius: 22,
+              padding: 28,
               border: "1px solid rgba(255,255,255,.45)",
-              boxShadow: "0 20px 45px rgba(17,17,17,.08)",
+              boxShadow: "0 16px 40px rgba(17,17,17,.06)",
               transition: ".25s",
-              cursor: "pointer",
+              cursor: "default",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-10px)";
+              e.currentTarget.style.transform = "translateY(-6px)";
               e.currentTarget.style.boxShadow =
-                "0 30px 60px rgba(59,234,76,.16)";
+                "0 24px 52px rgba(5,38,117,0.14)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow =
-                "0 20px 45px rgba(17,17,17,.08)";
+                "0 16px 40px rgba(17,17,17,.06)";
             }}
           >
             <div
               style={{
-                width: 70,
-                height: 70,
-                borderRadius: 22,
-                background: `${feature.color}20`,
+                width: 56,
+                height: 56,
+                borderRadius: 18,
+                background: `${feature.color}18`,
                 color: feature.color,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 24,
+                marginBottom: 18,
               }}
             >
               {feature.icon}
@@ -133,9 +153,10 @@ export default function Features() {
 
             <h3
               style={{
-                fontSize: 24,
-                marginBottom: 14,
+                fontSize: 20,
+                marginBottom: 8,
                 color: "#111111",
+                fontWeight: 700,
               }}
             >
               {feature.title}
@@ -144,12 +165,27 @@ export default function Features() {
             <p
               style={{
                 color: "#64748B",
-                lineHeight: 1.8,
-                fontSize: 16,
+                lineHeight: 1.7,
+                fontSize: 15,
+                marginBottom: 12,
               }}
             >
               {feature.description}
             </p>
+
+            <div
+              style={{
+                display: "inline-block",
+                background: `${feature.color}12`,
+                color: feature.color,
+                padding: "2px 14px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              {feature.tag}
+            </div>
           </div>
         ))}
       </div>
