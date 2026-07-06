@@ -8,11 +8,28 @@ import {
   Radio,
   Cpu,
   Timer,
+  Maximize2,
 } from "lucide-react";
 import Button from "../ui/Button";
+import LiveMap from "../map/LiveMap";
+import useLiveVehicles from "../../hooks/useLiveVehicles";
+import LiveSyncBadge from "../LiveSyncBadge";
 
 export default function Hero({ setActiveView, onDemoClick }) {
   const [paraPo, setParaPo] = useState(false);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const live = useLiveVehicles();
+
+  const vehicles = Array.isArray(live.vehicles)
+    ? live.vehicles.filter(
+        (v) =>
+          v &&
+          typeof v.lat === "number" &&
+          typeof v.lng === "number" &&
+          isFinite(v.lat) &&
+          isFinite(v.lng),
+      )
+    : [];
 
   const handleJeepneyClick = () => {
     setParaPo(true);
@@ -51,20 +68,36 @@ export default function Hero({ setActiveView, onDemoClick }) {
 
         <h1 className="hero-h1">BUSINA</h1>
 
-        <h2 className="hero-h2">Smarter commutes. Better journeys.</h2>
+        {/* Concrete, specific value — answers "what does this do" instantly,
+            instead of making people infer it from the tagline alone */}
+        <h2 className="hero-h2" style={{ color: "#2E9E3D" }}>
+          Never guess when your jeep arrives again.
+        </h2>
 
         <p
           style={{
-            fontSize: 20,
-            color: "#374151",
-            lineHeight: 1.8,
-            maxWidth: 640,
-            marginBottom: 40,
+            fontSize: 15,
+            fontWeight: 600,
+            color: "#64748B",
+            letterSpacing: 0.3,
+            marginTop: -6,
+            marginBottom: 22,
           }}
         >
-          A smart mobility platform that helps commuters find rides faster while
-          giving operators live fleet visibility, intelligent dispatch
-          recommendations, and demand-driven decision support.
+          Smarter commutes. Better journeys.
+        </p>
+
+        <p
+          style={{
+            fontSize: 18,
+            color: "#374151",
+            lineHeight: 1.7,
+            maxWidth: 600,
+            marginBottom: 36,
+          }}
+        >
+          Real-time jeepney tracking and AI dispatch for Metro Manila —
+          commuters see accurate ETAs, operators see their whole fleet, live.
         </p>
 
         <div
@@ -74,15 +107,42 @@ export default function Hero({ setActiveView, onDemoClick }) {
             flexWrap: "wrap",
           }}
         >
-          <Button onClick={() => setActiveView("commuter")}>
-            <Bus size={18} />
-            I'm a Commuter
-          </Button>
+          <div>
+            <Button onClick={() => setActiveView("commuter")}>
+              <Bus size={18} />
+              I'm a Commuter
+            </Button>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#9CA3AF",
+                marginTop: 6,
+                marginLeft: 4,
+              }}
+            >
+              Find your ride →
+            </div>
+          </div>
 
-          <Button variant="secondary" onClick={() => setActiveView("operator")}>
-            <Building2 size={18} />
-            I'm an Operator
-          </Button>
+          <div>
+            <Button
+              variant="secondary"
+              onClick={() => setActiveView("operator")}
+            >
+              <Building2 size={18} />
+              I'm an Operator
+            </Button>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#9CA3AF",
+                marginTop: 6,
+                marginLeft: 4,
+              }}
+            >
+              Open dashboard →
+            </div>
+          </div>
         </div>
 
         <div
@@ -121,14 +181,14 @@ export default function Hero({ setActiveView, onDemoClick }) {
         </div>
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT — the real live map, not a mocked stats card */}
 
       <div
         style={{
           background: "rgba(255,255,255,.92)",
           backdropFilter: "blur(18px)",
           borderRadius: 28,
-          padding: 34,
+          overflow: "hidden",
           boxShadow: "0 25px 70px rgba(59,234,76,.18)",
           border: "1px solid #D9D9D9",
         }}
@@ -138,105 +198,60 @@ export default function Hero({ setActiveView, onDemoClick }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 28,
+            padding: "18px 22px",
+            flexWrap: "wrap",
+            gap: 10,
           }}
         >
           <h2
             style={{
               margin: 0,
+              fontSize: 18,
               color: "#111111",
               display: "flex",
               alignItems: "center",
               gap: 8,
             }}
           >
-            <Bus size={20} color="#2E9E3D" /> Live Fleet Status
+            <Bus size={20} color="#2E9E3D" /> Live Fleet Map
           </h2>
 
-          <div
-            style={{
-              background: "#E9FBEA",
-              color: "#1FA82E",
-              padding: "6px 14px",
-              borderRadius: 999,
-              fontWeight: 700,
-              fontSize: 13,
-            }}
-          >
-            ● DEMO LIVE
-          </div>
+          <LiveSyncBadge vehicles={vehicles} connected={live.connected} />
         </div>
 
-        {[
-          ["Vehicles Online", "18"],
-          ["Passengers Today", "1,248"],
-          ["Average ETA", "5 mins"],
-          ["Average Speed", "31 km/h"],
-          ["AI Confidence", "97%"],
-        ].map(([label, value]) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "18px 0",
-              borderBottom: "1px solid #D9D9D9",
-            }}
-          >
-            <span style={{ color: "#374151" }}>{label}</span>
-            <strong className="font-numeric">{value}</strong>
-          </div>
-        ))}
+        <div style={{ position: "relative", height: 480 }}>
+          <LiveMap
+            vehicles={vehicles}
+            userLocation={null}
+            mapId="hero-live-map"
+            selectedVehicleId={selectedVehicleId}
+            onVehicleSelect={setSelectedVehicleId}
+          />
 
-        <div
-          style={{
-            marginTop: 26,
-            background: "#F6F7F9",
-            borderRadius: 14,
-            padding: 18,
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 700,
-              marginBottom: 12,
-            }}
-          >
-            Fleet Health
-          </div>
-          <div
-            style={{
-              height: 10,
-              background: "#D9D9D9",
-              borderRadius: 999,
-              overflow: "hidden",
-            }}
-          >
+          {!live.connected && vehicles.length === 0 && (
             <div
               style={{
-                width: "94%",
-                height: "100%",
-                background: "linear-gradient(90deg,#2E9E3D,#6EE87C)",
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(246,247,249,.9)",
               }}
-            />
-          </div>
-          <small
-            style={{
-              display: "block",
-              marginTop: 10,
-              color: "#64748B",
-            }}
-          >
-            Fleet operating normally.
-          </small>
+            >
+              <span style={{ color: "#64748B", fontSize: 14 }}>
+                Connecting to live fleet…
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Uses the app's own toast system instead of a raw browser alert */}
+        {/* Links straight into the real Commuter view — not a toast */}
         <button
-          onClick={() => onDemoClick && onDemoClick()}
+          onClick={() => setActiveView("commuter")}
           style={{
-            width: "100%",
-            marginTop: 28,
+            width: "calc(100% - 44px)",
+            margin: 22,
             padding: 16,
             borderRadius: 16,
             border: "none",
@@ -250,7 +265,8 @@ export default function Hero({ setActiveView, onDemoClick }) {
             cursor: "pointer",
           }}
         >
-          Explore Live Demo
+          <Maximize2 size={17} />
+          Open Full Map
           <ArrowRight size={18} />
         </button>
       </div>

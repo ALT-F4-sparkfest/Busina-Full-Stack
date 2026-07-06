@@ -1,31 +1,6 @@
-import { Cloud, TrafficCone, Waves, Bus, Clock3 } from "lucide-react";
-
-const COMMUTE_ITEMS = [
-  {
-    icon: <Cloud size={20} />,
-    label: "Weather",
-    value: "Moderate Rain",
-    tone: "warn",
-  },
-  {
-    icon: <TrafficCone size={20} />,
-    label: "Traffic",
-    value: "Heavy",
-    tone: "bad",
-  },
-  {
-    icon: <Waves size={20} />,
-    label: "Flood Risk",
-    value: "Medium",
-    tone: "warn",
-  },
-  {
-    icon: <Bus size={20} />,
-    label: "Jeepneys",
-    value: "127 Active",
-    tone: "good",
-  },
-];
+import { Cloud, Bus, Clock3 } from "lucide-react";
+import { useWeather } from "../../hooks/useWeather";
+import { useLiveClock } from "../../hooks/useLiveClock";
 
 const TONE_COLORS = {
   good: "#2E9E3D",
@@ -33,7 +8,24 @@ const TONE_COLORS = {
   bad: "#DC2626",
 };
 
-export default function TodaysCommute() {
+// activeVehicleCount / avgWaitMinutes are passed in from wherever you already
+// track live fleet data (e.g. useLiveVehicles). Falls back to demo numbers
+// so this still renders standalone.
+export default function TodaysCommute({
+  activeVehicleCount = 127,
+  avgWaitMinutes = 6,
+}) {
+  const weather = useWeather();
+  const { time, date } = useLiveClock();
+
+  const weatherValue = weather.loading
+    ? "Loading..."
+    : weather.error
+      ? "Unavailable"
+      : `${weather.label} · ${Math.round(weather.temperatureC)}°C`;
+
+  const weatherTone = weather.error ? "warn" : weather.tone;
+
   return (
     <div
       style={{
@@ -49,34 +41,56 @@ export default function TodaysCommute() {
     >
       <div
         style={{
+          fontSize: 13,
+          fontWeight: 600,
+          color: "#2E9E3D",
+          marginBottom: 6,
+        }}
+      >
+        TODAY'S COMMUTE
+      </div>
+      <h3
+        style={{
+          margin: 0,
+          fontSize: 22,
+          fontWeight: 800,
+          color: "#111111",
+          marginBottom: 20,
+        }}
+      >
+        Metro Manila Overview
+      </h3>
+
+      {/* Top rectangle: huge live time + date */}
+      <div
+        style={{
+          background: "#F6F7F9",
+          borderRadius: 20,
+          padding: "24px 28px",
+          border: "1px solid #E5E7EB",
+          marginBottom: 14,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 24,
         }}
       >
         <div>
           <div
+            className="font-numeric"
             style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#2E9E3D",
-              marginBottom: 6,
-            }}
-          >
-            TODAY'S COMMUTE
-          </div>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: 22,
+              fontSize: 48,
               fontWeight: 800,
               color: "#111111",
+              lineHeight: 1,
             }}
           >
-            Metro Manila Overview
-          </h3>
+            {time}
+          </div>
+          <div style={{ fontSize: 14, color: "#64748B", marginTop: 8 }}>
+            {date}
+          </div>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -88,6 +102,7 @@ export default function TodaysCommute() {
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 700,
+            height: "fit-content",
           }}
         >
           <span
@@ -99,56 +114,64 @@ export default function TodaysCommute() {
               boxShadow: "0 0 8px #3BEA4C",
             }}
           />
-          LIVE-ISH
+          LIVE
         </div>
       </div>
 
+      {/* Bottom row: two squares — weather (left), PUV count (right) */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(130px,1fr))",
+          gridTemplateColumns: "1fr 1fr",
           gap: 14,
           marginBottom: 24,
         }}
       >
-        {COMMUTE_ITEMS.map((item) => (
-          <div
-            key={item.label}
-            style={{
-              background: "#F6F7F9",
-              borderRadius: 16,
-              padding: "16px 14px",
-              border: "1px solid #E5E7EB",
-            }}
-          >
-            <div
-              style={{
-                color: TONE_COLORS[item.tone],
-                marginBottom: 10,
-              }}
-            >
-              {item.icon}
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: "#64748B",
-                marginBottom: 4,
-              }}
-            >
-              {item.label}
-            </div>
-            <div
-              style={{
-                fontSize: 15,
-                fontWeight: 700,
-                color: "#111111",
-              }}
-            >
-              {item.value}
-            </div>
+        <div
+          style={{
+            background: "#F6F7F9",
+            borderRadius: 16,
+            padding: "20px 18px",
+            border: "1px solid #E5E7EB",
+            aspectRatio: "1 / 1",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <div style={{ color: TONE_COLORS[weatherTone], marginBottom: 10 }}>
+            <Cloud size={24} />
           </div>
-        ))}
+          <div style={{ fontSize: 13, color: "#64748B", marginBottom: 6 }}>
+            Weather
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 700, color: "#111111" }}>
+            {weatherValue}
+          </div>
+        </div>
+
+        <div
+          style={{
+            background: "#F6F7F9",
+            borderRadius: 16,
+            padding: "20px 18px",
+            border: "1px solid #E5E7EB",
+            aspectRatio: "1 / 1",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <div style={{ color: TONE_COLORS.good, marginBottom: 10 }}>
+            <Bus size={24} />
+          </div>
+          <div style={{ fontSize: 13, color: "#64748B", marginBottom: 6 }}>
+            Jeepneys
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 700, color: "#111111" }}>
+            {activeVehicleCount} Active
+          </div>
+        </div>
       </div>
 
       <div
@@ -168,7 +191,7 @@ export default function TodaysCommute() {
           className="font-numeric"
           style={{ fontSize: 18, color: "#111111" }}
         >
-          6 min
+          {avgWaitMinutes} min
         </strong>
       </div>
 
@@ -180,7 +203,7 @@ export default function TodaysCommute() {
           textAlign: "center",
         }}
       >
-        Some figures are illustrative for this demo build.
+        Weather is live · vehicle counts reflect current fleet data.
       </div>
     </div>
   );

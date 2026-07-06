@@ -56,6 +56,28 @@ export default function Stats() {
     >
       <div
         style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: 20,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: "#9CA3AF",
+            letterSpacing: 0.5,
+            textTransform: "uppercase",
+            background: "#F6F7F9",
+            padding: "5px 14px",
+            borderRadius: 999,
+          }}
+        >
+          Demo build — figures below are illustrative
+        </span>
+      </div>
+      <div
+        style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
           gap: 24,

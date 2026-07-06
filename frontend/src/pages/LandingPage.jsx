@@ -6,8 +6,8 @@ import Hero from "../components/layout/Hero";
 import Stats from "../components/landing/Stats";
 import ProblemSpace from "../components/landing/ProblemSpace";
 import Features from "../components/landing/Features";
-import TodaysCommute from "../components/landing/TodaysCommute";
 import businaIcon from "../assets/busina-icon-transparent.png";
+import Reveal from "../components/ui/Reveal";
 
 export default function LandingPage({ setActiveView }) {
   const [loaded, setLoaded] = useState(false);
@@ -123,12 +123,13 @@ export default function LandingPage({ setActiveView }) {
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
-        {/* Hero */}
+        {/* Hero — now includes the live map directly, so no separate
+            map-preview section is needed right after it */}
         <section
           style={{
             maxWidth: 1550,
             margin: "0 auto",
-            padding: "40px 6% 30px",
+            padding: "40px 6% 20px",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(30px)",
             transition: "1s",
@@ -140,19 +141,6 @@ export default function LandingPage({ setActiveView }) {
           />
         </section>
 
-        {/* Today's Commute */}
-        <section
-          style={{
-            maxWidth: 1450,
-            margin: "0 auto 40px",
-            padding: "0 8%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <TodaysCommute />
-        </section>
-
         {/* Glass Banner */}
         <section style={{ maxWidth: 1450, margin: "0 auto", padding: "0 8%" }}>
           <GlassBanner />
@@ -160,37 +148,47 @@ export default function LandingPage({ setActiveView }) {
 
         {/* Stats */}
         <section
-          style={{ maxWidth: 1500, margin: "50px auto", padding: "0 8%" }}
+          style={{ maxWidth: 1500, margin: "36px auto", padding: "0 8%" }}
         >
-          <Stats />
+          <Reveal>
+            <Stats />
+          </Reveal>
         </section>
 
-        {/* Problem Space */}
+        {/* The Problem */}
         <section
-          style={{ maxWidth: 1500, margin: "70px auto", padding: "0 8%" }}
+          style={{ maxWidth: 1500, margin: "50px auto", padding: "0 8%" }}
         >
-          <ProblemSpace />
+          <Reveal>
+            <ProblemSpace />
+          </Reveal>
+        </section>
+
+        {/* How BUSINA Solves It */}
+        <section
+          style={{ maxWidth: 1100, margin: "50px auto 56px", padding: "0 8%" }}
+        >
+          <Reveal delay={100}>
+            <HowItWorks />
+          </Reveal>
         </section>
 
         {/* Features */}
         <section
-          style={{ maxWidth: 1500, margin: "70px auto", padding: "0 8%" }}
+          style={{ maxWidth: 1500, margin: "0 auto 56px", padding: "0 8%" }}
         >
-          <Features />
+          <Reveal delay={100}>
+            <Features />
+          </Reveal>
         </section>
 
-        {/* How It Works */}
+        {/* About the Team */}
         <section
-          style={{ maxWidth: 1100, margin: "0 auto 80px", padding: "0 8%" }}
+          style={{ maxWidth: 1100, margin: "0 auto 70px", padding: "0 8%" }}
         >
-          <HowItWorks />
-        </section>
-
-        {/* About Us */}
-        <section
-          style={{ maxWidth: 1100, margin: "0 auto 100px", padding: "0 8%" }}
-        >
-          <AboutUs />
+          <Reveal delay={100}>
+            <AboutUs />
+          </Reveal>
         </section>
 
         {/* Footer */}
@@ -268,30 +266,30 @@ export default function LandingPage({ setActiveView }) {
 const HOW_STEPS = [
   {
     icon: <Radio size={30} color="#2E9E3D" />,
-    title: "GPS Data Captured",
-    body: "Each jeepney broadcasts its real-time GPS position via MQTT every few seconds.",
+    title: "Vehicle sends its location",
+    body: "Every jeepney shares where it is, every few seconds — no driver action needed.",
   },
   {
     icon: <Cpu size={30} color="#2E9E3D" />,
-    title: "AI Processes the Feed",
-    body: "Our backend normalises position data, detects bunching & delays, and calculates ETAs.",
+    title: "BUSINA predicts arrival",
+    body: "Live position plus traffic conditions turn into an ETA you can actually trust.",
   },
   {
     icon: <Smartphone size={30} color="#2E9E3D" />,
-    title: "Commuters Get Updates",
-    body: "Riders see live vehicle positions and accurate arrival times on their phone.",
+    title: "Passengers see the ETA",
+    body: "Riders check the app and know whether to wait, walk, or pick another route.",
   },
   {
     icon: <BarChart3 size={30} color="#2E9E3D" />,
-    title: "Operators Stay in Control",
-    body: "Fleet managers get a live dashboard with alerts, demand hotspots, and dispatch recommendations.",
+    title: "Operators get the alert",
+    body: "Delays, bunching, and demand spikes surface on the dashboard before commuters complain.",
   },
 ];
 
 function HowItWorks() {
   return (
     <div>
-      <div style={{ textAlign: "center", marginBottom: 48 }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
         <div
           style={{
             display: "inline-block",
@@ -315,9 +313,10 @@ function HowItWorks() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gridTemplateColumns: "repeat(2, 1fr)",
           gap: 24,
         }}
+        className="how-it-works-grid"
       >
         {HOW_STEPS.map((step, i) => (
           <div
@@ -329,6 +328,20 @@ function HowItWorks() {
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
+              transition:
+                "transform .25s ease, box-shadow .25s ease, border-color .25s ease",
+              cursor: "default",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-6px)";
+              e.currentTarget.style.boxShadow =
+                "0 20px 40px rgba(46,158,61,.14)";
+              e.currentTarget.style.borderColor = "#3BEA4C";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.04)";
+              e.currentTarget.style.borderColor = "#D9D9D9";
             }}
           >
             <div
@@ -367,6 +380,11 @@ function HowItWorks() {
           </div>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .how-it-works-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -435,6 +453,91 @@ function AboutUs() {
         >
           We believe public infrastructure data should be public.
         </p>
+
+        {/* Team links — replace the href placeholders below with each
+            member's real GitHub/LinkedIn URLs */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          {[
+            {
+              name: "AI & Data",
+              github: "https://github.com/christopher-cresencio",
+              linkedin:
+                "https://www.linkedin.com/in/christopher-cresencio-b10395418/",
+            },
+            {
+              name: "Backend",
+              github: "https://github.com/rainieljerez",
+              linkedin: "https://linkedin.com/",
+            },
+            {
+              name: "Frontend",
+              github: "https://github.com/",
+              linkedin:
+                "https://www.linkedin.com/in/jhon-rey-oquendo-105504370/",
+            },
+            {
+              name: "Hardware",
+              github: "https://github.com/Mrutotman",
+              linkedin:
+                "https://www.linkedin.com/in/red-colby-dumdum-9579a4395",
+            },
+          ].map((member) => (
+            <div
+              key={member.name}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                background: "#F6F7F9",
+                border: "1px solid #D9D9D9",
+                borderRadius: 999,
+                padding: "6px 8px 6px 14px",
+              }}
+            >
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>
+                {member.name}
+              </span>
+              <a
+                href={member.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${member.name} GitHub`}
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: "white",
+                  border: "1px solid #D9D9D9",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#111111",
+                }}
+              >
+                <GithubIcon size={13} />
+              </a>
+              <a
+                href={member.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${member.name} LinkedIn`}
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: "white",
+                  border: "1px solid #D9D9D9",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#2E9E3D",
+                }}
+              >
+                <LinkedinIcon size={13} />
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
       <div
         style={{
@@ -448,7 +551,7 @@ function AboutUs() {
           { label: "Team Members", value: "4" },
           { label: "Routes Tracked", value: "5" },
           { label: "Vehicles Live", value: "8" },
-          { label: "Built in", value: "200hrs" },
+          { label: "Built in", value: "7 days" },
         ].map((s) => (
           <div
             key={s.label}
@@ -458,6 +561,20 @@ function AboutUs() {
               padding: 20,
               textAlign: "center",
               border: "1px solid #D9D9D9",
+              transition:
+                "transform .25s ease, box-shadow .25s ease, background .25s ease",
+              cursor: "default",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow =
+                "0 14px 28px rgba(46,158,61,.15)";
+              e.currentTarget.style.background = "#FFFFFF";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.background = "#F6F7F9";
             }}
           >
             <div
@@ -510,13 +627,12 @@ function Metric({ title, value, color }) {
       </div>
       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
         <div
+          className="busina-live-dot"
           style={{
             width: 12,
             height: 12,
-            borderRadius: "50%",
             background: color,
             boxShadow: `0 0 18px ${color}`,
-            animation: "pulse 2s infinite",
           }}
         />
         <div
@@ -553,8 +669,39 @@ function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
       />
       <style>{`
         @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-20px)}100%{transform:translateY(0)}}
-        @keyframes pulse{0%{transform:scale(1);opacity:.7}50%{transform:scale(1.35);opacity:1}100%{transform:scale(1);opacity:.7}}
       `}</style>
     </>
+  );
+}
+
+/* ── Inline brand icons ───────────────────────────────────────────────────
+   lucide-react deprecated logo/brand icons (GitHub, LinkedIn, etc.) since
+   they're trademarked marks, not generic icons — so these are plain inline
+   SVGs instead of a lucide import, immune to future package version churn. */
+function GithubIcon({ size = 14 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.24 2.75.12 3.04.74.8 1.19 1.82 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.07.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.2.66.79.55A10.51 10.51 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5z" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ size = 14 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
+    </svg>
   );
 }

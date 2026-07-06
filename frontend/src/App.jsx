@@ -1,3 +1,5 @@
+//app.jsx
+
 import { useState, useEffect } from "react";
 import { usePwaUpdate } from "./hooks/usePwaUpdate";
 import PwaUpdateToast from "./components/PwaUpdateToast";

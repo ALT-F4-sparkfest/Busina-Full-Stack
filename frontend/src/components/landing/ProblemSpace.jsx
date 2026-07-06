@@ -4,22 +4,22 @@ const PROBLEMS = [
   {
     icon: <EyeOff size={26} />,
     title: "Commuters Wait Blind",
-    body: "No way to know if the next jeepney is 2 minutes or 20 minutes away. Riders just stand and hope.",
+    body: "No ETA. Just stand and hope the next jeepney comes soon.",
   },
   {
     icon: <AlertTriangle size={26} />,
     title: "Operators Fly Blind Too",
-    body: "TODAs have no real-time view of their own fleet — no idea where vehicles are, if they're bunching, or which route needs backup.",
+    body: "No fleet visibility. TODAs can't see bunching or gaps in real time.",
   },
   {
     icon: <Clock size={26} />,
     title: "Delays Go Unnoticed",
-    body: "By the time a breakdown or bottleneck is reported, commuters have already been stranded for a while.",
+    body: "No live alerts. Riders are stranded before anyone even knows.",
   },
   {
     icon: <HelpCircle size={26} />,
     title: "Modernization Without Management",
-    body: "The PUVMP modernized the vehicles. Nothing modernized how routes and fleets are actually managed day to day.",
+    body: "New vehicles, same guesswork — nothing modernized how routes are run.",
   },
 ];
 

@@ -4,58 +4,58 @@ export default function Features() {
   const features = [
     {
       icon: <MapPinned size={34} />,
-      title: "Live Vehicle Tracking",
+      title: "See every jeepney, live",
       description:
-        "Track every vehicle on an interactive map with smooth real-time updates.",
+        "Watch vehicles move on an interactive map instead of standing at a stop hoping one shows up.",
       color: "#2E9E3D",
     },
     {
       icon: <Clock3 size={34} />,
-      title: "Accurate ETA",
+      title: "Know before you wait",
       description:
-        "Predict arrival times using live fleet positions and traffic-aware estimates.",
+        "Traffic-aware ETAs mean you decide whether to wait, walk, or grab a different route — before committing.",
       color: "#FFD93B",
     },
     {
       icon: <Brain size={34} />,
-      title: "AI Dispatch",
+      title: "Vehicles sent where they're needed",
       description:
-        "Receive intelligent dispatch recommendations based on commuter demand.",
+        "When commuter demand spikes on a route, dispatch recommendations flag it before a bottleneck forms.",
       color: "#00C2FF",
     },
     {
       icon: <Bus size={34} />,
-      title: "Fleet Monitoring",
+      title: "Fleets that don't fly blind",
       description:
-        "Monitor active vehicles, passenger loads, delays, and operational health.",
+        "Operators see every active vehicle, passenger load, and delay — instead of finding out after commuters complain.",
       color: "#3BEA4C",
     },
     {
       icon: <Route size={34} />,
-      title: "Demand Hotspots",
+      title: "Send more jeeps where it's busy",
       description:
-        "Identify high-demand pickup areas and optimize vehicle allocation instantly.",
+        "Spot high-demand pickup areas as they happen and reallocate vehicles instantly, not after the fact.",
       color: "#FF8A1D",
     },
     {
       icon: <BarChart3 size={34} />,
-      title: "Operational Analytics",
+      title: "Understand delays before they escalate",
       description:
-        "Visualize KPIs, travel trends, and fleet performance through smart dashboards.",
-      color: "#111111",
+        "Travel trends and fleet KPIs surface the pattern behind a bad commute day, not just the symptom.",
+      color: "#8B5CF6",
     },
   ];
 
   return (
     <section
       style={{
-        padding: "80px 8% 100px",
+        padding: "56px 8% 70px",
       }}
     >
       <div
         style={{
           textAlign: "center",
-          marginBottom: 60,
+          marginBottom: 44,
         }}
       >
         <h2
@@ -78,9 +78,8 @@ export default function Features() {
             color: "#64748B",
           }}
         >
-          BUSINA combines intelligent fleet management with a commuter-friendly
-          experience to create a smarter, faster, and more reliable public
-          transport system.
+          Built around what jeepney commuters and Metro Manila TODAs actually
+          need — not generic fleet-management jargon.
         </p>
       </div>
 
