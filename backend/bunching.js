@@ -1,196 +1,186 @@
 // bunching.js
-
-const supabase = require("./supabase");
-const stopsByRoute = require("./routes/stops.json");
+const supabase = require('./supabase');
+const stopsByRoute = require('./routes/stops.json');
+const vehicleRoutes = require('./routes/vehicleRoutes.json');
 
 const BUNCHING_THRESHOLD_METERS = 200;
 const RESOLUTION_THRESHOLD_METERS = 500;
 const MIN_SPEED_KMH = 5;
 const GPS_STALE_SECONDS = 60;
 
+// In-memory active alerts, keyed by "vehicleA_vehicleB" (alphabetical), for hysteresis
 const activeAlerts = {};
 
 function haversineMeters(lat1, lon1, lat2, lon2) {
   const R = 6371000;
-
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.asin(Math.sqrt(a));
 }
 
 function getNearestStop(lat, lng, routeId) {
   const stops = stopsByRoute[routeId] || [];
-
   let nearest = null;
-  let min = Infinity;
-
+  let minDist = Infinity;
   for (const stop of stops) {
     const d = haversineMeters(lat, lng, stop.lat, stop.lng);
-
-    if (d < min) {
-      min = d;
+    if (d < minDist) {
+      minDist = d;
       nearest = stop;
     }
   }
-
   return nearest;
 }
 
 function isAtTerminal(stopName, routeId) {
+  if (!stopName) return false;
   const stops = stopsByRoute[routeId] || [];
-
-  if (!stops.length) return false;
-
-  return (
-    stopName === stops[0].name || stopName === stops[stops.length - 1].name
-  );
+  if (stops.length === 0) return false;
+  const first = stops[0].name;
+  const last = stops[stops.length - 1].name;
+  return stopName === first || stopName === last;
 }
 
-function gpsFresh(lastUpdated) {
+function isGpsFresh(lastUpdated, nowMs, maxAgeSeconds = GPS_STALE_SECONDS) {
   if (!lastUpdated) return false;
-
-  return Date.now() - lastUpdated < GPS_STALE_SECONDS * 1000;
+  const ageSeconds = (nowMs - lastUpdated) / 1000;
+  return ageSeconds >= 0 && ageSeconds <= maxAgeSeconds;
 }
 
-function* pairs(list) {
-  for (let i = 0; i < list.length; i++) {
-    for (let j = i + 1; j < list.length; j++) {
-      yield [list[i], list[j]];
+function* pairs(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      yield [arr[i], arr[j]];
     }
   }
 }
 
 async function detectBunching() {
-  const { data, error } = await supabase.from("vehicles").select("*");
+  const nowMs = Date.now();
+
+  // Fetch all vehicles from Supabase
+  const { data: vehicleRows, error } = await supabase
+    .from('vehicles')
+    .select('*');
 
   if (error) {
-    console.error(error.message);
-
-    return {
-      newAlerts: [],
-      resolvedAlerts: [],
-      active: [],
-    };
+    console.error('Supabase fetch error in detectBunching:', error.message);
+    return { newAlerts: [], resolvedAlerts: [], active: [] };
   }
 
-  const vehicles = data.map((v) => ({
-    vehicleId: v.id,
-    routeId: v.route_id,
-    lat: v.lat,
-    lng: v.lng,
-    speed: v.speed || 0,
-    lastUpdated: v.last_updated,
-    stopName: getNearestStop(v.lat, v.lng, v.route_id)?.name || null,
-  }));
-
-  const routes = {};
-
-  vehicles.forEach((v) => {
-    if (!routes[v.routeId]) routes[v.routeId] = [];
-
-    routes[v.routeId].push(v);
+  const vehicles = vehicleRows.map(row => {
+    const routeId = vehicleRoutes[row.id];
+    const nearestStop = getNearestStop(row.lat, row.lng, routeId);
+    return {
+      vehicleId: row.id,
+      routeId,
+      lat: row.lat,
+      lng: row.lng,
+      speed: row.speed || 0,
+      lastUpdated: row.last_updated,   // snake_case from Supabase
+      stopName: nearestStop ? nearestStop.name : null,
+    };
   });
+
+  // Group by route
+  const byRoute = {};
+  for (const v of vehicles) {
+    if (!v.routeId) continue;
+    byRoute[v.routeId] = byRoute[v.routeId] || [];
+    byRoute[v.routeId].push(v);
+  }
 
   const newAlerts = [];
   const resolvedAlerts = [];
 
-  for (const routeId in routes) {
-    const eligible = routes[routeId].filter(
-      (v) =>
-        gpsFresh(v.lastUpdated) &&
-        !isAtTerminal(v.stopName, routeId) &&
-        v.speed >= MIN_SPEED_KMH,
+  for (const [routeId, routeVehicles] of Object.entries(byRoute)) {
+    const eligible = routeVehicles.filter(v =>
+      isGpsFresh(v.lastUpdated, nowMs) &&
+      !isAtTerminal(v.stopName, v.routeId) &&
+      v.speed >= MIN_SPEED_KMH
     );
 
+    if (eligible.length < 2) continue;
+
     for (const [a, b] of pairs(eligible)) {
-      const distance = haversineMeters(a.lat, a.lng, b.lat, b.lng);
+      const distanceM = haversineMeters(a.lat, a.lng, b.lat, b.lng);
+      const pairKey = [a.vehicleId, b.vehicleId].sort().join('_');
 
-      const pairKey = [a.vehicleId, b.vehicleId].sort().join("_");
+      if (distanceM < BUNCHING_THRESHOLD_METERS) {
+        const nearestStop = a.stopName || b.stopName;
+        const message = `${a.vehicleId} and ${b.vehicleId} are bunched near ${nearestStop}. ` +
+          `Distance: ${distanceM.toFixed(0)}m. Consider holding ${b.vehicleId} at the next stop to restore spacing.`;
 
-      if (distance < BUNCHING_THRESHOLD_METERS) {
         const alert = {
-          alert_id: pairKey,
+          alert_id: `ALERT-${routeId}-${nowMs}`,
           route_id: routeId,
-
           vehicle_a: a.vehicleId,
           vehicle_b: b.vehicleId,
-
-          distance_meters: Math.round(distance),
-
-          nearest_stop: a.stopName || b.stopName,
-
-          speed_a_kmh: a.speed,
-          speed_b_kmh: b.speed,
-
+          distance_meters: Math.round(distanceM * 10) / 10,
           vehicle_a_lat: a.lat,
           vehicle_a_lon: a.lng,
-
           vehicle_b_lat: b.lat,
           vehicle_b_lon: b.lng,
-
-          detected_at: new Date().toISOString(),
-
+          nearest_stop: nearestStop,
+          speed_a_kmh: a.speed,
+          speed_b_kmh: b.speed,
+          status: 'ACTIVE',
+          detected_at: new Date(nowMs).toISOString(),
           resolved_at: null,
-
-          status: "ACTIVE",
-
-          message: `${a.vehicleId} and ${b.vehicleId} are bunched near ${a.stopName}.`,
+          message,
         };
 
+        if (!activeAlerts[pairKey]) {
+          newAlerts.push(alert);
+        }
         activeAlerts[pairKey] = alert;
 
-        newAlerts.push(alert);
+        // Write alert to Supabase
+        const { error: alertError } = await supabase
+          .from('bunching_alerts')
+          .upsert(alert);
 
-        await supabase.from("bunching_alerts").upsert(alert, {
-          onConflict: "alert_id",
-        });
-      } else if (
-        activeAlerts[pairKey] &&
-        distance > RESOLUTION_THRESHOLD_METERS
-      ) {
+        if (alertError) console.error('Supabase alert write error:', alertError.message);
+
+      } else if (activeAlerts[pairKey] && distanceM > RESOLUTION_THRESHOLD_METERS) {
         const resolved = {
           ...activeAlerts[pairKey],
-
-          status: "RESOLVED",
-
-          resolved_at: new Date().toISOString(),
+          status: 'RESOLVED',
+          resolved_at: new Date(nowMs).toISOString(),
         };
-
         resolvedAlerts.push(resolved);
 
-        await supabase.from("bunching_alerts").upsert(resolved, {
-          onConflict: "alert_id",
-        });
+        // Update resolved alert in Supabase
+        const { error: resolveError } = await supabase
+          .from('bunching_alerts')
+          .upsert(resolved);
+
+        if (resolveError) console.error('Supabase resolve write error:', resolveError.message);
 
         delete activeAlerts[pairKey];
       }
     }
   }
 
-  return {
-    newAlerts,
-    resolvedAlerts,
-    active: Object.values(activeAlerts),
-  };
+  if (newAlerts.length) {
+    newAlerts.forEach(a => console.log(`BUNCHING ALERT: ${a.message}`));
+  }
+  if (resolvedAlerts.length) {
+    resolvedAlerts.forEach(a => console.log(`ALERT RESOLVED: ${a.vehicle_a} + ${a.vehicle_b} separated`));
+  }
+
+  return { newAlerts, resolvedAlerts, active: Object.values(activeAlerts) };
 }
 
-function startBunchingMonitor(interval = 30000) {
-  console.log(`Bunching monitor running every ${interval / 1000} seconds`);
-
-  detectBunching();
-
-  setInterval(detectBunching, interval);
+function startBunchingMonitor(intervalMs = 30000) {
+  console.log('Bunching monitor started (checking every', intervalMs / 1000, 'seconds)');
+  detectBunching().catch(err => console.error('Bunching detection error:', err));
+  setInterval(() => {
+    detectBunching().catch(err => console.error('Bunching detection error:', err));
+  }, intervalMs);
 }
 
-module.exports = {
-  detectBunching,
-  startBunchingMonitor,
-  activeAlerts,
-};
+module.exports = { detectBunching, startBunchingMonitor, activeAlerts };

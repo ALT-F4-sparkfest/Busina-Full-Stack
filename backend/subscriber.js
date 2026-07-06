@@ -1,140 +1,68 @@
-require("dotenv").config();
+// subscriber.js
+require('dotenv').config();
+const mqtt = require('mqtt');
+const supabase = require('./supabase');
+const { isOnRoute } = require('./geofence');
+const geofenceByRoute = require('./routes/geofence.json');
+const vehicleRoutes = require('./routes/vehicleRoutes.json');
 
-const axios = require("axios");
-const mqtt = require("mqtt");
+const localState = {}; // per-vehicle in-memory cache: avoids reading Supabase before every write
 
-const supabase = require("./supabase");
-
-const { isOnRoute } = require("./geofence");
-const geofenceByRoute = require("./routes/geofence.json");
-const vehicleRoutes = require("./routes/vehicleRoutes.json");
-
-const localState = {};
-
-const client = mqtt.connect(
-  `mqtts://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
-  {
-    username: process.env.MQTT_SUB_USER,
-    password: process.env.MQTT_SUB_PASS,
-  },
-);
-
-client.on("connect", () => {
-  console.log("✅ Subscriber connected to MQTT");
-
-  client.subscribe("jeepney/+/location", (err) => {
-    if (err) {
-      console.error("❌ Failed to subscribe:", err.message);
-    } else {
-      console.log("✅ Subscribed to jeepney/+/location");
-    }
-  });
+const client = mqtt.connect(`mqtts://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
+  username: process.env.MQTT_SUB_USER,
+  password: process.env.MQTT_SUB_PASS,
 });
 
-client.on("message", async (topic, message) => {
+client.on('connect', () => {
+  console.log('Subscriber connected to MQTT');
+  client.subscribe('jeepney/+/location');
+});
+
+client.on('message', async (topic, message) => {
   try {
     const data = JSON.parse(message.toString());
-
     const { vehicleId, lat, lng, speed, heading, timestamp } = data;
 
-    console.log(`📩 ${topic} -> ${vehicleId}`);
-
     const routeId = vehicleRoutes[vehicleId];
+    const geofenceData = geofenceByRoute[routeId];
+    const onRoute = geofenceData ? isOnRoute(lat, lng, geofenceData.coordinates) : null;
 
-    if (!routeId) {
-      console.warn(`⚠ Unknown vehicle: ${vehicleId}`);
-      return;
-    }
-
-    const geofence = geofenceByRoute[routeId];
-
-    const onRoute = geofence ? isOnRoute(lat, lng, geofence.coordinates) : null;
-
-    if (!localState[vehicleId]) {
-      localState[vehicleId] = {
-        recentSpeeds: [],
-        stationarySince: null,
-      };
-    }
-
+    if (!localState[vehicleId]) localState[vehicleId] = { recentSpeeds: [], stationarySince: null };
     const state = localState[vehicleId];
 
-    state.recentSpeeds.push(speed);
-
-    if (state.recentSpeeds.length > 4) {
-      state.recentSpeeds.shift();
-    }
+    state.recentSpeeds = [...state.recentSpeeds, speed].slice(-4);
 
     if (speed < 1) {
-      if (!state.stationarySince) {
-        state.stationarySince = timestamp;
-      }
+      if (!state.stationarySince) state.stationarySince = timestamp;
     } else {
       state.stationarySince = null;
     }
 
-    const vehicle = {
+    const { error } = await supabase.from('vehicles').upsert({
       id: vehicleId,
-
-      route_id: routeId,
-
       lat,
       lng,
-
       speed,
       heading,
-
       last_updated: timestamp,
-
-      recent_speeds: [...state.recentSpeeds],
-
+      recent_speeds: state.recentSpeeds,
       stationary_since: state.stationarySince,
-
       on_route: onRoute,
-    };
+      route_id: routeId,
+    });
 
-    // ------------------------------------
-    // Save latest state to Supabase
-    // ------------------------------------
+    if (error) console.error('Supabase write error:', error.message);
+    else console.log(`Saved ping for ${vehicleId} (onRoute: ${onRoute})`);
 
-    const { error } = await supabase.from("vehicles").upsert(vehicle);
-
-    if (error) {
-      console.error("❌ Supabase error:", error.message);
-      return;
-    }
-
-    // ------------------------------------
-    // Broadcast via Socket.IO if available
-    // ------------------------------------
-
-    if (global.broadcastVehicleUpdate) {
-      global.broadcastVehicleUpdate({
-        id: vehicleId,
-        route_id: vehicleRoutes[vehicleId] || null,
-        lat,
-        lng,
-        speed: speed || 0,
-        heading: heading || 0,
-        on_route: onRoute,
-        last_updated: timestamp,
-        stationary_since: state.stationarySince,
-        recent_speeds: state.recentSpeeds,
-      });
-    }
-
-    console.log(
-      `✅ Updated ${vehicleId} (${lat.toFixed(5)}, ${lng.toFixed(5)})`,
-    );
   } catch (err) {
-    console.error("❌ Subscriber error:", err.message);
+    console.error('Error processing message:', err.message || err);
   }
 });
 
-client.on("error", (err) => {
-  console.error("❌ MQTT Error:", err.message);
+client.on('error', (err) => {
+  console.error('MQTT connection error:', err);
 });
 
-process.on("unhandledRejection", (reason) => {
-  console.error("❌ Unhandled Rejection:", reason);
+process.on('unhandledRejection', (reason) => {
+  console.error('UNHANDLED REJECTION:', reason);
 });

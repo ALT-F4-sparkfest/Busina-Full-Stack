@@ -1,18 +1,16 @@
 // eta.js
-const supabase = require("./supabase");
-const stopsByRoute = require("./routes/stops.json");
-const vehicleRoutes = require("./routes/vehicleRoutes.json");
+const supabase = require('./supabase');
+const stopsByRoute = require('./routes/stops.json');
+const vehicleRoutes = require('./routes/vehicleRoutes.json');
 
 function haversineDistance(lat1, lng1, lat2, lng2) {
   const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 +
+    Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+    Math.sin(dLng/2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function getTrafficMultiplier(hour) {
@@ -46,42 +44,34 @@ function getStopsForVehicle(vehicleId) {
 async function calculateEtaToStop(vehicleId, stopId) {
   // Fetch vehicle from Supabase
   const { data: vehicle, error } = await supabase
-    .from("vehicles")
-    .select("*")
-    .eq("id", vehicleId)
+    .from('vehicles')
+    .select('*')
+    .eq('id', vehicleId)
     .single();
 
-  if (error || !vehicle) return { error: "Vehicle not found" };
+  if (error || !vehicle) return { error: 'Vehicle not found' };
 
   const { routeId, stops } = getStopsForVehicle(vehicleId);
-  const stop = stops.find((s) => s.id === stopId);
+  const stop = stops.find(s => s.id === stopId);
   if (!stop) return { error: `Stop not found for route ${routeId}` };
 
-  const distanceKm = haversineDistance(
-    vehicle.lat,
-    vehicle.lng,
-    stop.lat,
-    stop.lng,
-  );
+  const distanceKm = haversineDistance(vehicle.lat, vehicle.lng, stop.lat, stop.lng);
 
   // Supabase uses snake_case column names
-  const effectiveSpeed = getEffectiveSpeed(
-    vehicle.speed,
-    vehicle.recent_speeds,
-  );
+  const effectiveSpeed = getEffectiveSpeed(vehicle.speed, vehicle.recent_speeds);
 
   const secondsStationary = vehicle.stationary_since
     ? (Date.now() - vehicle.stationary_since) / 1000
     : 0;
 
-  let status = "approaching";
+  let status = 'approaching';
   let displayText;
 
   if (distanceKm < 0.1) {
-    status = "arriving";
+    status = 'arriving';
     displayText = `Arriving now at ${stop.name}`;
   } else if (shouldShowWaiting(secondsStationary, vehicle.speed)) {
-    status = "waiting";
+    status = 'waiting';
     displayText = `Vehicle waiting near ${stop.name}`;
   }
 
@@ -96,20 +86,20 @@ async function calculateEtaToStop(vehicleId, stopId) {
     eta_minutes: etaMinutes,
     status,
     display_text: displayText,
-    confidence: vehicle.recent_speeds?.length >= 4 ? "high" : "moderate",
+    confidence: vehicle.recent_speeds?.length >= 4 ? 'high' : 'moderate',
     distance_km: Number(distanceKm.toFixed(2)),
     timestamp: new Date().toISOString(),
   };
 
   // Cache ETA to Supabase
-  const { error: upsertError } = await supabase.from("etas").upsert({
+  const { error: upsertError } = await supabase.from('etas').upsert({
     vehicle_id: vehicleId,
     stop_id: stopId,
     ...result,
     last_updated: Date.now(),
   });
 
-  if (upsertError) console.error("ETA cache write error:", upsertError.message);
+  if (upsertError) console.error('ETA cache write error:', upsertError.message);
 
   return result;
 }
