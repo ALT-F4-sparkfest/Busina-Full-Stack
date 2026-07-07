@@ -34,9 +34,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// Start the MQTT subscriber in this same process, wired to io
-require("./subscriber")(io);
-
 // --- YOUR EXISTING ROUTES (unchanged) ---
 
 // Friendly root route (health check / sanity check)
@@ -89,6 +86,19 @@ app.get("/vehicles/:id/etas", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// --- MQTT & SIMULATOR SETUP ---
+
+// Start the MQTT subscriber in this same process, wired to io
+require("./subscriber")(io);
+
+// Optionally start the replay simulator (for demo/testing — publishes fake vehicle data over MQTT)
+if (process.env.ENABLE_REPLAY_SIM === "true") {
+  require("./replaySImulator"); // match exact filename casing
+  console.log("🔁 Replay simulator enabled");
+}
+
+// --- SERVER INITIALIZATION ---
 
 // Use Render's dynamic port in production, fallback to 3000 locally
 const PORT = process.env.PORT || 3000;
