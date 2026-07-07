@@ -143,3 +143,74 @@
 
   background: #eef4ff;
 }
+
+/* ==========================================
+   MOBILE RESPONSIVE — CommuterView overlays
+   Breakpoint matches layout.css (640px)
+========================================== */
+
+.todays-commute-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.tcs-divider {
+  width: 1px;
+  height: 20px;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.commuter-route-filter {
+  position: absolute;
+  top: 172px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.commuter-floating-controls {
+  position: absolute;
+  right: 16px;
+  bottom: calc(195px + var(--safe-bottom));
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commuter-selected-vehicle-card {
+  position: absolute;
+  left: 16px;
+  bottom: calc(195px + var(--safe-bottom));
+  z-index: 100;
+  max-width: 300px;
+}
+
+.commuter-eta-card {
+  position: absolute;
+  right: 16px;
+  top: 130px;
+  z-index: 100;
+}
+
+@media (max-width: 640px) {
+  .commuter-floating-controls {
+    bottom: calc(260px + var(--safe-bottom));
+  }
+
+  .commuter-selected-vehicle-card {
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    bottom: calc(260px + var(--safe-bottom));
+  }
+
+  .commuter-eta-card {
+    top: auto;
+    bottom: calc(260px + var(--safe-bottom));
+    right: 12px;
+  }
+}

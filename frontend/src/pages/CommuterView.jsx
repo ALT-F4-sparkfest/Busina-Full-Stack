@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Bus,
-  Clock3,
-  Navigation,
-  MapPin,
-  RefreshCw,
-  LocateFixed,
-  X,
-} from "lucide-react";
+import { Bus, Clock3, MapPin, RefreshCw, LocateFixed } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
 import BottomSheet from "../components/commuter/BottomSheet";
 import SearchOverlay from "../components/commuter/SearchOverlay";
@@ -16,7 +8,7 @@ import LiveSyncBadge from "../components/LiveSyncBadge";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import businaIcon from "../assets/busina-icon-transparent.png";
 import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
-
+import "../styles/commuter.css";
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -109,17 +101,6 @@ export default function CommuterView({ onBack }) {
     .sort((a, b) => a.dist - b.dist);
 
   const selectedVehicle = nearest.find((v) => v.id === selectedVehicleId);
-
-  // Live counts for the top strip — total fleet, not route-filtered,
-  // since this is meant to be a Metro Manila-wide overview.
-  const avgWaitMinutes = vehicleList.length
-    ? Math.round(
-        vehicleList.reduce(
-          (sum, v) => sum + (typeof v.eta === "number" ? v.eta : 6),
-          0,
-        ) / vehicleList.length,
-      )
-    : 6;
 
   const handleDestinationSubmit = async (dest) => {
     const target = (dest || destination).trim();
@@ -272,7 +253,6 @@ export default function CommuterView({ onBack }) {
       </header>
 
       {/* Today's Commute strip — always visible now, no toggle */}
-      {/* Today's Commute strip — always visible now, no toggle */}
       <div style={{ padding: "10px 16px 0", flexShrink: 0 }}>
         <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
       </div>
@@ -280,7 +260,6 @@ export default function CommuterView({ onBack }) {
       <style>{`
         @media (max-width: 480px) {
           .commuter-sync-badge { display: none; }
-          .tcs-divider { display: none; }
         }
       `}</style>
 
@@ -304,15 +283,7 @@ export default function CommuterView({ onBack }) {
           connected={live.connected}
         />
 
-        <div
-          style={{
-            position: "absolute",
-            top: 172,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 100,
-          }}
-        >
+        <div className="commuter-route-filter">
           <select
             value={routeFilter}
             onChange={(e) => setRouteFilter(e.target.value)}
@@ -338,17 +309,7 @@ export default function CommuterView({ onBack }) {
           </select>
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            right: 16,
-            bottom: 195,
-            zIndex: 100,
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-          }}
-        >
+        <div className="commuter-floating-controls">
           <button
             onClick={recenter}
             title="Recenter map"
@@ -388,15 +349,7 @@ export default function CommuterView({ onBack }) {
         </div>
 
         {selectedVehicle && (
-          <div
-            style={{
-              position: "absolute",
-              left: 16,
-              bottom: 195,
-              zIndex: 100,
-              maxWidth: 300,
-            }}
-          >
+          <div className="commuter-selected-vehicle-card">
             <div
               style={{
                 background: "rgba(255,255,255,.95)",
@@ -495,9 +448,7 @@ export default function CommuterView({ onBack }) {
         )}
 
         {eta && (
-          <div
-            style={{ position: "absolute", right: 16, top: 130, zIndex: 100 }}
-          >
+          <div className="commuter-eta-card">
             <div
               style={{
                 background: "rgba(255,255,255,.95)",

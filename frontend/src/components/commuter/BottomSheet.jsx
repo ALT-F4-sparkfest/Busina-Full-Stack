@@ -30,7 +30,7 @@ export default function BottomSheet({
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         boxShadow: "0 -12px 40px rgba(15,23,42,.12)",
-        padding: "14px 18px 28px",
+        padding: "14px 18px calc(28px + env(safe-area-inset-bottom, 0px))",
       }}
     >
       {/* Drag handle */}

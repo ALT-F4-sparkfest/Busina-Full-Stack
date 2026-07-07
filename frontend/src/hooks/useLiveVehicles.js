@@ -1,5 +1,4 @@
 // src/hooks/useLiveVehicles.js
-// src/hooks/useLiveVehicles.js
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 
@@ -12,7 +11,10 @@ function normaliseVehicle(v) {
   if (v.stationary_since) {
     const stoppedMs = Date.now() - new Date(v.stationary_since).getTime();
     status = stoppedMs > 3 * 60 * 1000 ? "Delayed" : "Stopped";
-  } else if (!v.on_route) {
+  } else if (v.on_route === false) {
+    // Only flag "Off Route" when the backend explicitly says so.
+    // Treating missing/undefined on_route as "off route" was the bug —
+    // most vehicles never had this field set, so they were mislabeled.
     status = "Off Route";
   }
 

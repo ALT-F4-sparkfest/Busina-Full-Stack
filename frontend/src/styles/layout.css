@@ -81,11 +81,6 @@
   min-width: 0;
 }
 
-.operator-charts-row {
-  display: flex;
-  gap: 24px;
-}
-
 .live-map-wrap {
   flex: 1;
   min-height: 320px;

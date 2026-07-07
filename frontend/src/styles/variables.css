@@ -69,4 +69,8 @@
   --duration-page-in: 1000ms;
   --anim-float: 8s;
   --anim-pulse: 2s;
+
+  /* Safe-area insets — for notches / home indicators on mobile PWAs */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }

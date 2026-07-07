@@ -11,7 +11,7 @@ export default function SearchOverlay({
     <div
       style={{
         position: "absolute",
-        top: 24,
+        top: "calc(24px + env(safe-area-inset-top, 0px))",
         left: "50%",
         transform: "translateX(-50%)",
         width: "min(92%,680px)",

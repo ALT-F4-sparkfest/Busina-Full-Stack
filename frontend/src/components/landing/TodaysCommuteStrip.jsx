@@ -14,11 +14,8 @@ export default function TodaysCommuteStrip({ activeVehicleCount = 0 }) {
 
   return (
     <div
+      className="todays-commute-strip"
       style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 20,
-        flexWrap: "wrap",
         background: "#FBF4C6",
         border: "1px solid #E5E7EB",
         borderRadius: 14,
@@ -47,7 +44,7 @@ export default function TodaysCommuteStrip({ activeVehicleCount = 0 }) {
         <span style={{ fontSize: 12, color: "#64748B" }}>{date}</span>
       </div>
 
-      <Divider />
+      <div className="tcs-divider" />
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <Cloud size={16} color="#03164A" />
@@ -57,7 +54,7 @@ export default function TodaysCommuteStrip({ activeVehicleCount = 0 }) {
         </span>
       </div>
 
-      <Divider />
+      <div className="tcs-divider" />
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <Bus size={16} color="#03164A" />
@@ -67,14 +64,5 @@ export default function TodaysCommuteStrip({ activeVehicleCount = 0 }) {
         </span>
       </div>
     </div>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      className="tcs-divider"
-      style={{ width: 1, height: 20, background: "#E5E7EB", flexShrink: 0 }}
-    />
   );
 }

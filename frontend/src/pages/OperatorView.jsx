@@ -1,18 +1,7 @@
 // src/pages/OperatorView.jsx
 
 import React, { useState, useEffect } from "react";
-import {
-  AlertCircle,
-  Bus,
-  MapPin,
-  Clock,
-  BarChart3,
-  TrafficCone,
-  ShieldAlert,
-  Radio,
-  CheckCircle2,
-  Bot,
-} from "lucide-react";
+import { AlertCircle, Bus, MapPin, Clock, BarChart3 } from "lucide-react";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import LiveMap from "../components/map/LiveMap";
 import ConnectionStatusPill from "../components/ConnectionStatusPill";
@@ -20,42 +9,25 @@ import LiveSyncBadge from "../components/LiveSyncBadge";
 import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
 
 import KPICards from "../components/KPICards";
-import TravelTimeChart from "../components/TravelTimeChart";
-import AIRecommendationPanel from "../components/operator/AIRecommendationPanel";
 import VehicleDetailsPanel from "../components/operator/VehicleDetailsPanel";
-import hotspots from "../data/demandHotspots.json";
 import Skeleton, {
   SkeletonVehicleRow,
   SkeletonStatLine,
   SkeletonStyles,
 } from "../components/ui/Skeleton";
 
+const sectionSubtitleStyle = {
+  margin: "-8px 0 16px",
+  fontSize: 13,
+  color: "#94A3B8",
+  lineHeight: 1.4,
+};
+
 export default function OperatorView({ onBack }) {
   const live = useLiveVehicles();
   const alerts = live.alerts ?? [];
-  const [waitingList, setWaitingList] = useState([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filterRoute, setFilterRoute] = useState("all");
-
-  useEffect(() => {
-    if (!live.socket) return;
-
-    const handleWaitingUpdate = (data) => {
-      setWaitingList((prev) => {
-        const newEntry = {
-          ...data,
-          id: Date.now() + Math.random(),
-          timestamp: new Date().toISOString(),
-        };
-        return [newEntry, ...prev].slice(0, 20);
-      });
-    };
-
-    live.socket.on("waiting-update", handleWaitingUpdate);
-    return () => {
-      live.socket.off("waiting-update", handleWaitingUpdate);
-    };
-  }, [live.socket]);
 
   const vehicleList = Array.isArray(live.vehicles)
     ? live.vehicles.filter(
@@ -97,10 +69,6 @@ export default function OperatorView({ onBack }) {
     if (speed < 10) return { label: "Slow", color: "#FCA307", icon: "●" };
     return { label: "Moving", color: "#052675", icon: "●" };
   };
-
-  const topHotspots = [...hotspots]
-    .sort((a, b) => b.demand_score - a.demand_score)
-    .slice(0, 5);
 
   return (
     <div className="operator-shell">
@@ -171,13 +139,15 @@ export default function OperatorView({ onBack }) {
           </div>
         </div>
       </header>
+
       {/* Today's Commute strip — top bar, always visible */}
       <div style={{ padding: "12px 32px 0" }}>
         <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
       </div>
 
+      {/* KPI Cards — live snapshot of the fleet */}
       <div style={{ padding: "16px 32px", flexShrink: 0 }}>
-        <KPICards vehicles={filteredVehicles} />
+        <KPICards vehicles={filteredVehicles} alerts={alerts} />
       </div>
 
       <div className="operator-body">
@@ -225,27 +195,27 @@ export default function OperatorView({ onBack }) {
               </div>
             )}
           </div>
-
-          <div className="operator-charts-row">
-            <div style={{ flex: 1 }}>
-              <TravelTimeChart />
-            </div>
-            <div style={{ flex: 1 }}>
-              <AIRecommendationPanel
-                vehicles={filteredVehicles}
-                waitingCommuters={waitingList}
-              />
-            </div>
-          </div>
         </div>
 
         <div className="operator-side">
+          {/* Vehicle details — full detail on whatever is selected */}
+          <p
+            style={{
+              margin: "0 0 -8px",
+              fontSize: 13,
+              color: "#94A3B8",
+              lineHeight: 1.4,
+            }}
+          >
+            Full detail on whichever vehicle is selected — click one on the map
+            or in the list below.
+          </p>
           <VehicleDetailsPanel
             vehicle={selectedVehicle}
             status={selectedVehicle ? getStatus(selectedVehicle.speed) : null}
           />
 
-          {/* Vehicle list */}
+          {/* Vehicle selection tab */}
           <section
             style={{
               background: "white",
@@ -260,7 +230,7 @@ export default function OperatorView({ onBack }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                marginBottom: 16,
+                marginBottom: 8,
               }}
             >
               <Bus size={20} color="#03164A" />
@@ -280,6 +250,10 @@ export default function OperatorView({ onBack }) {
                 </span>
               </h3>
             </div>
+            <p style={sectionSubtitleStyle}>
+              Every vehicle currently online for the selected route. Tap one to
+              center the map and view its details above.
+            </p>
             <div
               style={{
                 display: "flex",
@@ -409,7 +383,7 @@ export default function OperatorView({ onBack }) {
             </div>
           </section>
 
-          {/* Alerts feed */}
+          {/* Alerts tab */}
           <section
             style={{
               background: "white",
@@ -424,7 +398,7 @@ export default function OperatorView({ onBack }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                marginBottom: 16,
+                marginBottom: 8,
               }}
             >
               <AlertCircle size={20} color="#FD4847" />
@@ -444,6 +418,10 @@ export default function OperatorView({ onBack }) {
                 </span>
               </h3>
             </div>
+            <p style={sectionSubtitleStyle}>
+              Automatic flags for delays, bunching, or vehicles going off-route.
+              Critical alerts appear first.
+            </p>
             <div
               style={{
                 display: "flex",
@@ -530,256 +508,7 @@ export default function OperatorView({ onBack }) {
                 })}
             </div>
           </section>
-
-          <OperationsPanel
-            alerts={alerts}
-            hotspots={topHotspots}
-            vehicles={filteredVehicles}
-            waiting={waitingList}
-          />
         </div>
-      </div>
-    </div>
-  );
-}
-
-function OperationsPanel({
-  alerts = [],
-  hotspots = [],
-  vehicles = [],
-  waiting = [],
-}) {
-  const criticalCount = alerts.filter((a) => a.severity === "critical").length;
-
-  const getDynamicAISummary = () => {
-    if (criticalCount > 0) {
-      return {
-        icon: <ShieldAlert size={16} color="#FD4847" />,
-        text: `Attention required: There are ${criticalCount} critical operational alerts active. Fleet adjustments or driver contact recommended immediately.`,
-      };
-    }
-    if (waiting.length > 20) {
-      return {
-        icon: <TrafficCone size={16} color="#FCA307" />,
-        text: `High Commuter Congestion: ${waiting.length} passengers waiting across popular stops. Consider injecting unassigned vehicles into active standby loops.`,
-      };
-    }
-    if (vehicles.length === 0) {
-      return {
-        icon: <Radio size={16} color="#9CA3AF" />,
-        text: `No vehicles currently active. Please check the backend connection or replay simulator.`,
-      };
-    }
-    return {
-      icon: <CheckCircle2 size={16} color="#052675" />,
-      text: `Fleet is operating efficiently across all ${vehicles.length} active units tracked. Transit pacing matches demand thresholds near the highest-ranked hotspots.`,
-    };
-  };
-
-  return (
-    <div
-      style={{
-        background: "#fff",
-        borderRadius: 22,
-        padding: 24,
-        border: "1px solid #D9D9D9",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
-      }}
-    >
-      <h2
-        style={{
-          marginTop: 0,
-          marginBottom: 20,
-          fontSize: 18,
-          fontWeight: 600,
-          color: "#111111",
-        }}
-      >
-        🚦 Live Operations Center
-      </h2>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: 14,
-          marginBottom: 24,
-        }}
-      >
-        <MiniStat title="Fleet" value={vehicles.length} color="#03164A" />
-        <MiniStat title="Waiting" value={waiting.length} color="#FD4847" />
-        <MiniStat
-          title="Health"
-          value={criticalCount > 0 ? "88%" : "98%"}
-          color="#052675"
-        />
-      </div>
-
-      <h3
-        style={{
-          fontSize: 14,
-          fontWeight: 600,
-          color: "#111111",
-          marginBottom: 12,
-        }}
-      >
-        🚨 Live Alerts Summary
-      </h3>
-      {alerts.length ? (
-        alerts
-          .slice(0, 3)
-          .map((alert, index) => (
-            <AlertRow
-              key={index}
-              color={alert.severity === "critical" ? "#FD4847" : "#FCA307"}
-              text={`${alert.vehicle_id || "System"}: ${alert.message}`}
-            />
-          ))
-      ) : (
-        <AlertRow color="#052675" text="No operational alerts." />
-      )}
-
-      <hr
-        style={{ margin: "24px 0", border: 0, borderTop: "1px solid #D9D9D9" }}
-      />
-
-      <h3
-        style={{
-          fontSize: 14,
-          fontWeight: 600,
-          color: "#111111",
-          marginBottom: 12,
-        }}
-      >
-        📍 Demand Ranking
-      </h3>
-      {hotspots.map((spot, index) => (
-        <HotspotRow key={index} rank={index + 1} spot={spot} />
-      ))}
-
-      <div
-        style={{
-          marginTop: 24,
-          background: "#E7ECFB",
-          padding: 18,
-          borderRadius: 14,
-        }}
-      >
-        <strong
-          style={{
-            color: "#03164A",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <Bot size={16} /> Dynamic AI Summary
-        </strong>
-        <p
-          style={{
-            marginTop: 10,
-            color: "#475569",
-            lineHeight: 1.6,
-            marginBottom: 0,
-            display: "flex",
-            gap: 8,
-          }}
-        >
-          <span style={{ flexShrink: 0, marginTop: 2 }}>
-            {getDynamicAISummary().icon}
-          </span>
-          <span>{getDynamicAISummary().text}</span>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function MiniStat({ title, value, color }) {
-  return (
-    <div
-      style={{
-        background: `${color}15`,
-        borderRadius: 14,
-        padding: 18,
-        textAlign: "center",
-      }}
-    >
-      <div className="font-numeric" style={{ color, fontSize: 28 }}>
-        {value}
-      </div>
-      <div style={{ marginTop: 6, color: "#64748B" }}>{title}</div>
-    </div>
-  );
-}
-
-function AlertRow({ color, text }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 12,
-        marginBottom: 14,
-        alignItems: "flex-start",
-      }}
-    >
-      <div
-        style={{
-          width: 12,
-          height: 12,
-          borderRadius: "50%",
-          background: color,
-          marginTop: 5,
-          flexShrink: 0,
-        }}
-      />
-      <div style={{ color: "#334155", lineHeight: 1.5, fontSize: 14 }}>
-        {text}
-      </div>
-    </div>
-  );
-}
-
-function HotspotRow({ rank, spot }) {
-  const colors = ["#FD4847", "#FCA307", "#FCA307", "#052675", "#03164A"];
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "12px 0",
-        borderBottom: "1px solid #FBF4C6",
-      }}
-    >
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <div
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
-            background: colors[rank - 1] || "#64748B",
-            color: "#fff",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontWeight: 700,
-          }}
-        >
-          {rank}
-        </div>
-        <div>
-          <strong style={{ fontSize: 14, color: "#111111" }}>
-            {spot.stop_name}
-          </strong>
-          <div style={{ color: "#64748B", fontSize: 13 }}>{spot.route_id}</div>
-        </div>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <strong style={{ fontSize: 14, color: "#111111" }}>
-          {spot.avg_wait_minutes} min
-        </strong>
-        <div style={{ color: "#64748B", fontSize: 13 }}>Avg Wait</div>
       </div>
     </div>
   );
