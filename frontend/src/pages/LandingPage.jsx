@@ -494,24 +494,27 @@ function AboutUs() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {[
             {
-              name: "Jargon Jr.",
-              github: "https://github.com/",
+              name: "AI and Data",
+              github: "https://github.com/christopher-cresencio",
+              linkedin:
+                "https://www.linkedin.com/in/christopher-cresencio-b10395418",
+            },
+            {
+              name: "Backend",
+              github: "https://github.com/rainieljerez",
+              linkedin:
+                "https://www.linkedin.com/in/joaqui-rainiel-jerez-605490420",
+            },
+            {
+              name: "Frontend",
+              github: "https://github.com/jhonristh",
               linkedin: "https://linkedin.com/",
             },
             {
-              name: "Teammate 2",
-              github: "https://github.com/",
-              linkedin: "https://linkedin.com/",
-            },
-            {
-              name: "Teammate 3",
-              github: "https://github.com/",
-              linkedin: "https://linkedin.com/",
-            },
-            {
-              name: "Teammate 4",
-              github: "https://github.com/",
-              linkedin: "https://linkedin.com/",
+              name: "Hardware",
+              github: "https://github.com/Mrutotman",
+              linkedin:
+                "https://www.linkedin.com/in/red-colby-dumdum-9579a4395",
             },
           ].map((member) => (
             <div
