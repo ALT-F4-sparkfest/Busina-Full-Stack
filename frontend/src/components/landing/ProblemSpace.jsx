@@ -78,7 +78,8 @@ export default function ProblemSpace() {
             margin: "0 0 16px",
           }}
         >
-          Public transit runs on guesswork
+          Eight million Filipinos ride jeepneys every day without knowing when
+          one will arrive.
         </h2>
         <p
           style={{

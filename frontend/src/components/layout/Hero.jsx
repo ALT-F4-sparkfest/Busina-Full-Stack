@@ -90,8 +90,8 @@ export default function Hero({ setActiveView, onDemoClick }) {
             fontWeight: 800,
           }}
         >
-          Never guess when your <br className="hide-mobile" /> jeep arrives
-          again.
+          The First Real-Time Fleet Intelligence Platform for Philippine Public
+          Transit.
         </h1>
 
         {/* Sub-tagline */}
