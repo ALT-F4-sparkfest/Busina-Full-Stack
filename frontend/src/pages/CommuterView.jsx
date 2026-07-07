@@ -1,4 +1,3 @@
-// src/pages/CommuterView.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Bus,
@@ -7,7 +6,6 @@ import {
   MapPin,
   RefreshCw,
   LocateFixed,
-  Info,
   X,
 } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
@@ -17,7 +15,7 @@ import ConnectionStatusPill from "../components/ConnectionStatusPill";
 import LiveSyncBadge from "../components/LiveSyncBadge";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import businaIcon from "../assets/busina-icon-transparent.png";
-import TodaysCommute from "../components/landing/TodaysCommute";
+import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
 
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -35,10 +33,6 @@ function distance(lat1, lon1, lat2, lon2) {
 
 const DEFAULT_LOCATION = { lat: 14.625, lng: 121.048 };
 
-// --- Route scope config -----------------------------------------------
-// BUSINA's live MVP scope is fixed to these 6 anchor points and 5 routes.
-// Any destination search outside this set should be rejected with a
-// clear "Route unmapped" message instead of silently failing.
 const SERVICE_POINTS = [
   "Cubao",
   "Divisoria",
@@ -61,7 +55,6 @@ function isDestinationInScope(text) {
   const norm = text.trim().toLowerCase();
   return SERVICE_POINTS.some((p) => norm.includes(p.toLowerCase()));
 }
-// ------------------------------------------------------------------------
 
 export default function CommuterView({ onBack }) {
   const live = useLiveVehicles();
@@ -75,10 +68,8 @@ export default function CommuterView({ onBack }) {
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [routeFilter, setRouteFilter] = useState("all");
   const [userLocation, setUserLocation] = useState(DEFAULT_LOCATION);
-  const [mapKey, setMapKey] = useState(0); // force map remount on refresh
-  const [showOverview, setShowOverview] = useState(false);
+  const [mapKey, setMapKey] = useState(0);
 
-  // Get real GPS if available
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -119,16 +110,23 @@ export default function CommuterView({ onBack }) {
 
   const selectedVehicle = nearest.find((v) => v.id === selectedVehicleId);
 
-  // ETA fetch with demo fallback + route-scope validation
+  // Live counts for the top strip — total fleet, not route-filtered,
+  // since this is meant to be a Metro Manila-wide overview.
+  const avgWaitMinutes = vehicleList.length
+    ? Math.round(
+        vehicleList.reduce(
+          (sum, v) => sum + (typeof v.eta === "number" ? v.eta : 6),
+          0,
+        ) / vehicleList.length,
+      )
+    : 6;
+
   const handleDestinationSubmit = async (dest) => {
     const target = (dest || destination).trim();
     if (!target) return;
 
     setRouteError(null);
 
-    // Validate against service scope BEFORE anything else. This check used
-    // to happen after `!selectedVehicle`, which meant the button did
-    // nothing at all when offline/no vehicle was selected — it looked dead.
     if (!isDestinationInScope(target)) {
       setRouteError(
         `"${target}" is outside our current coverage. BUSINA currently serves Cubao ↔ Divisoria, Marikina, Pasig, San Juan, and Makati.`,
@@ -154,8 +152,6 @@ export default function CommuterView({ onBack }) {
         display_text: data.display_text,
       });
     } catch {
-      // Offline / backend unreachable / no vehicle selected — mock fallback.
-      // Only reached now if the destination is actually in scope.
       const mockEta = selectedVehicle?.eta ?? Math.round(Math.random() * 8 + 3);
       setEta({
         eta_minutes: mockEta,
@@ -169,7 +165,6 @@ export default function CommuterView({ onBack }) {
     }
   };
 
-  // I'm Waiting with toast feedback
   const toggleWaiting = () => {
     setIsWaiting((prev) => {
       const next = !prev;
@@ -186,7 +181,6 @@ export default function CommuterView({ onBack }) {
     });
   };
 
-  // Recenter: reset userLocation to force map re-center
   const recenter = useCallback(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -199,7 +193,6 @@ export default function CommuterView({ onBack }) {
     );
   }, []);
 
-  // Refresh: bump mapKey to force full remount
   const refresh = () => setMapKey((k) => k + 1);
 
   return (
@@ -214,15 +207,16 @@ export default function CommuterView({ onBack }) {
       {/* Header */}
       <header
         style={{
-          height: 64,
+          minHeight: 64,
           background: "white",
           borderBottom: "1px solid #D9D9D9",
           display: "flex",
           alignItems: "center",
-          padding: "0 20px",
-          gap: 14,
+          padding: "10px 16px",
+          gap: 10,
           zIndex: 100,
           flexShrink: 0,
+          flexWrap: "wrap",
         }}
       >
         <button
@@ -235,6 +229,7 @@ export default function CommuterView({ onBack }) {
             borderRadius: 10,
             cursor: "pointer",
             fontSize: 16,
+            flexShrink: 0,
           }}
         >
           ←
@@ -260,83 +255,37 @@ export default function CommuterView({ onBack }) {
           <div style={{ fontSize: 11, color: "#64748B" }}>Commuter View</div>
         </div>
         <div
+          className="commuter-header-right"
           style={{
             marginLeft: "auto",
             display: "flex",
             alignItems: "center",
             gap: 10,
+            flexWrap: "wrap",
           }}
         >
-          <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
+          <span className="commuter-sync-badge">
+            <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
+          </span>
           <ConnectionStatusPill status={live.connected ? "live" : "offline"} />
-          <button
-            onClick={() => setShowOverview((s) => !s)}
-            aria-label={
-              showOverview
-                ? "Hide Metro Manila overview"
-                : "Show Metro Manila overview"
-            }
-            style={{
-              border: "1px solid #D9D9D9",
-              background: showOverview ? "#E7ECFB" : "white",
-              color: showOverview ? "#052675" : "#64748B",
-              borderRadius: 10,
-              width: 36,
-              height: 36,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <Info size={17} />
-          </button>
         </div>
       </header>
 
+      {/* Today's Commute strip — always visible now, no toggle */}
+      {/* Today's Commute strip — always visible now, no toggle */}
+      <div style={{ padding: "10px 16px 0", flexShrink: 0 }}>
+        <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
+      </div>
+
+      <style>{`
+        @media (max-width: 480px) {
+          .commuter-sync-badge { display: none; }
+          .tcs-divider { display: none; }
+        }
+      `}</style>
+
       {/* Map area */}
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
-        {showOverview && (
-          <div
-            style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              zIndex: 150,
-              maxWidth: 360,
-              width: "calc(100% - 32px)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: 8,
-              }}
-            >
-              <button
-                onClick={() => setShowOverview(false)}
-                aria-label="Close overview"
-                style={{
-                  border: "none",
-                  background: "white",
-                  boxShadow: "0 4px 16px rgba(17,17,17,.12)",
-                  borderRadius: "50%",
-                  width: 30,
-                  height: 30,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <X size={15} />
-              </button>
-            </div>
-            <TodaysCommute />
-          </div>
-        )}
-
         <LiveMap
           key={mapKey}
           vehicles={nearest}
@@ -347,7 +296,6 @@ export default function CommuterView({ onBack }) {
           routeId={routeFilter === "all" ? null : routeFilter}
         />
 
-        {/* Search overlay */}
         <SearchOverlay
           destination={destination}
           setDestination={setDestination}
@@ -356,7 +304,6 @@ export default function CommuterView({ onBack }) {
           connected={live.connected}
         />
 
-        {/* Route filter — centered, directly under the search bar + route chips */}
         <div
           style={{
             position: "absolute",
@@ -391,7 +338,6 @@ export default function CommuterView({ onBack }) {
           </select>
         </div>
 
-        {/* Refresh + Recenter buttons — bottom right above sheet */}
         <div
           style={{
             position: "absolute",
@@ -441,7 +387,6 @@ export default function CommuterView({ onBack }) {
           </button>
         </div>
 
-        {/* Selected vehicle card */}
         {selectedVehicle && (
           <div
             style={{
@@ -549,7 +494,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* ETA result card */}
         {eta && (
           <div
             style={{ position: "absolute", right: 16, top: 130, zIndex: 100 }}
@@ -610,7 +554,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* Waiting toast */}
         {waitingToast && (
           <div
             style={{
@@ -636,7 +579,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* Route-unmapped toast */}
         {routeError && (
           <div
             style={{

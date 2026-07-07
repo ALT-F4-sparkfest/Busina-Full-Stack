@@ -17,6 +17,7 @@ import useLiveVehicles from "../hooks/useLiveVehicles";
 import LiveMap from "../components/map/LiveMap";
 import ConnectionStatusPill from "../components/ConnectionStatusPill";
 import LiveSyncBadge from "../components/LiveSyncBadge";
+import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
 
 import KPICards from "../components/KPICards";
 import TravelTimeChart from "../components/TravelTimeChart";
@@ -170,6 +171,10 @@ export default function OperatorView({ onBack }) {
           </div>
         </div>
       </header>
+      {/* Today's Commute strip — top bar, always visible */}
+      <div style={{ padding: "12px 32px 0" }}>
+        <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
+      </div>
 
       <div style={{ padding: "16px 32px", flexShrink: 0 }}>
         <KPICards vehicles={filteredVehicles} />
