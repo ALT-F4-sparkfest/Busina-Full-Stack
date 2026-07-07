@@ -8,14 +8,14 @@
 =========================== */
 
 :root {
-  --primary: #2e9e3d;
-  --primary-dark: #1fa82e;
+  --primary: #052675;
+  --primary-dark: #03164a;
 
-  --success: #3bea4c;
-  --warning: #ff8a1d;
-  --danger: #ff4a3d;
+  --success: #052675;
+  --warning: #fca307;
+  --danger: #fd4847;
 
-  --background: #f6f7f9;
+  --background: #fbf4c6;
   --surface: #ffffff;
 
   --text: #111111;
@@ -145,7 +145,7 @@ input {
 
 input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(46, 158, 61, 0.15);
+  box-shadow: 0 0 0 3px rgba(5, 38, 117, 0.15);
 }
 
 .card {

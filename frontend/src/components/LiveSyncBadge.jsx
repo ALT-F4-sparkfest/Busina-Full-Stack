@@ -43,11 +43,11 @@ export default function LiveSyncBadge({ vehicles = [], connected }) {
         gap: 8,
         padding: "6px 14px",
         borderRadius: 999,
-        background: connected ? "#E9FBEA" : "#FFECEA",
-        border: `1px solid ${connected ? "#3BEA4C" : "#FF4A3D"}`,
+        background: connected ? "#E7ECFB" : "#FFECEA",
+        border: `1px solid ${connected ? "#052675" : "#FD4847"}`,
         fontSize: 12.5,
         fontWeight: 700,
-        color: connected ? "#1FA82E" : "#B3261E",
+        color: connected ? "#052675" : "#B3261E",
         whiteSpace: "nowrap",
       }}
     >

@@ -7,6 +7,8 @@ import {
   MapPin,
   RefreshCw,
   LocateFixed,
+  Info,
+  X,
 } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
 import BottomSheet from "../components/commuter/BottomSheet";
@@ -15,6 +17,7 @@ import ConnectionStatusPill from "../components/ConnectionStatusPill";
 import LiveSyncBadge from "../components/LiveSyncBadge";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import businaIcon from "../assets/busina-icon-transparent.png";
+import TodaysCommute from "../components/landing/TodaysCommute";
 
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -73,6 +76,7 @@ export default function CommuterView({ onBack }) {
   const [routeFilter, setRouteFilter] = useState("all");
   const [userLocation, setUserLocation] = useState(DEFAULT_LOCATION);
   const [mapKey, setMapKey] = useState(0); // force map remount on refresh
+  const [showOverview, setShowOverview] = useState(false);
 
   // Get real GPS if available
   useEffect(() => {
@@ -202,7 +206,7 @@ export default function CommuterView({ onBack }) {
     <div
       style={{
         height: "100vh",
-        background: "#F6F7F9",
+        background: "#FBF4C6",
         display: "flex",
         flexDirection: "column",
       }}
@@ -225,7 +229,7 @@ export default function CommuterView({ onBack }) {
           onClick={onBack}
           style={{
             border: "none",
-            background: "#F6F7F9",
+            background: "#FBF4C6",
             width: 38,
             height: 38,
             borderRadius: 10,
@@ -265,11 +269,74 @@ export default function CommuterView({ onBack }) {
         >
           <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
           <ConnectionStatusPill status={live.connected ? "live" : "offline"} />
+          <button
+            onClick={() => setShowOverview((s) => !s)}
+            aria-label={
+              showOverview
+                ? "Hide Metro Manila overview"
+                : "Show Metro Manila overview"
+            }
+            style={{
+              border: "1px solid #D9D9D9",
+              background: showOverview ? "#E7ECFB" : "white",
+              color: showOverview ? "#052675" : "#64748B",
+              borderRadius: 10,
+              width: 36,
+              height: 36,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Info size={17} />
+          </button>
         </div>
       </header>
 
       {/* Map area */}
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+        {showOverview && (
+          <div
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 150,
+              maxWidth: 360,
+              width: "calc(100% - 32px)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: 8,
+              }}
+            >
+              <button
+                onClick={() => setShowOverview(false)}
+                aria-label="Close overview"
+                style={{
+                  border: "none",
+                  background: "white",
+                  boxShadow: "0 4px 16px rgba(17,17,17,.12)",
+                  borderRadius: "50%",
+                  width: 30,
+                  height: 30,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <X size={15} />
+              </button>
+            </div>
+            <TodaysCommute />
+          </div>
+        )}
+
         <LiveMap
           key={mapKey}
           vehicles={nearest}
@@ -352,7 +419,7 @@ export default function CommuterView({ onBack }) {
               cursor: "pointer",
             }}
           >
-            <LocateFixed size={18} color="#2E9E3D" />
+            <LocateFixed size={18} color="#03164A" />
           </button>
           <button
             onClick={refresh}
@@ -401,13 +468,13 @@ export default function CommuterView({ onBack }) {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    background: "#E9FBEA",
+                    background: "#E7ECFB",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Bus size={22} color="#2E9E3D" />
+                  <Bus size={22} color="#03164A" />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 16 }}>
@@ -467,10 +534,10 @@ export default function CommuterView({ onBack }) {
                     borderRadius: "50%",
                     background:
                       selectedVehicle.status === "On Route"
-                        ? "#3BEA4C"
+                        ? "#052675"
                         : selectedVehicle.status === "Delayed"
-                          ? "#FF8A1D"
-                          : "#FF4A3D",
+                          ? "#FCA307"
+                          : "#FD4847",
                     display: "inline-block",
                   }}
                 />
@@ -552,7 +619,7 @@ export default function CommuterView({ onBack }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 200,
-              background: "#2E9E3D",
+              background: "#03164A",
               color: "white",
               padding: "10px 20px",
               borderRadius: 12,
@@ -578,7 +645,7 @@ export default function CommuterView({ onBack }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 200,
-              background: "#FF4A3D",
+              background: "#FD4847",
               color: "white",
               padding: "10px 20px",
               borderRadius: 12,
@@ -610,7 +677,7 @@ function MiniInfo({ label, value }) {
   return (
     <div
       style={{
-        background: "#F6F7F9",
+        background: "#FBF4C6",
         borderRadius: 10,
         padding: "8px 10px",
         textAlign: "center",

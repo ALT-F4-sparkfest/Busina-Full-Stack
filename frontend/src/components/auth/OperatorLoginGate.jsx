@@ -121,12 +121,12 @@ function OperatorLoginModal({ onSuccess }) {
               width: 48,
               height: 48,
               borderRadius: 14,
-              background: "linear-gradient(135deg,#3BEA4C,#6EE87C)",
+              background: "linear-gradient(135deg,#052675,#1B3E8F)",
               color: "#111111",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 10px 24px rgba(59,234,76,.35)",
+              boxShadow: "0 10px 24px rgba(5,38,117,.35)",
               flexShrink: 0,
             }}
           >
@@ -201,7 +201,7 @@ function OperatorLoginModal({ onSuccess }) {
               padding: "10px 14px",
               borderRadius: 10,
               background: "#FFECEA",
-              color: "#FF4A3D",
+              color: "#FD4847",
               fontSize: 13,
               fontWeight: 600,
             }}
@@ -220,7 +220,7 @@ function OperatorLoginModal({ onSuccess }) {
             padding: 15,
             borderRadius: 14,
             border: "none",
-            background: loading ? "#9CA3AF" : "#2E9E3D",
+            background: loading ? "#9CA3AF" : "#03164A",
             color: "#fff",
             fontWeight: 700,
             fontSize: 15,
@@ -260,11 +260,11 @@ function OperatorSessionBar({ onLogout }) {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "12px 24px",
-        background: "#E9FBEA",
+        background: "#E7ECFB",
         borderBottom: "1px solid #D9D9D9",
         fontSize: 13,
         fontWeight: 600,
-        color: "#1FA82E",
+        color: "#052675",
       }}
     >
       <span>🔒 Operator session active</span>
@@ -276,7 +276,7 @@ function OperatorSessionBar({ onLogout }) {
           gap: 6,
           background: "none",
           border: "none",
-          color: "#1FA82E",
+          color: "#052675",
           fontWeight: 700,
           fontSize: 13,
           cursor: "pointer",
@@ -305,7 +305,7 @@ const inputWrap = {
   border: "1px solid #D9D9D9",
   borderRadius: 12,
   padding: "12px 14px",
-  background: "#F6F7F9",
+  background: "#FBF4C6",
 };
 
 const inputStyle = {

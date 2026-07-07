@@ -1,4 +1,5 @@
 // src/pages/OperatorView.jsx
+
 import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
@@ -11,8 +12,6 @@ import {
   Radio,
   CheckCircle2,
   Bot,
-  ChevronDown,
-  ChevronRight,
 } from "lucide-react";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import LiveMap from "../components/map/LiveMap";
@@ -36,7 +35,6 @@ export default function OperatorView({ onBack }) {
   const [waitingList, setWaitingList] = useState([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filterRoute, setFilterRoute] = useState("all");
-  const [showAnalytics, setShowAnalytics] = useState(false); // 👈 NEW: progressive disclosure toggle
 
   useEffect(() => {
     if (!live.socket) return;
@@ -73,6 +71,8 @@ export default function OperatorView({ onBack }) {
     ...new Set(vehicleList.map((v) => v.route_id).filter(Boolean)),
   ];
 
+  // True only during the initial connect — once we've ever seen a vehicle,
+  // an empty list means "genuinely no vehicles," not "still loading."
   const isLoading = !live.connected && vehicleList.length === 0;
 
   const filteredVehicles =
@@ -92,9 +92,9 @@ export default function OperatorView({ onBack }) {
 
   const getStatus = (speed) => {
     if (typeof speed !== "number" || speed < 1)
-      return { label: "Stopped", color: "#FF4A3D", icon: "●" };
-    if (speed < 10) return { label: "Slow", color: "#FF8A1D", icon: "●" };
-    return { label: "Moving", color: "#3BEA4C", icon: "●" };
+      return { label: "Stopped", color: "#FD4847", icon: "●" };
+    if (speed < 10) return { label: "Slow", color: "#FCA307", icon: "●" };
+    return { label: "Moving", color: "#052675", icon: "●" };
   };
 
   const topHotspots = [...hotspots]
@@ -128,7 +128,7 @@ export default function OperatorView({ onBack }) {
             gap: 8,
           }}
         >
-          <BarChart3 size={20} color="#2E9E3D" /> Operator Dashboard
+          <BarChart3 size={20} color="#03164A" /> Operator Dashboard
         </span>
         <div
           style={{
@@ -171,7 +171,6 @@ export default function OperatorView({ onBack }) {
         </div>
       </header>
 
-      {/* KPICards – kept intact */}
       <div style={{ padding: "16px 32px", flexShrink: 0 }}>
         <KPICards vehicles={filteredVehicles} />
       </div>
@@ -208,7 +207,7 @@ export default function OperatorView({ onBack }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: "#F6F7F9",
+                  background: "#FBF4C6",
                   gap: 8,
                   flexDirection: "column",
                 }}
@@ -222,67 +221,26 @@ export default function OperatorView({ onBack }) {
             )}
           </div>
 
-          {/* ─── Progressive Disclosure Toggle ─── */}
-          <button
-            onClick={() => setShowAnalytics(!showAnalytics)}
-            style={{
-              marginTop: 16,
-              padding: "12px 20px",
-              width: "100%",
-              border: "1px solid #D9D9D9",
-              borderRadius: 14,
-              background: "white",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: 15,
-              fontWeight: 600,
-              color: "#111111",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#2E9E3D";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(46,158,61,0.08)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#D9D9D9";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <span>📊 {showAnalytics ? "Hide" : "Show"} Advanced Analytics</span>
-            {showAnalytics ? (
-              <ChevronDown size={18} color="#64748B" />
-            ) : (
-              <ChevronRight size={18} color="#64748B" />
-            )}
-          </button>
-
-          {/* ─── Analytics Section – conditionally rendered ─── */}
-          {showAnalytics && (
-            <div className="operator-charts-row" style={{ marginTop: 16 }}>
-              <div style={{ flex: 1 }}>
-                <TravelTimeChart />
-              </div>
-              <div style={{ flex: 1 }}>
-                <AIRecommendationPanel
-                  vehicles={filteredVehicles}
-                  waitingCommuters={waitingList}
-                />
-              </div>
+          <div className="operator-charts-row">
+            <div style={{ flex: 1 }}>
+              <TravelTimeChart />
             </div>
-          )}
+            <div style={{ flex: 1 }}>
+              <AIRecommendationPanel
+                vehicles={filteredVehicles}
+                waitingCommuters={waitingList}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="operator-side">
-          {/* VehicleDetailsPanel – kept intact */}
           <VehicleDetailsPanel
             vehicle={selectedVehicle}
             status={selectedVehicle ? getStatus(selectedVehicle.speed) : null}
           />
 
-          {/* Vehicle list – kept intact */}
+          {/* Vehicle list */}
           <section
             style={{
               background: "white",
@@ -300,7 +258,7 @@ export default function OperatorView({ onBack }) {
                 marginBottom: 16,
               }}
             >
-              <Bus size={20} color="#2E9E3D" />
+              <Bus size={20} color="#03164A" />
               <h3
                 style={{
                   margin: 0,
@@ -336,7 +294,7 @@ export default function OperatorView({ onBack }) {
                     padding: "20px",
                     textAlign: "center",
                     color: "#94A3B8",
-                    background: "#F6F7F9",
+                    background: "#FBF4C6",
                     borderRadius: 12,
                   }}
                 >
@@ -354,10 +312,10 @@ export default function OperatorView({ onBack }) {
                         padding: "12px 16px",
                         borderRadius: 12,
                         background:
-                          v.id === selectedVehicleId ? "#E9FBEA" : "#F6F7F9",
+                          v.id === selectedVehicleId ? "#E7ECFB" : "#FBF4C6",
                         border:
                           v.id === selectedVehicleId
-                            ? "2px solid #2E9E3D"
+                            ? "2px solid #03164A"
                             : "1px solid #D9D9D9",
                         cursor: "pointer",
                         display: "flex",
@@ -366,7 +324,7 @@ export default function OperatorView({ onBack }) {
                         transition: "all 0.2s",
                         boxShadow:
                           v.id === selectedVehicleId
-                            ? "0 4px 12px rgba(46,158,61,0.15)"
+                            ? "0 4px 12px rgba(5,38,117,0.15)"
                             : "none",
                       }}
                     >
@@ -446,7 +404,7 @@ export default function OperatorView({ onBack }) {
             </div>
           </section>
 
-          {/* Alerts feed – kept intact */}
+          {/* Alerts feed */}
           <section
             style={{
               background: "white",
@@ -464,7 +422,7 @@ export default function OperatorView({ onBack }) {
                 marginBottom: 16,
               }}
             >
-              <AlertCircle size={20} color="#FF4A3D" />
+              <AlertCircle size={20} color="#FD4847" />
               <h3
                 style={{
                   margin: 0,
@@ -500,7 +458,7 @@ export default function OperatorView({ onBack }) {
                     padding: "20px",
                     textAlign: "center",
                     color: "#94A3B8",
-                    background: "#F6F7F9",
+                    background: "#FBF4C6",
                     borderRadius: 12,
                   }}
                 >
@@ -568,7 +526,6 @@ export default function OperatorView({ onBack }) {
             </div>
           </section>
 
-          {/* OperationsPanel – kept intact */}
           <OperationsPanel
             alerts={alerts}
             hotspots={topHotspots}
@@ -592,13 +549,13 @@ function OperationsPanel({
   const getDynamicAISummary = () => {
     if (criticalCount > 0) {
       return {
-        icon: <ShieldAlert size={16} color="#FF4A3D" />,
+        icon: <ShieldAlert size={16} color="#FD4847" />,
         text: `Attention required: There are ${criticalCount} critical operational alerts active. Fleet adjustments or driver contact recommended immediately.`,
       };
     }
     if (waiting.length > 20) {
       return {
-        icon: <TrafficCone size={16} color="#FF8A1D" />,
+        icon: <TrafficCone size={16} color="#FCA307" />,
         text: `High Commuter Congestion: ${waiting.length} passengers waiting across popular stops. Consider injecting unassigned vehicles into active standby loops.`,
       };
     }
@@ -609,7 +566,7 @@ function OperationsPanel({
       };
     }
     return {
-      icon: <CheckCircle2 size={16} color="#3BEA4C" />,
+      icon: <CheckCircle2 size={16} color="#052675" />,
       text: `Fleet is operating efficiently across all ${vehicles.length} active units tracked. Transit pacing matches demand thresholds near the highest-ranked hotspots.`,
     };
   };
@@ -644,12 +601,12 @@ function OperationsPanel({
           marginBottom: 24,
         }}
       >
-        <MiniStat title="Fleet" value={vehicles.length} color="#2E9E3D" />
-        <MiniStat title="Waiting" value={waiting.length} color="#FF4A3D" />
+        <MiniStat title="Fleet" value={vehicles.length} color="#03164A" />
+        <MiniStat title="Waiting" value={waiting.length} color="#FD4847" />
         <MiniStat
           title="Health"
           value={criticalCount > 0 ? "88%" : "98%"}
-          color="#3BEA4C"
+          color="#052675"
         />
       </div>
 
@@ -669,12 +626,12 @@ function OperationsPanel({
           .map((alert, index) => (
             <AlertRow
               key={index}
-              color={alert.severity === "critical" ? "#FF4A3D" : "#FF8A1D"}
+              color={alert.severity === "critical" ? "#FD4847" : "#FCA307"}
               text={`${alert.vehicle_id || "System"}: ${alert.message}`}
             />
           ))
       ) : (
-        <AlertRow color="#3BEA4C" text="No operational alerts." />
+        <AlertRow color="#052675" text="No operational alerts." />
       )}
 
       <hr
@@ -698,14 +655,14 @@ function OperationsPanel({
       <div
         style={{
           marginTop: 24,
-          background: "#E9FBEA",
+          background: "#E7ECFB",
           padding: 18,
           borderRadius: 14,
         }}
       >
         <strong
           style={{
-            color: "#2E9E3D",
+            color: "#03164A",
             display: "flex",
             alignItems: "center",
             gap: 6,
@@ -779,7 +736,7 @@ function AlertRow({ color, text }) {
 }
 
 function HotspotRow({ rank, spot }) {
-  const colors = ["#FF4A3D", "#FF8A1D", "#FF8A1D", "#3BEA4C", "#2E9E3D"];
+  const colors = ["#FD4847", "#FCA307", "#FCA307", "#052675", "#03164A"];
   return (
     <div
       style={{
@@ -787,7 +744,7 @@ function HotspotRow({ rank, spot }) {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "12px 0",
-        borderBottom: "1px solid #F6F7F9",
+        borderBottom: "1px solid #FBF4C6",
       }}
     >
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>

@@ -13,7 +13,7 @@ export default defineConfig({
         name: "BUSINA - Smart Route",
         short_name: "BUSINA",
         description: "Real-time public transport tracking",
-        theme_color: "#2E9E3D",
+        theme_color: "#03164A",
         background_color: "#FAFAFA",
         display: "standalone",
         start_url: "/",

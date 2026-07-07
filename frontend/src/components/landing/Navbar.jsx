@@ -1,16 +1,7 @@
-// src/components/landing/Navbar.jsx
-import { useState } from "react";
-import { GitBranch, Sparkles, Users, Briefcase } from "lucide-react";
+import { GitBranch, Sparkles } from "lucide-react";
 import businaIcon from "../../assets/busina-icon-transparent.png";
 
-export default function Navbar({ setActiveView, currentView }) {
-  const [view, setView] = useState(currentView || "commuter");
-
-  const handleToggle = (mode) => {
-    setView(mode);
-    if (setActiveView) setActiveView(mode);
-  };
-
+export default function Navbar() {
   return (
     <nav
       className="navbar-shell"
@@ -21,38 +12,33 @@ export default function Navbar({ setActiveView, currentView }) {
         width: "92%",
         maxWidth: 1450,
         margin: "20px auto",
-        padding: "14px 28px",
+        padding: "18px 30px",
         borderRadius: 24,
         background: "rgba(255,255,255,.82)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,.45)",
         boxShadow: "0 20px 45px rgba(17,17,17,.12)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: 16,
       }}
     >
-      {/* LEFT – Logo */}
+      {/* LEFT */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 14,
+          gap: 18,
         }}
       >
         <div
           style={{
-            width: 46,
-            height: 46,
-            borderRadius: 14,
-            background: "linear-gradient(135deg,#052675,#03164A)",
+            width: 56,
+            height: 56,
+            borderRadius: 18,
+            background: "linear-gradient(135deg,#03164A,#1B3E8F)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 8px 24px rgba(5,38,117,0.30)",
+            boxShadow: "0 10px 30px rgba(5,38,117,.35)",
             overflow: "hidden",
           }}
         >
@@ -60,27 +46,26 @@ export default function Navbar({ setActiveView, currentView }) {
             src={businaIcon}
             alt="BUSINA logo"
             style={{
-              width: "76%",
-              height: "76%",
+              width: "78%",
+              height: "78%",
               objectFit: "contain",
-              filter: "brightness(0) invert(1)",
+              filter: "brightness(0) invert(1)", // renders the black linework as white on the green badge
             }}
           />
         </div>
         <div>
           <div
             style={{
-              fontSize: 24,
+              fontSize: 28,
               fontWeight: 800,
               color: "#111111",
-              lineHeight: 1.1,
             }}
           >
             BUSINA
           </div>
           <div
             style={{
-              fontSize: 12,
+              fontSize: 14,
               color: "#64748B",
             }}
           >
@@ -89,61 +74,14 @@ export default function Navbar({ setActiveView, currentView }) {
         </div>
       </div>
 
-      {/* CENTER – User Mode Toggle (NEW) */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 4,
-          background: "#F1F5F9",
-          borderRadius: 999,
-          padding: 4,
-          border: "1px solid #E2E8F0",
-        }}
-      >
-        <button
-          onClick={() => handleToggle("commuter")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "8px 18px",
-            borderRadius: 999,
-            border: "none",
-            background: view === "commuter" ? "#052675" : "transparent",
-            color: view === "commuter" ? "#fff" : "#64748B",
-            fontWeight: 700,
-            fontSize: 13,
-            cursor: "pointer",
-            transition: "all .2s",
-          }}
-        >
-          <Users size={15} />
-          Commuter
-        </button>
-        <button
-          onClick={() => handleToggle("operator")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "8px 18px",
-            borderRadius: 999,
-            border: "none",
-            background: view === "operator" ? "#052675" : "transparent",
-            color: view === "operator" ? "#fff" : "#64748B",
-            fontWeight: 700,
-            fontSize: 13,
-            cursor: "pointer",
-            transition: "all .2s",
-          }}
-        >
-          <Briefcase size={15} />
-          Operator
-        </button>
+      {/* CENTER — hidden under 768px via .navbar-badges media query */}
+      <div className="navbar-badges">
+        <Badge text="Real-Time Tracking" color="#03164A" />
+        <Badge text="AI Dispatch" color="#00C2FF" />
+        <Badge text="Real-Time ETA" color="#FCA307" />
       </div>
 
-      {/* RIGHT – GitHub Link */}
+      {/* RIGHT – now links to GitHub */}
       <a
         href="https://github.com/ALT-F4-sparkfest"
         target="_blank"
@@ -151,70 +89,43 @@ export default function Navbar({ setActiveView, currentView }) {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 8,
+          gap: 10,
           border: "none",
-          background: "#052675",
+          background: "#03164A",
           color: "white",
-          padding: "10px 20px",
-          borderRadius: 12,
+          padding: "13px 22px",
+          borderRadius: 14,
           cursor: "pointer",
           fontWeight: 700,
-          fontSize: 14,
-          boxShadow: "0 8px 20px rgba(5,38,117,0.22)",
+          fontSize: 15,
+          boxShadow: "0 10px 24px rgba(5,38,117,.25)",
           textDecoration: "none",
         }}
       >
-        <GitBranch size={16} />
+        <GitBranch size={18} />
         Source Code
       </a>
-
-      {/* ─── Mobile responsive styles ─── */}
-      <style>{`
-        @media (max-width: 700px) {
-          .navbar-shell {
-            flex-direction: column;
-            align-items: stretch !important;
-            padding: 12px 16px !important;
-            margin: 12px auto !important;
-            width: 96% !important;
-          }
-          .navbar-shell > div:first-child {
-            justify-content: center;
-          }
-          .navbar-shell .navbar-badges {
-            display: none !important;
-          }
-          .navbar-shell > a {
-            justify-content: center;
-          }
-        }
-        @media (max-width: 480px) {
-          .navbar-shell > div:first-child {
-            gap: 10px !important;
-          }
-          .navbar-shell > div:first-child > div:first-child {
-            width: 38px !important;
-            height: 38px !important;
-          }
-          .navbar-shell > div:first-child > div:last-child > div:first-child {
-            font-size: 20px !important;
-          }
-          .navbar-shell > div:first-child > div:last-child > div:last-child {
-            font-size: 11px !important;
-          }
-          .navbar-shell .user-toggle {
-            justify-content: center;
-          }
-          .navbar-shell .user-toggle button {
-            padding: 6px 14px !important;
-            font-size: 12px !important;
-          }
-          .navbar-shell > a {
-            padding: 8px 16px !important;
-            font-size: 13px !important;
-          }
-        }
-      `}</style>
     </nav>
+  );
+}
+
+function Badge({ text, color }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        background: `${color}15`,
+        color,
+        padding: "10px 16px",
+        borderRadius: 999,
+        fontWeight: 700,
+        fontSize: 14,
+      }}
+    >
+      <Sparkles size={15} />
+      {text}
+    </div>
   );
 }
