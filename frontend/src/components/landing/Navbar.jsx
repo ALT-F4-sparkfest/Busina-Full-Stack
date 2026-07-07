@@ -1,7 +1,15 @@
-import { GitBranch, Sparkles } from "lucide-react";
+import { GitBranch, Bus, Building2 } from "lucide-react";
 import businaIcon from "../../assets/busina-icon-transparent.png";
 
-export default function Navbar() {
+const NAV_LINKS = [
+  { label: "Live Overview", href: "#live-overview" },
+  { label: "The Problem", href: "#the-problem" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Everything You Need", href: "#everything-you-need" },
+  { label: "About Us", href: "#about-us" },
+];
+
+export default function Navbar({ setActiveView, currentView = "landing" }) {
   return (
     <nav
       className="navbar-shell"
@@ -12,33 +20,37 @@ export default function Navbar() {
         width: "92%",
         maxWidth: 1450,
         margin: "20px auto",
-        padding: "18px 30px",
-        borderRadius: 24,
+        padding: "14px 26px",
+        borderRadius: 999,
         background: "rgba(255,255,255,.82)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,.45)",
         boxShadow: "0 20px 45px rgba(17,17,17,.12)",
+        display: "flex",
+        alignItems: "center",
+        gap: 18,
       }}
     >
-      {/* LEFT */}
+      {/* LEFT — logo */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 18,
+          gap: 14,
+          flexShrink: 0,
         }}
       >
         <div
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: 18,
+            width: 48,
+            height: 48,
+            borderRadius: 14,
             background: "linear-gradient(135deg,#03164A,#1B3E8F)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 10px 30px rgba(5,38,117,.35)",
+            boxShadow: "0 8px 22px rgba(5,38,117,.35)",
             overflow: "hidden",
           }}
         >
@@ -49,83 +61,144 @@ export default function Navbar() {
               width: "78%",
               height: "78%",
               objectFit: "contain",
-              filter: "brightness(0) invert(1)", // renders the black linework as white on the green badge
+              filter: "brightness(0) invert(1)",
             }}
           />
         </div>
-        <div>
-          <div
-            style={{
-              fontSize: 28,
-              fontWeight: 800,
-              color: "#111111",
-            }}
-          >
-            BUSINA
-          </div>
-          <div
-            style={{
-              fontSize: 14,
-              color: "#64748B",
-            }}
-          >
-            Smarter commutes. Better journeys.
-          </div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "#111111" }}>
+          BUSINA
         </div>
       </div>
 
-      {/* CENTER — hidden under 768px via .navbar-badges media query */}
-      <div className="navbar-badges">
-        <Badge text="Real-Time Tracking" color="#03164A" />
-        <Badge text="AI Dispatch" color="#00C2FF" />
-        <Badge text="Real-Time ETA" color="#FCA307" />
+      {/* CENTER — in-page navigation, hidden under 1024px via .navbar-links media query */}
+      <div
+        className="navbar-links"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          flex: 1,
+          justifyContent: "center",
+        }}
+      >
+        {NAV_LINKS.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            style={{
+              padding: "9px 14px",
+              borderRadius: 999,
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#374151",
+              textDecoration: "none",
+              whiteSpace: "nowrap",
+              transition: "background .2s ease, color .2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#E7ECFB";
+              e.currentTarget.style.color = "#052675";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "#374151";
+            }}
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
 
-      {/* RIGHT – now links to GitHub */}
-      <a
-        href="https://github.com/ALT-F4-sparkfest"
-        target="_blank"
-        rel="noopener noreferrer"
+      <style>{`
+        @media (max-width: 1024px) {
+          .navbar-links { display: none !important; }
+        }
+      `}</style>
+
+      {/* RIGHT — commuter/operator toggle + source code */}
+      <div
         style={{
           display: "flex",
           alignItems: "center",
           gap: 10,
-          border: "none",
-          background: "#03164A",
-          color: "white",
-          padding: "13px 22px",
-          borderRadius: 14,
-          cursor: "pointer",
-          fontWeight: 700,
-          fontSize: 15,
-          boxShadow: "0 10px 24px rgba(5,38,117,.25)",
-          textDecoration: "none",
+          flexShrink: 0,
         }}
       >
-        <GitBranch size={18} />
-        Source Code
-      </a>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            background: "#FBF4C6",
+            borderRadius: 999,
+            padding: 4,
+            border: "1px solid #D9D9D9",
+          }}
+        >
+          <ToggleButton
+            active={false}
+            icon={<Bus size={14} />}
+            label="Commuter"
+            onClick={() => setActiveView && setActiveView("commuter")}
+          />
+          <ToggleButton
+            active={false}
+            icon={<Building2 size={14} />}
+            label="Operator"
+            onClick={() => setActiveView && setActiveView("operator")}
+          />
+        </div>
+
+        <a
+          href="https://github.com/ALT-F4-sparkfest"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            border: "none",
+            background: "#03164A",
+            color: "white",
+            padding: "11px 18px",
+            borderRadius: 999,
+            cursor: "pointer",
+            fontWeight: 700,
+            fontSize: 14,
+            boxShadow: "0 10px 24px rgba(5,38,117,.25)",
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <GitBranch size={16} />
+          Source Code
+        </a>
+      </div>
     </nav>
   );
 }
 
-function Badge({ text, color }) {
+function ToggleButton({ active, icon, label, onClick }) {
   return (
-    <div
+    <button
+      onClick={onClick}
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 8,
-        background: `${color}15`,
-        color,
-        padding: "10px 16px",
+        gap: 6,
+        border: "none",
+        background: active ? "#052675" : "transparent",
+        color: active ? "#FFFFFF" : "#374151",
+        padding: "8px 14px",
         borderRadius: 999,
+        cursor: "pointer",
         fontWeight: 700,
-        fontSize: 14,
+        fontSize: 13,
+        transition: ".2s",
       }}
     >
-      <Sparkles size={15} />
-      {text}
-    </div>
+      {icon}
+      {label}
+    </button>
   );
 }

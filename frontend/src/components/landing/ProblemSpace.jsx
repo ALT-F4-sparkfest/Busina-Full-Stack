@@ -47,7 +47,7 @@ export default function ProblemSpace() {
           height: 420,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(5,38,117,.16),transparent 70%)",
+            "radial-gradient(circle,rgba(252,163,7,.16),transparent 70%)",
           filter: "blur(60px)",
           pointerEvents: "none",
         }}
@@ -59,8 +59,8 @@ export default function ProblemSpace() {
         <div
           style={{
             display: "inline-block",
-            background: "rgba(5,38,117,.12)",
-            color: "#1B3E8F",
+            background: "rgba(252,163,7,.12)",
+            color: "#FCA307",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
@@ -113,8 +113,8 @@ export default function ProblemSpace() {
               transition: ".25s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(5,38,117,.08)";
-              e.currentTarget.style.borderColor = "rgba(5,38,117,.3)";
+              e.currentTarget.style.background = "rgba(252,163,7,.08)";
+              e.currentTarget.style.borderColor = "rgba(252,163,7,.3)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = "rgba(255,255,255,.04)";
@@ -126,8 +126,8 @@ export default function ProblemSpace() {
                 width: 52,
                 height: 52,
                 borderRadius: 16,
-                background: "rgba(5,38,117,.14)",
-                color: "#1B3E8F",
+                background: "rgba(252,163,7,.14)",
+                color: "#FCA307",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

@@ -123,13 +123,24 @@ export default function LandingPage({ setActiveView }) {
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
+        {/* Glass Banner — moved above Hero */}
+        <section
+          style={{
+            maxWidth: 1450,
+            margin: "24px auto 0",
+            padding: "0 8%",
+          }}
+        >
+          <GlassBanner />
+        </section>
+
         {/* Hero — now includes the live map directly, so no separate
             map-preview section is needed right after it */}
         <section
           style={{
             maxWidth: 1550,
             margin: "0 auto",
-            padding: "40px 6% 20px",
+            padding: "28px 6% 20px",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(30px)",
             transition: "1s",
@@ -141,14 +152,15 @@ export default function LandingPage({ setActiveView }) {
           />
         </section>
 
-        {/* Glass Banner */}
-        <section style={{ maxWidth: 1450, margin: "0 auto", padding: "0 8%" }}>
-          <GlassBanner />
-        </section>
-
         {/* Stats */}
         <section
-          style={{ maxWidth: 1500, margin: "36px auto", padding: "0 8%" }}
+          id="live-overview"
+          style={{
+            maxWidth: 1500,
+            margin: "36px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal>
             <Stats />
@@ -157,7 +169,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* The Problem */}
         <section
-          style={{ maxWidth: 1500, margin: "50px auto", padding: "0 8%" }}
+          id="the-problem"
+          style={{
+            maxWidth: 1500,
+            margin: "50px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal>
             <ProblemSpace />
@@ -166,7 +184,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* How BUSINA Solves It */}
         <section
-          style={{ maxWidth: 1100, margin: "50px auto 56px", padding: "0 8%" }}
+          id="how-it-works"
+          style={{
+            maxWidth: 1100,
+            margin: "50px auto 56px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <HowItWorks />
@@ -175,7 +199,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* Features */}
         <section
-          style={{ maxWidth: 1500, margin: "0 auto 56px", padding: "0 8%" }}
+          id="everything-you-need"
+          style={{
+            maxWidth: 1500,
+            margin: "0 auto 56px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <Features />
@@ -184,7 +214,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* About the Team */}
         <section
-          style={{ maxWidth: 1100, margin: "0 auto 70px", padding: "0 8%" }}
+          id="about-us"
+          style={{
+            maxWidth: 1100,
+            margin: "0 auto 70px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <AboutUs />
