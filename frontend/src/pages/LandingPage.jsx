@@ -60,7 +60,7 @@ export default function LandingPage({ setActiveView }) {
         </div>
       )}
 
-      {/* Background glows – navy + coral */}
+      {/* Background glows */}
       <div
         style={{
           position: "fixed",
@@ -70,7 +70,7 @@ export default function LandingPage({ setActiveView }) {
           height: 620,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(5,38,117,0.15),transparent 70%)",
+            "radial-gradient(circle,rgba(5,38,117,.18),transparent 70%)",
           filter: "blur(80px)",
           zIndex: 0,
           pointerEvents: "none",
@@ -85,38 +85,29 @@ export default function LandingPage({ setActiveView }) {
           height: 700,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(253,72,71,0.10),transparent 70%)",
+            "radial-gradient(circle,rgba(5,38,117,.10),transparent 70%)",
           filter: "blur(100px)",
           zIndex: 0,
           pointerEvents: "none",
         }}
       />
-      <FloatingCircle
-        size={120}
-        top="18%"
-        left="6%"
-        delay={0}
-        opacity={0.08}
-        color="#052675"
-      />
+      <FloatingCircle size={120} top="18%" left="6%" delay={0} opacity={0.1} />
       <FloatingCircle
         size={70}
         top="58%"
         right="12%"
         delay={2}
-        opacity={0.12}
-        color="#FCA307"
+        opacity={0.14}
       />
       <FloatingCircle
         size={48}
         bottom="18%"
         left="28%"
         delay={4}
-        opacity={0.1}
-        color="#FD4847"
+        opacity={0.12}
       />
 
-      {/* Navbar – now passes setActiveView for the toggle */}
+      {/* Navbar */}
       <div
         style={{
           position: "sticky",
@@ -128,23 +119,28 @@ export default function LandingPage({ setActiveView }) {
           borderBottom: "1px solid rgba(226,232,240,.55)",
         }}
       >
-        <Navbar setActiveView={setActiveView} currentView="commuter" />
+        <Navbar setActiveView={setActiveView} currentView="landing" />
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
-        {/* Glass Banner – moved ABOVE the Hero */}
+        {/* Glass Banner — moved above Hero */}
         <section
-          style={{ maxWidth: 1450, margin: "0 auto", padding: "20px 8% 0" }}
+          style={{
+            maxWidth: 1450,
+            margin: "24px auto 0",
+            padding: "0 8%",
+          }}
         >
           <GlassBanner />
         </section>
 
-        {/* Hero */}
+        {/* Hero — now includes the live map directly, so no separate
+            map-preview section is needed right after it */}
         <section
           style={{
             maxWidth: 1550,
             margin: "0 auto",
-            padding: "20px 6% 20px",
+            padding: "28px 6% 20px",
             opacity: loaded ? 1 : 0,
             transform: loaded ? "translateY(0)" : "translateY(30px)",
             transition: "1s",
@@ -158,7 +154,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* Stats */}
         <section
-          style={{ maxWidth: 1500, margin: "36px auto", padding: "0 8%" }}
+          id="live-overview"
+          style={{
+            maxWidth: 1500,
+            margin: "36px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal>
             <Stats />
@@ -167,16 +169,28 @@ export default function LandingPage({ setActiveView }) {
 
         {/* The Problem */}
         <section
-          style={{ maxWidth: 1500, margin: "50px auto", padding: "0 8%" }}
+          id="the-problem"
+          style={{
+            maxWidth: 1500,
+            margin: "50px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal>
             <ProblemSpace />
           </Reveal>
         </section>
 
-        {/* How BUSINA Solves It – localized inside this file */}
+        {/* How BUSINA Solves It */}
         <section
-          style={{ maxWidth: 1100, margin: "50px auto 56px", padding: "0 8%" }}
+          id="how-it-works"
+          style={{
+            maxWidth: 1100,
+            margin: "50px auto 56px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <HowItWorks />
@@ -185,7 +199,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* Features */}
         <section
-          style={{ maxWidth: 1500, margin: "0 auto 56px", padding: "0 8%" }}
+          id="everything-you-need"
+          style={{
+            maxWidth: 1500,
+            margin: "0 auto 56px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <Features />
@@ -194,7 +214,13 @@ export default function LandingPage({ setActiveView }) {
 
         {/* About the Team */}
         <section
-          style={{ maxWidth: 1100, margin: "0 auto 70px", padding: "0 8%" }}
+          id="about-us"
+          style={{
+            maxWidth: 1100,
+            margin: "0 auto 70px",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
         >
           <Reveal delay={100}>
             <AboutUs />
@@ -263,7 +289,6 @@ export default function LandingPage({ setActiveView }) {
               <div style={{ marginTop: 22, fontSize: 13, opacity: 0.7 }}>
                 © 2026 BUSINA by ALT-F4. All rights reserved.
               </div>
-              <div style={{ fontSize: 13, opacity: 0.7 }}></div>
             </div>
           </div>
         </footer>
@@ -272,68 +297,59 @@ export default function LandingPage({ setActiveView }) {
   );
 }
 
-/* ── How It Works (localized) ────────────────────────────────────────── */
+/* ── How It Works ─────────────────────────────────────────────────────────── */
 const HOW_STEPS = [
   {
-    icon: <Radio size={28} color="#052675" />,
-    title: "Nagpadala ng location ang sasakyan",
-    body: "Bawat jeepney ay nagbabahagi ng kanyang lokasyon bawat ilang segundo — walang kailangang gawin ang driver.",
-    tag: "GPS",
+    icon: <Radio size={30} color="#03164A" />,
+    title: "Vehicle sends its location",
+    body: "Every jeepney shares where it is, every few seconds — no driver action needed.",
   },
   {
-    icon: <Cpu size={28} color="#052675" />,
-    title: "Pinaplano ng BUSINA ang pagdating",
-    body: "Ang live na posisyon plus trapiko ay nagiging ETA na maaari mong pagkatiwalaan.",
-    tag: "AI",
+    icon: <Cpu size={30} color="#03164A" />,
+    title: "BUSINA predicts arrival",
+    body: "Live position plus traffic conditions turn into an ETA you can actually trust.",
   },
   {
-    icon: <Smartphone size={28} color="#052675" />,
-    title: "Nakikita ng pasahero ang ETA",
-    body: "Tingnan ng mga sakay ang app at alamin kung maghihintay, lalakad, o ibang ruta ang pipiliin.",
-    tag: "Mobile",
+    icon: <Smartphone size={30} color="#03164A" />,
+    title: "Passengers see the ETA",
+    body: "Riders check the app and know whether to wait, walk, or pick another route.",
   },
   {
-    icon: <BarChart3 size={28} color="#052675" />,
-    title: "Nag-aalert ang operator",
-    body: "Ang mga pagkaantala, pagsisikip, at demand spikes ay lumalabas sa dashboard bago pa magreklamo ang mga pasahero.",
-    tag: "Alert",
+    icon: <BarChart3 size={30} color="#03164A" />,
+    title: "Operators get the alert",
+    body: "Delays, bunching, and demand spikes surface on the dashboard before commuters complain.",
   },
 ];
 
 function HowItWorks() {
   return (
     <div>
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
         <div
           style={{
             display: "inline-block",
             background: "#E7ECFB",
-            color: "#052675",
+            color: "#03164A",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
             fontWeight: 600,
-            marginBottom: 14,
+            marginBottom: 16,
           }}
         >
-          PAANO ITO GUMAGANA
+          HOW IT WORKS
         </div>
         <h2
-          style={{
-            fontSize: "clamp(28px, 3vw, 36px)",
-            fontWeight: 800,
-            color: "#111111",
-            margin: 0,
-          }}
+          style={{ fontSize: 32, fontWeight: 800, color: "#111111", margin: 0 }}
         >
-          Mula GPS ping hanggang sa screen mo sa loob ng ilang segundo
+          From GPS ping to your screen in seconds
         </h2>
       </div>
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 20,
+          gap: 24,
         }}
         className="how-it-works-grid"
       >
@@ -342,8 +358,8 @@ function HowItWorks() {
             key={i}
             style={{
               background: "white",
-              borderRadius: 18,
-              padding: 24,
+              borderRadius: 20,
+              padding: 28,
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
@@ -352,9 +368,9 @@ function HowItWorks() {
               cursor: "default",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
+              e.currentTarget.style.transform = "translateY(-6px)";
               e.currentTarget.style.boxShadow =
-                "0 18px 36px rgba(5,38,117,0.12)";
+                "0 20px 40px rgba(5,38,117,.14)";
               e.currentTarget.style.borderColor = "#052675";
             }}
             onMouseLeave={(e) => {
@@ -366,55 +382,35 @@ function HowItWorks() {
             <div
               style={{
                 position: "absolute",
-                top: 14,
-                right: 14,
-                width: 24,
-                height: 24,
+                top: 16,
+                right: 16,
+                width: 28,
+                height: 28,
                 borderRadius: "50%",
                 background: "#E7ECFB",
-                color: "#052675",
+                color: "#03164A",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 800,
-                fontSize: 12,
+                fontSize: 13,
               }}
             >
               {i + 1}
             </div>
-            <div style={{ marginBottom: 12 }}>{step.icon}</div>
+            <div style={{ marginBottom: 14 }}>{step.icon}</div>
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 15,
+                fontSize: 16,
                 color: "#111111",
-                marginBottom: 6,
+                marginBottom: 8,
               }}
             >
               {step.title}
             </div>
-            <div
-              style={{
-                fontSize: 14,
-                color: "#64748B",
-                lineHeight: 1.6,
-                marginBottom: 10,
-              }}
-            >
+            <div style={{ fontSize: 14, color: "#64748B", lineHeight: 1.6 }}>
               {step.body}
-            </div>
-            <div
-              style={{
-                display: "inline-block",
-                background: "#E7ECFB",
-                color: "#052675",
-                padding: "2px 12px",
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {step.tag}
             </div>
           </div>
         ))}
@@ -428,7 +424,7 @@ function HowItWorks() {
   );
 }
 
-/* ── About Us ──────────────────────────────────────────────────────────── */
+/* ── About Us ─────────────────────────────────────────────────────────────── */
 function AboutUs() {
   return (
     <div
@@ -449,7 +445,7 @@ function AboutUs() {
           style={{
             display: "inline-block",
             background: "#E7ECFB",
-            color: "#052675",
+            color: "#03164A",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
@@ -457,7 +453,7 @@ function AboutUs() {
             marginBottom: 20,
           }}
         >
-          TUNGKOL SA AMIN
+          ABOUT US
         </div>
         <h2
           style={{
@@ -467,7 +463,7 @@ function AboutUs() {
             margin: "0 0 18px",
           }}
         >
-          Binuo para sa mga Pilipinong commuter, ng mga Pilipinong estudyante
+          Built for Filipino commuters, by Filipino students
         </h2>
         <p
           style={{
@@ -477,11 +473,10 @@ function AboutUs() {
             fontSize: 15,
           }}
         >
-          Nagsimula ang BUSINA bilang isang hackathon project na may iisang
-          layunin: gawing predictable ang mga ruta ng jeepney. Pinagsama namin
-          ang real‑time GPS tracking, Socket.IO live updates, at AI‑assisted
-          dispatch upang bigyan ang parehong commuter at operator ng visibility
-          na hindi pa nila naranasan.
+          BUSINA started as a hackathon project with one goal: make jeepney
+          routes predictable. We combined real-time GPS tracking, Socket.IO live
+          updates, and AI-assisted dispatch to give both commuters and operators
+          the visibility they've never had.
         </p>
         <p
           style={{
@@ -491,28 +486,29 @@ function AboutUs() {
             fontSize: 15,
           }}
         >
-          Naniniwala kami na ang data ng pampublikong imprastraktura ay dapat
-          maging publiko.
+          We believe public infrastructure data should be public.
         </p>
 
+        {/* Team links — replace the href placeholders below with each
+            member's real GitHub/LinkedIn URLs */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {[
             {
-              name: "AI & Data",
+              name: "AI and Data",
               github: "https://github.com/christopher-cresencio",
               linkedin:
-                "https://www.linkedin.com/in/christopher-cresencio-b10395418/",
+                "https://www.linkedin.com/in/christopher-cresencio-b10395418",
             },
             {
               name: "Backend",
               github: "https://github.com/rainieljerez",
-              linkedin: "https://linkedin.com/",
+              linkedin:
+                "https://www.linkedin.com/in/joaqui-rainiel-jerez-605490420",
             },
             {
               name: "Frontend",
-              github: "https://github.com/",
-              linkedin:
-                "https://www.linkedin.com/in/jhon-rey-oquendo-105504370/",
+              github: "https://github.com/jhonristh",
+              linkedin: "https://linkedin.com/",
             },
             {
               name: "Hardware",
@@ -527,7 +523,7 @@ function AboutUs() {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                background: "#F6F7F9",
+                background: "#FBF4C6",
                 border: "1px solid #D9D9D9",
                 borderRadius: 999,
                 padding: "6px 8px 6px 14px",
@@ -569,7 +565,7 @@ function AboutUs() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#052675",
+                  color: "#03164A",
                 }}
               >
                 <LinkedinIcon size={13} />
@@ -590,12 +586,12 @@ function AboutUs() {
           { label: "Team Members", value: "4" },
           { label: "Routes Tracked", value: "5" },
           { label: "Vehicles Live", value: "8" },
-          { label: "Built in", value: "7 days" },
+          { label: "Built in", value: "200hrs" },
         ].map((s) => (
           <div
             key={s.label}
             style={{
-              background: "#F6F7F9",
+              background: "#FBF4C6",
               borderRadius: 16,
               padding: 20,
               textAlign: "center",
@@ -607,18 +603,18 @@ function AboutUs() {
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-4px)";
               e.currentTarget.style.boxShadow =
-                "0 14px 28px rgba(5,38,117,0.15)";
+                "0 14px 28px rgba(5,38,117,.15)";
               e.currentTarget.style.background = "#FFFFFF";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.background = "#F6F7F9";
+              e.currentTarget.style.background = "#FBF4C6";
             }}
           >
             <div
               className="font-numeric"
-              style={{ fontSize: 28, color: "#052675" }}
+              style={{ fontSize: 28, color: "#03164A" }}
             >
               {s.value}
             </div>
@@ -632,7 +628,7 @@ function AboutUs() {
   );
 }
 
-/* ── Glass Banner ──────────────────────────────────────────────────────── */
+/* ── Glass Banner ─────────────────────────────────────────────────────────── */
 function GlassBanner() {
   return (
     <div
@@ -650,10 +646,10 @@ function GlassBanner() {
         gap: 30,
       }}
     >
-      <Metric title="Fleet Status" value="LIVE" color="#FD4847" />
-      <Metric title="GPS Updates" value="Real-Time" color="#052675" />
+      <Metric title="Fleet Status" value="LIVE" color="#052675" />
+      <Metric title="GPS Updates" value="Real-Time" color="#00C2FF" />
       <Metric title="Analytics" value="AI Enabled" color="#FCA307" />
-      <Metric title="Platform" value="Online" color="#052675" />
+      <Metric title="Platform" value="Online" color="#FD4847" />
     </div>
   );
 }
@@ -685,17 +681,7 @@ function Metric({ title, value, color }) {
   );
 }
 
-/* ── Floating Circles ──────────────────────────────────────────────────── */
-function FloatingCircle({
-  size,
-  top,
-  left,
-  right,
-  bottom,
-  delay,
-  opacity,
-  color,
-}) {
+function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
   return (
     <>
       <div
@@ -704,7 +690,7 @@ function FloatingCircle({
           width: size,
           height: size,
           borderRadius: "50%",
-          background: color || "#052675",
+          background: "#03164A",
           opacity,
           top,
           left,
@@ -723,7 +709,10 @@ function FloatingCircle({
   );
 }
 
-/* ── Inline brand icons ────────────────────────────────────────────────── */
+/* ── Inline brand icons ───────────────────────────────────────────────────
+   lucide-react deprecated logo/brand icons (GitHub, LinkedIn, etc.) since
+   they're trademarked marks, not generic icons — so these are plain inline
+   SVGs instead of a lucide import, immune to future package version churn. */
 function GithubIcon({ size = 14 }) {
   return (
     <svg

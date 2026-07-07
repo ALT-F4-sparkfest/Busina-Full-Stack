@@ -45,7 +45,7 @@ body {
 
 .hero-badge {
   display: inline-block;
-  background: #ff8a1d;
+  background: #fca307;
   color: white;
   font-size: 12px;
   font-weight: 600;
@@ -66,7 +66,7 @@ body {
 .hero-tagline {
   font-size: 18px;
   font-weight: 600;
-  color: #ff8a1d;
+  color: #fca307;
   margin: 8px 0 12px;
   font-style: italic;
 }
@@ -125,10 +125,10 @@ body {
 .cta-button.primary {
   background: #111111;
   color: white;
-  box-shadow: 0 4px 16px rgba(46, 158, 61, 0.3);
+  box-shadow: 0 4px 16px rgba(5, 38, 117, 0.3);
 }
 .cta-button.secondary {
-  background: #ff8a1d;
+  background: #fca307;
   color: white;
   box-shadow: 0 4px 16px rgba(255, 138, 29, 0.3);
 }
@@ -162,13 +162,13 @@ body {
   gap: 12px;
 }
 .step-card {
-  background: #f6f7f9;
+  background: #fbf4c6;
   padding: 16px 12px;
   border-radius: 12px;
   text-align: center;
 }
 .step-number {
-  background: #ff8a1d;
+  background: #fca307;
   color: white;
   width: 24px;
   height: 24px;
@@ -208,7 +208,7 @@ body {
   gap: 10px;
 }
 .route-card {
-  background: #f6f7f9;
+  background: #fbf4c6;
   padding: 12px 14px;
   border-radius: 10px;
   font-size: 14px;
@@ -322,7 +322,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   text-align: center;
-  border-left: 3px solid #ff8a1d;
+  border-left: 3px solid #fca307;
 }
 .kpi-icon {
   font-size: 20px;
@@ -410,7 +410,7 @@ body {
 }
 .commuter-side-panel {
   width: 320px;
-  background: #f6f7f9;
+  background: #fbf4c6;
   padding: 16px;
   overflow-y: auto;
   border-left: 1px solid #d9d9d9;
@@ -430,7 +430,7 @@ body {
   font-weight: 600;
   color: #111111;
   margin-bottom: 10px;
-  border-bottom: 2px solid #ff8a1d;
+  border-bottom: 2px solid #fca307;
   padding-bottom: 4px;
 }
 .vehicle-item {
@@ -452,7 +452,7 @@ body {
 }
 .destination-input button {
   padding: 8px 16px;
-  background: #ff8a1d;
+  background: #fca307;
   color: white;
   border: none;
   border-radius: 6px;
@@ -468,7 +468,7 @@ body {
 .waiting-btn {
   width: 100%;
   padding: 12px;
-  background: #ff8a1d;
+  background: #fca307;
   color: white;
   border: none;
   border-radius: 8px;
@@ -476,7 +476,7 @@ body {
   cursor: pointer;
 }
 .waiting-btn.active {
-  background: #3bea4c;
+  background: #052675;
 }
 
 /* Map controls (refresh & center) */
@@ -566,7 +566,7 @@ body {
   font-weight: 600;
   color: #111111;
   margin-bottom: 10px;
-  border-bottom: 2px solid #ff8a1d;
+  border-bottom: 2px solid #fca307;
   padding-bottom: 6px;
   display: inline-block;
 }
@@ -576,7 +576,7 @@ body {
   gap: 8px;
 }
 .stat-card {
-  background: #f6f7f9;
+  background: #fbf4c6;
   padding: 10px 4px;
   border-radius: 8px;
   text-align: center;
@@ -595,7 +595,7 @@ body {
 }
 
 .vehicle-card {
-  background: #f6f7f9;
+  background: #fbf4c6;
   padding: 10px 12px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -619,15 +619,15 @@ body {
   text-transform: capitalize;
 }
 .vehicle-status.on_route {
-  background: #3bea4c;
+  background: #052675;
   color: white;
 }
 .vehicle-status.waiting {
-  background: #ffd93b;
+  background: #fca307;
   color: #333;
 }
 .vehicle-status.offline {
-  background: #ff4a3d;
+  background: #fd4847;
   color: white;
 }
 .vehicle-route {
@@ -659,7 +659,7 @@ body {
 
 .alert-section .alert-card {
   background: #fff3e0;
-  border-left: 3px solid #ff8a1d;
+  border-left: 3px solid #fca307;
   padding: 8px 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -668,7 +668,7 @@ body {
 }
 
 .hotspot-card {
-  background: #f6f7f9;
+  background: #fbf4c6;
   border-radius: 8px;
   padding: 8px 10px;
   margin-bottom: 6px;
@@ -738,8 +738,8 @@ body {
   background: rgba(255, 255, 255, 0.9);
 }
 .connection-pill.status-live {
-  background: #e9fbea;
-  color: #1fa82e;
+  background: #e7ecfb;
+  color: #052675;
 }
 .connection-pill.status-stale {
   background: #fff7da;
@@ -773,7 +773,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .pwa-toast-muted {
-  background: #1fa82e;
+  background: #052675;
 }
 .pwa-toast-text {
   display: flex;
@@ -789,7 +789,7 @@ body {
   margin-top: 2px;
 }
 .pwa-toast-btn {
-  background: #ff8a1d;
+  background: #fca307;
   border: none;
   color: white;
   padding: 8px 18px;
@@ -832,10 +832,10 @@ body {
   font-weight: 500;
 }
 .update-toast.offline-ready {
-  background: #3bea4c;
+  background: #052675;
 }
 .update-toast button {
-  background: #ff8a1d;
+  background: #fca307;
   border: none;
   color: white;
   padding: 6px 16px;
@@ -917,7 +917,7 @@ body {
 .logo-text {
   font-size: 24px;
   font-weight: 800;
-  color: #2e9e3d;
+  color: #03164a;
 }
 
 .navbar-links {
@@ -933,7 +933,7 @@ body {
 }
 
 .navbar-links a:hover {
-  color: #2e9e3d;
+  color: #03164a;
 }
 
 /* ==========================================
@@ -968,8 +968,8 @@ body {
   align-items: center;
   gap: 10px;
 
-  background: #e9fbea;
-  color: #2e9e3d;
+  background: #e7ecfb;
+  color: #03164a;
 
   padding: 10px 18px;
   border-radius: 999px;
@@ -1010,8 +1010,8 @@ body {
   position: relative;
 
   background:
-    linear-gradient(90deg, #f6f7f9 1px, transparent 1px),
-    linear-gradient(#f6f7f9 1px, transparent 1px), #f6f7f9;
+    linear-gradient(90deg, #fbf4c6 1px, transparent 1px),
+    linear-gradient(#fbf4c6 1px, transparent 1px), #fbf4c6;
 
   background-size: 40px 40px;
 }

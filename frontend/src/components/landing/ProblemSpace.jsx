@@ -1,30 +1,25 @@
-// src/components/landing/ProblemSpace.jsx
 import { AlertTriangle, Clock, EyeOff, HelpCircle } from "lucide-react";
 
 const PROBLEMS = [
   {
     icon: <EyeOff size={26} />,
     title: "Commuters Wait Blind",
-    body: "Walang ETA. Nakatayo lang at umaasa na may darating na jeep.",
-    tag: "Walang visibility",
+    body: "No ETA. Just stand and hope the next jeepney comes soon.",
   },
   {
     icon: <AlertTriangle size={26} />,
     title: "Operators Fly Blind Too",
-    body: "Walang fleet visibility. Hindi nakikita ng TODA ang mga agwat o pagsisikip sa ruta.",
-    tag: "Walang real‑time data",
+    body: "No fleet visibility. TODAs can't see bunching or gaps in real time.",
   },
   {
     icon: <Clock size={26} />,
     title: "Delays Go Unnoticed",
-    body: "Walang live alerts. Na-stranded ang mga pasahero bago pa malaman ng kahit sino.",
-    tag: "Late ang response",
+    body: "No live alerts. Riders are stranded before anyone even knows.",
   },
   {
     icon: <HelpCircle size={26} />,
     title: "Modernization Without Management",
-    body: "Bagong sasakyan, pero pareho pa rin ang haka‑haka — walang nagbago sa pamamahala ng ruta.",
-    tag: "Walang sistema",
+    body: "New vehicles, same guesswork — nothing modernized how routes are run.",
   },
 ];
 
@@ -42,7 +37,7 @@ export default function ProblemSpace() {
         overflow: "hidden",
       }}
     >
-      {/* Glow accent — Orange */}
+      {/* subtle glow accent */}
       <div
         style={{
           position: "absolute",
@@ -52,50 +47,50 @@ export default function ProblemSpace() {
           height: 420,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle,rgba(252,163,7,0.18),transparent 70%)",
+            "radial-gradient(circle,rgba(252,163,7,.16),transparent 70%)",
           filter: "blur(60px)",
           pointerEvents: "none",
         }}
       />
 
       <div
-        style={{ position: "relative", textAlign: "center", marginBottom: 48 }}
+        style={{ position: "relative", textAlign: "center", marginBottom: 56 }}
       >
         <div
           style={{
             display: "inline-block",
-            background: "rgba(252,163,7,0.15)",
+            background: "rgba(252,163,7,.12)",
             color: "#FCA307",
             padding: "6px 18px",
             borderRadius: 999,
             fontSize: 13,
             fontWeight: 600,
-            marginBottom: 16,
+            marginBottom: 18,
           }}
         >
-          🇵🇭 ANG PROBLEMA
+          THE PROBLEM
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 3.5vw, 40px)",
+            fontSize: 38,
             fontWeight: 800,
             color: "#FFFFFF",
-            margin: "0 0 14px",
+            margin: "0 0 16px",
           }}
         >
-          Ang public transit ay nakasalalay sa hula
+          Public transit runs on guesswork
         </h2>
         <p
           style={{
             maxWidth: 640,
             margin: "0 auto",
-            fontSize: "clamp(15px, 1.2vw, 18px)",
+            fontSize: 17,
             lineHeight: 1.8,
             color: "rgba(255,255,255,.6)",
           }}
         >
-          Parehong pasahero at operator ang nag-navigate sa parehong ruta na
-          walang visibility sa kung ano talaga ang nangyayari sa kalsada.
+          Commuters and operators are both navigating the same routes with zero
+          visibility into what's actually happening on the road.
         </p>
       </div>
 
@@ -103,8 +98,8 @@ export default function ProblemSpace() {
         style={{
           position: "relative",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-          gap: 20,
+          gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+          gap: 24,
         }}
       >
         {PROBLEMS.map((p) => (
@@ -113,13 +108,13 @@ export default function ProblemSpace() {
             style={{
               background: "rgba(255,255,255,.04)",
               border: "1px solid rgba(255,255,255,.08)",
-              borderRadius: 20,
-              padding: 24,
+              borderRadius: 22,
+              padding: 28,
               transition: ".25s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(252,163,7,0.08)";
-              e.currentTarget.style.borderColor = "rgba(252,163,7,0.35)";
+              e.currentTarget.style.background = "rgba(252,163,7,.08)";
+              e.currentTarget.style.borderColor = "rgba(252,163,7,.3)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = "rgba(255,255,255,.04)";
@@ -128,15 +123,15 @@ export default function ProblemSpace() {
           >
             <div
               style={{
-                width: 46,
-                height: 46,
-                borderRadius: 14,
-                background: "rgba(252,163,7,0.14)",
+                width: 52,
+                height: 52,
+                borderRadius: 16,
+                background: "rgba(252,163,7,.14)",
                 color: "#FCA307",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 16,
+                marginBottom: 20,
               }}
             >
               {p.icon}
@@ -144,35 +139,21 @@ export default function ProblemSpace() {
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: 17,
                 color: "#FFFFFF",
-                marginBottom: 6,
+                marginBottom: 10,
               }}
             >
               {p.title}
             </div>
             <div
               style={{
-                fontSize: 13,
-                lineHeight: 1.6,
+                fontSize: 14,
+                lineHeight: 1.7,
                 color: "rgba(255,255,255,.55)",
-                marginBottom: 10,
               }}
             >
               {p.body}
-            </div>
-            <div
-              style={{
-                display: "inline-block",
-                background: "rgba(252,163,7,0.12)",
-                color: "#FCA307",
-                padding: "2px 12px",
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {p.tag}
             </div>
           </div>
         ))}

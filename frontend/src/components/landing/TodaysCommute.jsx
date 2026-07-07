@@ -3,9 +3,9 @@ import { useWeather } from "../../hooks/useWeather";
 import { useLiveClock } from "../../hooks/useLiveClock";
 
 const TONE_COLORS = {
-  good: "#2E9E3D",
-  warn: "#B8860B",
-  bad: "#DC2626",
+  good: "#03164A",
+  warn: "#FCA307",
+  bad: "#FD4847",
 };
 
 // activeVehicleCount / avgWaitMinutes are passed in from wherever you already
@@ -43,7 +43,7 @@ export default function TodaysCommute({
         style={{
           fontSize: 13,
           fontWeight: 600,
-          color: "#2E9E3D",
+          color: "#03164A",
           marginBottom: 6,
         }}
       >
@@ -64,7 +64,7 @@ export default function TodaysCommute({
       {/* Top rectangle: huge live time + date */}
       <div
         style={{
-          background: "#F6F7F9",
+          background: "#FBF4C6",
           borderRadius: 20,
           padding: "24px 28px",
           border: "1px solid #E5E7EB",
@@ -96,8 +96,8 @@ export default function TodaysCommute({
             display: "flex",
             alignItems: "center",
             gap: 6,
-            background: "#E9FBEA",
-            color: "#2E9E3D",
+            background: "#E7ECFB",
+            color: "#03164A",
             padding: "6px 12px",
             borderRadius: 999,
             fontSize: 12,
@@ -110,8 +110,8 @@ export default function TodaysCommute({
             style={{
               width: 7,
               height: 7,
-              background: "#3BEA4C",
-              boxShadow: "0 0 8px #3BEA4C",
+              background: "#052675",
+              boxShadow: "0 0 8px #052675",
             }}
           />
           LIVE
@@ -129,7 +129,7 @@ export default function TodaysCommute({
       >
         <div
           style={{
-            background: "#F6F7F9",
+            background: "#FBF4C6",
             borderRadius: 16,
             padding: "20px 18px",
             border: "1px solid #E5E7EB",
@@ -152,7 +152,7 @@ export default function TodaysCommute({
 
         <div
           style={{
-            background: "#F6F7F9",
+            background: "#FBF4C6",
             borderRadius: 16,
             padding: "20px 18px",
             border: "1px solid #E5E7EB",

@@ -101,7 +101,7 @@ export default function SyncDemoView({ onBack }) {
           flexShrink: 0,
         }}
       >
-        <ArrowLeftRight size={14} color="#3BEA4C" />
+        <ArrowLeftRight size={14} color="#052675" />
         Same live feed, two views — click any vehicle to highlight it on both
         sides at once.
       </div>
@@ -117,7 +117,7 @@ export default function SyncDemoView({ onBack }) {
       >
         <Pane
           label="Commuter View"
-          color="#3BEA4C"
+          color="#052675"
           vehicles={vehicleList}
           selectedVehicleId={selectedVehicleId}
           onVehicleSelect={setSelectedVehicleId}
@@ -126,7 +126,7 @@ export default function SyncDemoView({ onBack }) {
         <div style={{ width: 1, background: "#2A2A2A", flexShrink: 0 }} />
         <Pane
           label="Operator View"
-          color="#FFD93B"
+          color="#FCA307"
           vehicles={vehicleList}
           selectedVehicleId={selectedVehicleId}
           onVehicleSelect={setSelectedVehicleId}
@@ -164,7 +164,7 @@ export default function SyncDemoView({ onBack }) {
           <div
             style={{
               marginLeft: "auto",
-              color: "#3BEA4C",
+              color: "#052675",
               fontSize: 12.5,
               fontWeight: 700,
               display: "flex",

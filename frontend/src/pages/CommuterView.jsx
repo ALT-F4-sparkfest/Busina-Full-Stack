@@ -1,4 +1,3 @@
-// src/pages/CommuterView.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Bus,
@@ -7,6 +6,7 @@ import {
   MapPin,
   RefreshCw,
   LocateFixed,
+  X,
 } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
 import BottomSheet from "../components/commuter/BottomSheet";
@@ -15,6 +15,7 @@ import ConnectionStatusPill from "../components/ConnectionStatusPill";
 import LiveSyncBadge from "../components/LiveSyncBadge";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import businaIcon from "../assets/busina-icon-transparent.png";
+import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
 
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -32,10 +33,6 @@ function distance(lat1, lon1, lat2, lon2) {
 
 const DEFAULT_LOCATION = { lat: 14.625, lng: 121.048 };
 
-// --- Route scope config -----------------------------------------------
-// BUSINA's live MVP scope is fixed to these 6 anchor points and 5 routes.
-// Any destination search outside this set should be rejected with a
-// clear "Route unmapped" message instead of silently failing.
 const SERVICE_POINTS = [
   "Cubao",
   "Divisoria",
@@ -58,7 +55,6 @@ function isDestinationInScope(text) {
   const norm = text.trim().toLowerCase();
   return SERVICE_POINTS.some((p) => norm.includes(p.toLowerCase()));
 }
-// ------------------------------------------------------------------------
 
 export default function CommuterView({ onBack }) {
   const live = useLiveVehicles();
@@ -72,9 +68,8 @@ export default function CommuterView({ onBack }) {
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [routeFilter, setRouteFilter] = useState("all");
   const [userLocation, setUserLocation] = useState(DEFAULT_LOCATION);
-  const [mapKey, setMapKey] = useState(0); // force map remount on refresh
+  const [mapKey, setMapKey] = useState(0);
 
-  // Get real GPS if available
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -115,16 +110,23 @@ export default function CommuterView({ onBack }) {
 
   const selectedVehicle = nearest.find((v) => v.id === selectedVehicleId);
 
-  // ETA fetch with demo fallback + route-scope validation
+  // Live counts for the top strip — total fleet, not route-filtered,
+  // since this is meant to be a Metro Manila-wide overview.
+  const avgWaitMinutes = vehicleList.length
+    ? Math.round(
+        vehicleList.reduce(
+          (sum, v) => sum + (typeof v.eta === "number" ? v.eta : 6),
+          0,
+        ) / vehicleList.length,
+      )
+    : 6;
+
   const handleDestinationSubmit = async (dest) => {
     const target = (dest || destination).trim();
     if (!target) return;
 
     setRouteError(null);
 
-    // Validate against service scope BEFORE anything else. This check used
-    // to happen after `!selectedVehicle`, which meant the button did
-    // nothing at all when offline/no vehicle was selected — it looked dead.
     if (!isDestinationInScope(target)) {
       setRouteError(
         `"${target}" is outside our current coverage. BUSINA currently serves Cubao ↔ Divisoria, Marikina, Pasig, San Juan, and Makati.`,
@@ -150,8 +152,6 @@ export default function CommuterView({ onBack }) {
         display_text: data.display_text,
       });
     } catch {
-      // Offline / backend unreachable / no vehicle selected — mock fallback.
-      // Only reached now if the destination is actually in scope.
       const mockEta = selectedVehicle?.eta ?? Math.round(Math.random() * 8 + 3);
       setEta({
         eta_minutes: mockEta,
@@ -165,7 +165,6 @@ export default function CommuterView({ onBack }) {
     }
   };
 
-  // I'm Waiting with toast feedback
   const toggleWaiting = () => {
     setIsWaiting((prev) => {
       const next = !prev;
@@ -182,7 +181,6 @@ export default function CommuterView({ onBack }) {
     });
   };
 
-  // Recenter: reset userLocation to force map re-center
   const recenter = useCallback(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -195,14 +193,13 @@ export default function CommuterView({ onBack }) {
     );
   }, []);
 
-  // Refresh: bump mapKey to force full remount
   const refresh = () => setMapKey((k) => k + 1);
 
   return (
     <div
       style={{
         height: "100vh",
-        background: "#F6F7F9",
+        background: "#FBF4C6",
         display: "flex",
         flexDirection: "column",
       }}
@@ -210,27 +207,29 @@ export default function CommuterView({ onBack }) {
       {/* Header */}
       <header
         style={{
-          height: 64,
+          minHeight: 64,
           background: "white",
           borderBottom: "1px solid #D9D9D9",
           display: "flex",
           alignItems: "center",
-          padding: "0 20px",
-          gap: 14,
+          padding: "10px 16px",
+          gap: 10,
           zIndex: 100,
           flexShrink: 0,
+          flexWrap: "wrap",
         }}
       >
         <button
           onClick={onBack}
           style={{
             border: "none",
-            background: "#F6F7F9",
+            background: "#FBF4C6",
             width: 38,
             height: 38,
             borderRadius: 10,
             cursor: "pointer",
             fontSize: 16,
+            flexShrink: 0,
           }}
         >
           ←
@@ -256,17 +255,34 @@ export default function CommuterView({ onBack }) {
           <div style={{ fontSize: 11, color: "#64748B" }}>Commuter View</div>
         </div>
         <div
+          className="commuter-header-right"
           style={{
             marginLeft: "auto",
             display: "flex",
             alignItems: "center",
             gap: 10,
+            flexWrap: "wrap",
           }}
         >
-          <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
+          <span className="commuter-sync-badge">
+            <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
+          </span>
           <ConnectionStatusPill status={live.connected ? "live" : "offline"} />
         </div>
       </header>
+
+      {/* Today's Commute strip — always visible now, no toggle */}
+      {/* Today's Commute strip — always visible now, no toggle */}
+      <div style={{ padding: "10px 16px 0", flexShrink: 0 }}>
+        <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
+      </div>
+
+      <style>{`
+        @media (max-width: 480px) {
+          .commuter-sync-badge { display: none; }
+          .tcs-divider { display: none; }
+        }
+      `}</style>
 
       {/* Map area */}
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
@@ -280,7 +296,6 @@ export default function CommuterView({ onBack }) {
           routeId={routeFilter === "all" ? null : routeFilter}
         />
 
-        {/* Search overlay */}
         <SearchOverlay
           destination={destination}
           setDestination={setDestination}
@@ -289,7 +304,6 @@ export default function CommuterView({ onBack }) {
           connected={live.connected}
         />
 
-        {/* Route filter — centered, directly under the search bar + route chips */}
         <div
           style={{
             position: "absolute",
@@ -324,7 +338,6 @@ export default function CommuterView({ onBack }) {
           </select>
         </div>
 
-        {/* Refresh + Recenter buttons — bottom right above sheet */}
         <div
           style={{
             position: "absolute",
@@ -352,7 +365,7 @@ export default function CommuterView({ onBack }) {
               cursor: "pointer",
             }}
           >
-            <LocateFixed size={18} color="#2E9E3D" />
+            <LocateFixed size={18} color="#03164A" />
           </button>
           <button
             onClick={refresh}
@@ -374,7 +387,6 @@ export default function CommuterView({ onBack }) {
           </button>
         </div>
 
-        {/* Selected vehicle card */}
         {selectedVehicle && (
           <div
             style={{
@@ -401,13 +413,13 @@ export default function CommuterView({ onBack }) {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    background: "#E9FBEA",
+                    background: "#E7ECFB",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Bus size={22} color="#2E9E3D" />
+                  <Bus size={22} color="#03164A" />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 16 }}>
@@ -467,10 +479,10 @@ export default function CommuterView({ onBack }) {
                     borderRadius: "50%",
                     background:
                       selectedVehicle.status === "On Route"
-                        ? "#3BEA4C"
+                        ? "#052675"
                         : selectedVehicle.status === "Delayed"
-                          ? "#FF8A1D"
-                          : "#FF4A3D",
+                          ? "#FCA307"
+                          : "#FD4847",
                     display: "inline-block",
                   }}
                 />
@@ -482,7 +494,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* ETA result card */}
         {eta && (
           <div
             style={{ position: "absolute", right: 16, top: 130, zIndex: 100 }}
@@ -543,7 +554,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* Waiting toast */}
         {waitingToast && (
           <div
             style={{
@@ -552,7 +562,7 @@ export default function CommuterView({ onBack }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 200,
-              background: "#2E9E3D",
+              background: "#03164A",
               color: "white",
               padding: "10px 20px",
               borderRadius: 12,
@@ -569,7 +579,6 @@ export default function CommuterView({ onBack }) {
           </div>
         )}
 
-        {/* Route-unmapped toast */}
         {routeError && (
           <div
             style={{
@@ -578,7 +587,7 @@ export default function CommuterView({ onBack }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 200,
-              background: "#FF4A3D",
+              background: "#FD4847",
               color: "white",
               padding: "10px 20px",
               borderRadius: 12,
@@ -610,7 +619,7 @@ function MiniInfo({ label, value }) {
   return (
     <div
       style={{
-        background: "#F6F7F9",
+        background: "#FBF4C6",
         borderRadius: 10,
         padding: "8px 10px",
         textAlign: "center",

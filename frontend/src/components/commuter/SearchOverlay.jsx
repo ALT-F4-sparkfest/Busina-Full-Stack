@@ -18,7 +18,9 @@ export default function SearchOverlay({
         zIndex: 50,
       }}
     >
-      {/* Search */}
+      {/* 🚫 Removed the "LIVE / OFFLINE" badge here */}
+
+      {/* Search - unchanged */}
       <div
         style={{
           display: "flex",
@@ -57,20 +59,20 @@ export default function SearchOverlay({
             height: 48,
             borderRadius: 16,
             border: "none",
-            background: "#2E9E3D",
+            background: "#03164A",
             color: "white",
             cursor: "pointer",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 10px 24px rgba(46,158,61,.28)",
+            boxShadow: "0 10px 24px rgba(5,38,117,.28)",
           }}
         >
           {loading ? "..." : <MapPin size={20} />}
         </button>
       </div>
 
-      {/* Route Chips */}
+      {/* Route Chips - unchanged */}
       <div
         style={{
           display: "flex",
@@ -79,7 +81,7 @@ export default function SearchOverlay({
           overflowX: "auto",
         }}
       >
-        {["Cubao", "Divisoria", "Makati", "Marikina", "Pasig", "San Juan"].map(
+        {["Cubao", "Makati", "Marikina", "Pasig", "San Juan", "Divisoria"].map(
           (route) => (
             <button
               key={route}
@@ -90,7 +92,7 @@ export default function SearchOverlay({
                 borderRadius: 999,
                 background: "rgba(255,255,255,.92)",
                 backdropFilter: "blur(18px)",
-                color: "#2E9E3D",
+                color: "#03164A",
                 fontWeight: 700,
                 cursor: "pointer",
                 whiteSpace: "nowrap",

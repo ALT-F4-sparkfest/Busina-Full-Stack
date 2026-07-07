@@ -52,7 +52,7 @@ export default function LiveMapPreview({ setActiveView }) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Radio size={16} color="#2E9E3D" />
+          <Radio size={16} color="#03164A" />
           <span style={{ fontWeight: 700, fontSize: 14, color: "#111111" }}>
             This is the actual product — not a mockup
           </span>
@@ -97,7 +97,7 @@ export default function LiveMapPreview({ setActiveView }) {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "16px 20px",
-          background: "#F6F7F9",
+          background: "#FBF4C6",
           flexWrap: "wrap",
           gap: 12,
         }}
@@ -113,7 +113,7 @@ export default function LiveMapPreview({ setActiveView }) {
               alignItems: "center",
               gap: 6,
               border: "none",
-              background: "#2E9E3D",
+              background: "#03164A",
               color: "white",
               fontWeight: 700,
               fontSize: 13,

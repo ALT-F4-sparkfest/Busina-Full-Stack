@@ -77,7 +77,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
           }}
         >
           <Sparkles size={14} />
-          🇵🇭 Para sa mga Pilipinong commuter
+          Para sa mga Pilipinong Komyuter
         </div>
 
         {/* Main headline */}
@@ -104,7 +104,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
             margin: 0,
           }}
         >
-          Smarter commutes. Better journeys. 🇵🇭
+          Smarter commutes. Better journeys.
         </p>
 
         {/* Description */}
@@ -132,7 +132,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
           <div>
             <Button onClick={() => setActiveView("commuter")} size="small">
               <Bus size={16} />
-              Commuter
+              I'm a Commuter
             </Button>
             <div
               style={{
@@ -153,7 +153,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
               size="small"
             >
               <Building2 size={16} />
-              Operator
+              I'm an Operator
             </Button>
             <div
               style={{
@@ -163,7 +163,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
                 marginLeft: 4,
               }}
             >
-              Bukas ang dashboard →
+              Buksan ang dashboard →
             </div>
           </div>
         </div>
