@@ -12,13 +12,16 @@ const geofenceRoutes = require("./routes/geofenceRoutes");
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+// Use FRONTEND_URL env var in production, fallback to local dev URL
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+
+app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json());
 app.use("/routes", geofenceRoutes);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigin,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -35,6 +38,12 @@ io.on("connection", (socket) => {
 require("./subscriber")(io);
 
 // --- YOUR EXISTING ROUTES (unchanged) ---
+
+// Friendly root route (health check / sanity check)
+app.get("/", (req, res) => {
+  res.send("Busina backend is running 🚍");
+});
+
 app.get("/alerts", (req, res) => {
   res.json(Object.values(activeAlerts));
 });
@@ -81,10 +90,11 @@ app.get("/vehicles/:id/etas", async (req, res) => {
   }
 });
 
-const PORT = 3000;
+// Use Render's dynamic port in production, fallback to 3000 locally
+const PORT = process.env.PORT || 3000;
 startBunchingMonitor(30000);
 
 server.listen(PORT, () => {
   console.log(`✅ API running on port ${PORT}`);
-  console.log(`✅ Socket.IO attached at ws://localhost:${PORT}/socket.io/`);
+  console.log(`✅ Socket.IO attached, allowed origin: ${allowedOrigin}`);
 });
