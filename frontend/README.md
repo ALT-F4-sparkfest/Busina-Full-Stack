@@ -9,7 +9,7 @@
 
 ## 📌 Overview
 
-BUSINA (Bus Intelligent Navigation Assistant) is a smart public transportation platform designed to improve commuter mobility through real-time vehicle monitoring, estimated arrival times, and intelligent transport insights.
+BUSINA is a smart public transportation platform designed to improve commuter mobility through real-time vehicle monitoring, estimated arrival times, and intelligent transport insights.
 
 This repository contains the frontend application built using **React + Vite**, powering two major experiences:
 
