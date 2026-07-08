@@ -106,7 +106,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
             margin: 0,
           }}
         >
-          Smarter commutes, bettery journeys.
+          Smarter commutes, better journeys.
         </p>
 
         {/* Description */}
@@ -119,8 +119,9 @@ export default function Hero({ setActiveView, onDemoClick }) {
             margin: "2px 0 10px",
           }}
         >
-          Real‑time jeepney tracking and AI dispatch for Metro Manila —
-          commuters see accurate ETAs, operators see their whole fleet, live.
+          Your jeepney. Your route. Your arrival time — finally visible. Built
+          by Filipino commuters. Designed for Philippine transportation. Powered
+          by real-time GPS and AI.
         </p>
 
         {/* Four-audience strip */}

@@ -2,10 +2,10 @@
 import { CheckCircle2 } from "lucide-react";
 
 const POINTS = [
-  "Built by daily jeepney commuters",
-  "Routes based on real Metro Manila streets",
-  "Simulated using real GPS datasets",
-  "Ready for a Phase 2 pilot with cooperatives",
+  "Daily jeepney commuters",
+  "Metro Manila route observation",
+  "Simulated fleet based on real corridors",
+  "PUV modernization research",
 ];
 
 export default function Validation() {

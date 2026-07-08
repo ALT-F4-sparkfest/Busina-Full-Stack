@@ -5,22 +5,22 @@ const PROBLEMS = [
   {
     icon: <EyeOff size={26} />,
     title: "Commuters Wait Blind",
-    body: "No ETA. Just stand and hope the next jeepney comes soon.",
+    body: "Walang ETA—naghihintay lang kung kailan darating ang susunod na jeep.",
   },
   {
     icon: <AlertTriangle size={26} />,
     title: "Operators Fly Blind Too",
-    body: "No fleet visibility. TODAs can't see bunching or gaps in real time.",
+    body: "Walang real-time na pananaw sa kanilang mga sasakyan at operasyon.",
   },
   {
     icon: <Clock size={26} />,
     title: "Delays Go Unnoticed",
-    body: "No live alerts. Riders are stranded before anyone even knows.",
+    body: "Walang agarang abiso tungkol sa mga delay at aberya.",
   },
   {
     icon: <HelpCircle size={26} />,
     title: "Modernization Without Management",
-    body: "New vehicles, same guesswork — nothing modernized how routes are run.",
+    body: "Bagong sasakyan, ngunit pareho pa rin ang paraan ng pagpapatakbo.",
   },
 ];
 
@@ -79,8 +79,8 @@ export default function ProblemSpace() {
             margin: "0 0 16px",
           }}
         >
-          Eight million Filipinos ride jeepneys every day without knowing when
-          one will arrive.
+          Eight million Filipinos start their commute without knowing when they
+          will get home.
         </h2>
         <p
           style={{

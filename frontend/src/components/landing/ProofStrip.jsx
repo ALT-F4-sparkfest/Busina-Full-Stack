@@ -4,7 +4,7 @@ import useCountUp from "../../hooks/useCountUp";
 
 const PROOF = [
   { icon: <Bus size={16} />, value: "10", label: "Vehicles" },
-  { icon: <Users size={16} />, value: "245", label: "Riders" },
+  { icon: <Users size={16} />, value: "X", label: "Riders" },
   { icon: <Target size={16} />, value: "97%", label: "ETA Accuracy" },
   { icon: <Wifi size={16} />, value: "MQTT", label: "Streaming" },
   { icon: <Cpu size={16} />, value: "ESP32", label: "Hardware Ready" },

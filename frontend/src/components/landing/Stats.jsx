@@ -13,38 +13,26 @@ export default function Stats() {
   const stats = [
     {
       icon: <Bus size={28} />,
-      value: "18",
-      label: "Active Vehicles",
+      value: "10",
+      label: "Simulated Vehicles",
       color: "#052675",
     },
     {
-      icon: <Users size={28} />,
-      value: "245",
-      label: "Passengers Tracked",
+      icon: <TrendingUp size={28} />,
+      value: "5",
+      label: "Metro Manila Routes",
       color: "#FCA307",
     },
     {
       icon: <Clock3 size={28} />,
-      value: "5 min",
-      label: "Average ETA",
+      value: "<5 min",
+      label: "Target ETA accuracy",
       color: "#FCA307",
     },
     {
-      icon: <Brain size={28} />,
-      value: "97%",
-      label: "AI Confidence",
-      color: "#FD4847",
-    },
-    {
-      icon: <TrendingUp size={28} />,
-      value: "99.4%",
-      label: "Fleet Uptime",
-      color: "#052675",
-    },
-    {
       icon: <ShieldCheck size={28} />,
-      value: "Live",
-      label: "System Status",
+      value: "Realtime",
+      label: "GPS Streaming",
       color: "#FD4847",
     },
   ];
@@ -68,7 +56,7 @@ export default function Stats() {
             marginBottom: 16,
           }}
         >
-          LIVE OVERVIEW
+          LIVE PROTOTYPE FLEET
         </div>
         <h2
           style={{
@@ -78,7 +66,7 @@ export default function Stats() {
             margin: "0 0 12px",
           }}
         >
-          Real‑time fleet at a glance
+          Know the roads. Understand the commute.
         </h2>
         <p
           style={{
@@ -89,9 +77,9 @@ export default function Stats() {
             color: "#64748B",
           }}
         >
-          See the current status of jeepneys operating across Metro Manila —
-          live vehicle counts, passenger demand, ETA accuracy, and system
-          health.
+          BUSINA transforms everyday jeepney operations into real-time insights
+          — helping commuters find rides, operators manage fleets, and
+          communities move better.
         </p>
       </div>
 

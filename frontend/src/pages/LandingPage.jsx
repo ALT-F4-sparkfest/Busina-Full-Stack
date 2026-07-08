@@ -405,23 +405,23 @@ export default function LandingPage({ setActiveView }) {
 const HOW_STEPS = [
   {
     icon: <Radio size={30} color="#03164A" />,
-    title: "Vehicle sends its location",
-    body: "Every jeepney shares where it is, every few seconds — no driver action needed.",
+    title: "Vehicle telemetry",
+    body: "Nagpapadala ang bawat jeepney ng real-time na lokasyon gamit ang GPS.",
   },
   {
     icon: <Cpu size={30} color="#03164A" />,
-    title: "BUSINA predicts arrival",
-    body: "Live position plus traffic conditions turn into an ETA you can actually trust.",
+    title: "ETA prediction engine",
+    body: "Kinakalkula ng BUSINA ang tumpak na oras ng pagdating gamit ang live na datos.",
   },
   {
     icon: <Smartphone size={30} color="#03164A" />,
-    title: "Passengers see the ETA",
-    body: "Riders check the app and know whether to wait, walk, or pick another route.",
+    title: "Passenger information system",
+    body: "Makikita ng mga commuter ang lokasyon, ETA, at ruta ng mga jeepney.",
   },
   {
     icon: <BarChart3 size={30} color="#03164A" />,
-    title: "Operators get the alert",
-    body: "Delays, bunching, and demand spikes surface on the dashboard before commuters complain.",
+    title: "Fleet optimization",
+    body: "Tinutulungan ang mga operator na mabawasan ang pagkaantala at mapahusay ang operasyon.",
   },
 ];
 
