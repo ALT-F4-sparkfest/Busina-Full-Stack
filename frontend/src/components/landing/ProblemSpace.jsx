@@ -1,3 +1,4 @@
+// src/components/landing/ProblemSpace.jsx
 import { AlertTriangle, Clock, EyeOff, HelpCircle } from "lucide-react";
 
 const PROBLEMS = [
@@ -28,7 +29,7 @@ export default function ProblemSpace() {
     <section
       style={{
         borderRadius: 32,
-        padding: "64px 48px",
+        padding: "clamp(28px, 6vw, 64px) clamp(20px, 5vw, 48px)",
         background:
           "linear-gradient(135deg,#0B0F0D 0%,#111815 55%,#0B0F0D 100%)",
         border: "1px solid rgba(255,255,255,.06)",
@@ -72,7 +73,7 @@ export default function ProblemSpace() {
         </div>
         <h2
           style={{
-            fontSize: 38,
+            fontSize: "clamp(28px, 6vw, 48px)",
             fontWeight: 800,
             color: "#FFFFFF",
             margin: "0 0 16px",
@@ -85,7 +86,7 @@ export default function ProblemSpace() {
           style={{
             maxWidth: 640,
             margin: "0 auto",
-            fontSize: 17,
+            fontSize: 18,
             lineHeight: 1.8,
             color: "rgba(255,255,255,.6)",
           }}
@@ -109,9 +110,9 @@ export default function ProblemSpace() {
             style={{
               background: "rgba(255,255,255,.04)",
               border: "1px solid rgba(255,255,255,.08)",
-              borderRadius: 22,
+              borderRadius: 24,
               padding: 28,
-              transition: ".25s",
+              transition: "150ms",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(252,163,7,.08)";
@@ -140,7 +141,7 @@ export default function ProblemSpace() {
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 17,
+                fontSize: 26,
                 color: "#FFFFFF",
                 marginBottom: 10,
               }}
@@ -149,7 +150,7 @@ export default function ProblemSpace() {
             </div>
             <div
               style={{
-                fontSize: 14,
+                fontSize: 18,
                 lineHeight: 1.7,
                 color: "rgba(255,255,255,.55)",
               }}

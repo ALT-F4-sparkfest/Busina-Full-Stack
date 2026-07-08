@@ -55,7 +55,6 @@ export default function Stats() {
         padding: "20px 8% 80px",
       }}
     >
-      {/* ── NEW: Section Heading & Description ── */}
       <div style={{ textAlign: "center", marginBottom: 40 }}>
         <div
           style={{
@@ -73,7 +72,7 @@ export default function Stats() {
         </div>
         <h2
           style={{
-            fontSize: 34,
+            fontSize: "clamp(28px, 6vw, 48px)",
             fontWeight: 800,
             color: "#111111",
             margin: "0 0 12px",
@@ -96,7 +95,6 @@ export default function Stats() {
         </p>
       </div>
 
-      {/* ── Existing stats grid ── */}
       <div
         style={{
           display: "grid",
@@ -118,24 +116,16 @@ function StatCard({ stat }) {
   return (
     <div
       ref={ref}
+      className="hover-lift"
       style={{
         background: "rgba(255,255,255,.82)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
-        borderRadius: 20,
+        borderRadius: 24,
         padding: 24,
         border: "1px solid rgba(255,255,255,.45)",
         boxShadow: "0 12px 32px rgba(17,17,17,.06)",
-        transition: "all .25s ease",
         cursor: "default",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-6px)";
-        e.currentTarget.style.boxShadow = "0 20px 48px rgba(5,38,117,0.14)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(17,17,17,.06)";
       }}
     >
       <div

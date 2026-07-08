@@ -6,6 +6,13 @@ import Hero from "../components/layout/Hero";
 import Stats from "../components/landing/Stats";
 import ProblemSpace from "../components/landing/ProblemSpace";
 import Features from "../components/landing/Features";
+import WhyNow from "../components/landing/WhyNow";
+import WhyOthersFail from "../components/landing/WhyOthersFail";
+import ExperienceTeaser from "../components/landing/ExperienceTeaser";
+import Impact from "../components/landing/Impact";
+import BusinessModel from "../components/landing/BusinessModel";
+import Validation from "../components/landing/Validation";
+import FinalCTA from "../components/landing/FinalCTA";
 import businaIcon from "../assets/busina-icon-transparent.png";
 import Reveal from "../components/ui/Reveal";
 
@@ -123,19 +130,13 @@ export default function LandingPage({ setActiveView }) {
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
-        {/* Glass Banner — moved above Hero */}
-        <section
-          style={{
-            maxWidth: 1450,
-            margin: "24px auto 0",
-            padding: "0 8%",
-          }}
-        >
-          <GlassBanner />
-        </section>
+        {/* NOTE: GlassBanner (LIVE / Real-Time / AI Enabled / Online chips)
+            has been intentionally removed per Phase 1 audit — those chips
+            communicated nothing concrete to judges. Hero now carries a
+            proof strip with real numbers instead (see ProofStrip inside
+            Hero.jsx). */}
 
-        {/* Hero — now includes the live map directly, so no separate
-            map-preview section is needed right after it */}
+        {/* Hero — includes the live map, proof strip, and audience strip */}
         <section
           style={{
             maxWidth: 1550,
@@ -152,12 +153,12 @@ export default function LandingPage({ setActiveView }) {
           />
         </section>
 
-        {/* Stats */}
+        {/* Live Overview stats */}
         <section
           id="live-overview"
           style={{
             maxWidth: 1500,
-            margin: "36px auto",
+            margin: "48px auto",
             padding: "0 8%",
             scrollMarginTop: 110,
           }}
@@ -172,7 +173,7 @@ export default function LandingPage({ setActiveView }) {
           id="the-problem"
           style={{
             maxWidth: 1500,
-            margin: "50px auto",
+            margin: "48px auto",
             padding: "0 8%",
             scrollMarginTop: 110,
           }}
@@ -182,12 +183,42 @@ export default function LandingPage({ setActiveView }) {
           </Reveal>
         </section>
 
+        {/* Why Now — timeline, right after the problem per Phase 5 */}
+        <section
+          id="why-now"
+          style={{
+            maxWidth: 1300,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={50}>
+            <WhyNow />
+          </Reveal>
+        </section>
+
+        {/* Why Existing Solutions Fail */}
+        <section
+          id="why-others-fail"
+          style={{
+            maxWidth: 1400,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={50}>
+            <WhyOthersFail />
+          </Reveal>
+        </section>
+
         {/* How BUSINA Solves It */}
         <section
           id="how-it-works"
           style={{
             maxWidth: 1100,
-            margin: "50px auto 56px",
+            margin: "48px auto",
             padding: "0 8%",
             scrollMarginTop: 110,
           }}
@@ -197,12 +228,72 @@ export default function LandingPage({ setActiveView }) {
           </Reveal>
         </section>
 
+        {/* Experience BUSINA — teaser panels routing into the real Commuter/Operator pages */}
+        <section
+          id="experience"
+          style={{
+            maxWidth: 1300,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={100}>
+            <ExperienceTeaser setActiveView={setActiveView} />
+          </Reveal>
+        </section>
+
+        {/* Impact — outcomes, dark blue chapter */}
+        <section
+          id="impact"
+          style={{
+            maxWidth: 1400,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={100}>
+            <Impact />
+          </Reveal>
+        </section>
+
+        {/* Business Model */}
+        <section
+          id="business-model"
+          style={{
+            maxWidth: 1100,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={100}>
+            <BusinessModel />
+          </Reveal>
+        </section>
+
+        {/* Validation */}
+        <section
+          id="validation"
+          style={{
+            maxWidth: 1100,
+            margin: "48px auto",
+            padding: "0 8%",
+            scrollMarginTop: 110,
+          }}
+        >
+          <Reveal delay={100}>
+            <Validation />
+          </Reveal>
+        </section>
+
         {/* Features */}
         <section
           id="everything-you-need"
           style={{
             maxWidth: 1500,
-            margin: "0 auto 56px",
+            margin: "0 auto 48px",
             padding: "0 8%",
             scrollMarginTop: 110,
           }}
@@ -217,13 +308,27 @@ export default function LandingPage({ setActiveView }) {
           id="about-us"
           style={{
             maxWidth: 1100,
-            margin: "0 auto 70px",
+            margin: "0 auto 48px",
             padding: "0 8%",
             scrollMarginTop: 110,
           }}
         >
           <Reveal delay={100}>
             <AboutUs />
+          </Reveal>
+        </section>
+
+        {/* Final CTA — three equal buttons */}
+        <section
+          id="final-cta"
+          style={{
+            maxWidth: 1100,
+            margin: "0 auto 70px",
+            padding: "0 8%",
+          }}
+        >
+          <Reveal delay={100}>
+            <FinalCTA setActiveView={setActiveView} />
           </Reveal>
         </section>
 
@@ -272,9 +377,8 @@ export default function LandingPage({ setActiveView }) {
                   maxWidth: 420,
                 }}
               >
-                Intelligent Public Transportation Monitoring &amp; Passenger
-                Assistance System powered by real-time GPS, AI analytics and
-                live fleet management.
+                The future of Philippine public transport starts with one
+                visible jeepney.
               </div>
             </div>
             <div style={{ textAlign: "right", color: "#64748B" }}>
@@ -340,7 +444,12 @@ function HowItWorks() {
           HOW IT WORKS
         </div>
         <h2
-          style={{ fontSize: 32, fontWeight: 800, color: "#111111", margin: 0 }}
+          style={{
+            fontSize: "clamp(28px, 6vw, 48px)",
+            fontWeight: 800,
+            color: "#111111",
+            margin: 0,
+          }}
         >
           From GPS ping to your screen in seconds
         </h2>
@@ -356,27 +465,15 @@ function HowItWorks() {
         {HOW_STEPS.map((step, i) => (
           <div
             key={i}
+            className="hover-lift"
             style={{
               background: "white",
-              borderRadius: 20,
-              padding: 28,
+              borderRadius: 24,
+              padding: 32,
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
-              transition:
-                "transform .25s ease, box-shadow .25s ease, border-color .25s ease",
               cursor: "default",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-6px)";
-              e.currentTarget.style.boxShadow =
-                "0 20px 40px rgba(5,38,117,.14)";
-              e.currentTarget.style.borderColor = "#052675";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.04)";
-              e.currentTarget.style.borderColor = "#D9D9D9";
             }}
           >
             <div
@@ -402,14 +499,14 @@ function HowItWorks() {
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: 26,
                 color: "#111111",
                 marginBottom: 8,
               }}
             >
               {step.title}
             </div>
-            <div style={{ fontSize: 14, color: "#64748B", lineHeight: 1.6 }}>
+            <div style={{ fontSize: 18, color: "#64748B", lineHeight: 1.6 }}>
               {step.body}
             </div>
           </div>
@@ -428,10 +525,11 @@ function HowItWorks() {
 function AboutUs() {
   return (
     <div
+      className="about-us-card"
       style={{
         background: "white",
         borderRadius: 28,
-        padding: "52px 48px",
+        padding: "clamp(28px, 6vw, 64px) clamp(20px, 5vw, 48px)",
         border: "1px solid #D9D9D9",
         boxShadow: "0 8px 32px rgba(0,0,0,0.05)",
         display: "flex",
@@ -453,11 +551,11 @@ function AboutUs() {
             marginBottom: 20,
           }}
         >
-          ABOUT US
+          BUILT BY COMMUTERS
         </div>
         <h2
           style={{
-            fontSize: 30,
+            fontSize: "clamp(28px, 6vw, 48px)",
             fontWeight: 800,
             color: "#111111",
             margin: "0 0 18px",
@@ -470,7 +568,7 @@ function AboutUs() {
             color: "#64748B",
             lineHeight: 1.8,
             margin: "0 0 16px",
-            fontSize: 15,
+            fontSize: 18,
           }}
         >
           BUSINA started as a hackathon project with one goal: make jeepney
@@ -483,7 +581,7 @@ function AboutUs() {
             color: "#64748B",
             lineHeight: 1.8,
             margin: "0 0 28px",
-            fontSize: 15,
+            fontSize: 18,
           }}
         >
           We believe public infrastructure data should be public.
@@ -508,7 +606,8 @@ function AboutUs() {
             {
               name: "Frontend",
               github: "https://github.com/jhonristh",
-              linkedin: "https://linkedin.com/",
+              linkedin:
+                "https://www.linkedin.com/in/jhon-rey-oquendo-105504370/",
             },
             {
               name: "Hardware",
@@ -535,17 +634,16 @@ function AboutUs() {
               <a
                 href={member.github}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 aria-label={`${member.name} GitHub`}
                 style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   width: 26,
                   height: 26,
                   borderRadius: "50%",
                   background: "white",
-                  border: "1px solid #D9D9D9",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   color: "#111111",
                 }}
               >
@@ -554,18 +652,17 @@ function AboutUs() {
               <a
                 href={member.linkedin}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 aria-label={`${member.name} LinkedIn`}
                 style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   width: 26,
                   height: 26,
                   borderRadius: "50%",
                   background: "white",
-                  border: "1px solid #D9D9D9",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#03164A",
+                  color: "#0A66C2",
                 }}
               >
                 <LinkedinIcon size={13} />
@@ -574,47 +671,34 @@ function AboutUs() {
           ))}
         </div>
       </div>
+
+      {/* Quick facts panel */}
       <div
         style={{
-          flex: "1 1 240px",
+          flex: "1 1 260px",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 16,
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 14,
         }}
       >
         {[
-          { label: "Team Members", value: "4" },
-          { label: "Routes Tracked", value: "5" },
-          { label: "Vehicles Live", value: "8" },
-          { label: "Built in", value: "200hrs" },
+          { value: "4", label: "Team Members" },
+          { value: "5", label: "Routes Tracked" },
+          { value: "8", label: "Vehicles Live" },
+          { value: "200hrs", label: "Built In" },
         ].map((s) => (
           <div
             key={s.label}
             style={{
               background: "#FBF4C6",
-              borderRadius: 16,
-              padding: 20,
+              borderRadius: 18,
+              padding: "18px 14px",
               textAlign: "center",
-              border: "1px solid #D9D9D9",
-              transition:
-                "transform .25s ease, box-shadow .25s ease, background .25s ease",
-              cursor: "default",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow =
-                "0 14px 28px rgba(5,38,117,.15)";
-              e.currentTarget.style.background = "#FFFFFF";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.background = "#FBF4C6";
             }}
           >
             <div
               className="font-numeric"
-              style={{ fontSize: 28, color: "#03164A" }}
+              style={{ fontSize: 26, fontWeight: 800, color: "#052675" }}
             >
               {s.value}
             </div>
@@ -623,59 +707,6 @@ function AboutUs() {
             </div>
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Glass Banner ─────────────────────────────────────────────────────────── */
-function GlassBanner() {
-  return (
-    <div
-      style={{
-        borderRadius: 32,
-        padding: "26px 36px",
-        background: "rgba(255,255,255,.72)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(255,255,255,.5)",
-        boxShadow: "0 24px 70px rgba(17,17,17,.08)",
-        display: "flex",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: 30,
-      }}
-    >
-      <Metric title="Fleet Status" value="LIVE" color="#052675" />
-      <Metric title="GPS Updates" value="Real-Time" color="#00C2FF" />
-      <Metric title="Analytics" value="AI Enabled" color="#FCA307" />
-      <Metric title="Platform" value="Online" color="#FD4847" />
-    </div>
-  );
-}
-
-function Metric({ title, value, color }) {
-  return (
-    <div>
-      <div style={{ color: "#64748B", fontSize: 13, marginBottom: 8 }}>
-        {title}
-      </div>
-      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        <div
-          className="busina-live-dot"
-          style={{
-            width: 12,
-            height: 12,
-            background: color,
-            boxShadow: `0 0 18px ${color}`,
-          }}
-        />
-        <div
-          className="font-numeric"
-          style={{ fontSize: 20, color: "#111111" }}
-        >
-          {value}
-        </div>
       </div>
     </div>
   );

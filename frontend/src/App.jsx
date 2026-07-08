@@ -7,6 +7,8 @@ import CommuterView from "./pages/CommuterView";
 import OperatorView from "./pages/OperatorView";
 import OperatorLoginGate from "./components/auth/OperatorLoginGate";
 import SyncDemoView from "./pages/SyncDemoView";
+import "./styles/variables.css";
+import "./styles/motion-and-a11y.css";
 
 function App() {
   const [activeView, setActiveView] = useState("landing");
