@@ -1,413 +1,565 @@
-# BUSINA Frontend Technical Documentation
+# 🚌 BUSINA Frontend
 
-## 1. Introduction
+> **Bus Intelligent Navigation Assistant**  
+> Real-Time Public Transportation Monitoring and Commuter Intelligence Platform
 
-BUSINA (Bus Intelligent Navigation Assistant) is a React-based web application that serves as the client interface for the BUSINA Smart Public Transportation Monitoring System. The frontend provides two primary user interfaces:
-
-- **Commuter Dashboard**, designed for passengers to monitor public utility vehicles (PUVs), estimate arrival times, and plan trips.
-- **Operator Dashboard**, designed for transport cooperatives to monitor fleet operations, vehicle health, and operational performance in real time.
-
-The frontend consumes RESTful APIs and Socket.IO streams from the BUSINA backend to visualize live transportation data using the Google Maps JavaScript API.
+![BUSINA Logo](./public/busina-logo-full-transparent.png)
 
 ---
 
-# 2. System Architecture
+## 📌 Overview
 
-```
-                   BUSINA Backend
-          (Express + Socket.IO Server)
-                     │
-      ┌──────────────┴──────────────┐
-      │                             │
- REST API                    Socket.IO
-      │                             │
-      └──────────────┬──────────────┘
-                     │
-             useLiveVehicles Hook
-                     │
-            React State Management
-                     │
-      ┌──────────────┴──────────────┐
-      │                             │
- Commuter Dashboard          Operator Dashboard
-                     │
-               Google Maps API
-```
+BUSINA (Bus Intelligent Navigation Assistant) is a smart public transportation platform designed to improve commuter mobility through real-time vehicle monitoring, estimated arrival times, and intelligent transport insights.
 
-The frontend initially retrieves fleet data through REST API requests and subsequently synchronizes updates through Socket.IO events, eliminating the need for frequent polling.
+This repository contains the frontend application built using **React + Vite**, powering two major experiences:
+
+- 🧍 **Commuter Interface** — helps passengers locate vehicles, monitor arrivals, and make better travel decisions.
+- 🏢 **Operator Dashboard** — enables transport operators to monitor fleet conditions, analyze performance, and receive operational insights.
+
+The frontend communicates with backend services through REST APIs and Socket.IO real-time events to provide a live transportation experience.
 
 ---
 
-# 3. Technology Stack
+# ✨ Core Features
 
-| Layer            | Technology                 |
-| ---------------- | -------------------------- |
-| Framework        | React 18                   |
-| Build Tool       | Vite                       |
-| Mapping          | Google Maps JavaScript API |
-| Charts           | Recharts                   |
-| Icons            | Lucide React               |
-| Communication    | Fetch API                  |
-| Real-Time        | Socket.IO Client           |
-| Styling          | CSS3 + Responsive Layout   |
-| State Management | React Hooks                |
+## 🧍 Commuter Experience
 
----
+BUSINA provides commuters with real-time transportation awareness.
 
-# 4. Application Structure
+### Features
 
-```
-src
-│
-├── components
-│
-├── hooks
-│
-├── pages
-│
-├── data
-│
-├── App.jsx
-└── main.jsx
-```
-
-The application follows a component-based architecture where reusable UI components are separated from business logic contained inside custom hooks.
-
----
-
-# 5. Application Pages
-
-## 5.1 Landing Page
-
-The landing page serves as the application's public entry point.
-
-### Responsibilities
-
-- Present project overview
-- Display live fleet statistics
-- Introduce BUSINA features
-- Navigate users to the Commuter or Operator dashboard
-
-### Components
-
-- Navbar
-- Hero
-- Stats
-- Features
-
----
-
-## 5.2 Commuter Dashboard
-
-The Commuter Dashboard allows passengers to monitor nearby public utility vehicles in real time.
-
-### Functionalities
-
-- Interactive Google Map
 - Live vehicle tracking
-- Vehicle selection
+- Interactive Google Maps visualization
 - Automatic user location detection
-- Automatic map centering
-- Route filtering
-- ETA estimation
-- Destination search
+- Route visualization
 - Vehicle information display
+- ETA estimation
+- Route filtering
 - Connection status monitoring
+- Responsive mobile-first interface
 
-Each vehicle marker displays operational information including:
+Vehicle information includes:
 
-- Route
+- Vehicle route
+- Current location
 - Current speed
-- Passenger load
+- Passenger capacity
 - Distance from commuter
 - Estimated arrival time
 
 ---
 
-## 5.3 Operator Dashboard
+# 🏢 Operator Dashboard
 
-The Operator Dashboard provides transport cooperatives with an operational overview of the active fleet.
+The operator dashboard provides fleet intelligence for transport administrators.
 
-### Functionalities
+### Features
 
-- Live fleet monitoring
-- Fleet KPI dashboard
-- Vehicle information panel
-- Route filtering
-- Travel time analytics
-- AI recommendation panel
+- Real-time fleet monitoring
+- Vehicle status overview
+- Fleet KPI monitoring
+- Route performance analytics
+- Travel time visualization
+- AI-assisted recommendations
+- Vehicle information inspection
 - Demand hotspot visualization
-- Fleet health monitoring
 
-Each monitored vehicle displays:
+Operational information includes:
 
 - Vehicle ID
-- Assigned route
-- Passenger occupancy
-- Vehicle speed
-- Estimated arrival time
+- Route assignment
 - GPS coordinates
-- Last update timestamp
-
----
-
-# 6. Core Components
-
-## LiveMap
-
-The LiveMap component encapsulates all Google Maps functionality.
-
-Responsibilities include:
-
-- Rendering vehicle markers
-- Drawing route polylines
-- Displaying commuter location
-- Highlighting selected vehicles
-- Automatic camera movement
-
----
-
-## VehicleMarker
-
-Represents individual buses on the map.
-
-Responsibilities:
-
-- Display vehicle icon
-- Handle selection events
-- Show current vehicle position
-
----
-
-## KPICards
-
-Displays fleet-wide operational metrics.
-
-Metrics include:
-
-- Active fleet size
-- Average speed
-- On-route vehicles
-- Stationary vehicles
-
-Values update automatically through Socket.IO.
-
----
-
-## TravelTimeChart
-
-Visualizes average travel time statistics using Recharts.
-
-This component assists operators in identifying congestion and route performance trends.
-
----
-
-## VehicleDetailsPanel
-
-Displays detailed operational information of the currently selected vehicle.
-
-Information includes:
-
-- Route
 - Speed
-- Passenger count
-- ETA
-- GPS coordinates
-- Last synchronization time
+- Occupancy information
+- Synchronization timestamp
 
 ---
 
-## AIRecommendationPanel
+# 🌐 System Architecture
 
-Displays heuristic-based operational recommendations generated from current fleet conditions.
+BUSINA uses a real-time event-driven frontend architecture.
 
-Recommendations consider:
+```
 
-- Fleet utilization
-- Waiting commuters
-- Active vehicles
-- Operational efficiency
+```
 
----
+              Vehicle GPS Data
 
-# 7. Custom Hooks
+                     │
 
-## useLiveVehicles()
+                     ▼
 
-This hook manages all communication between the frontend and backend.
+          Backend Transportation Server
 
-Responsibilities include:
+          Express + Socket.IO + Supabase
 
-- Initial REST API data retrieval
-- Socket.IO initialization
-- Vehicle synchronization
-- Connection monitoring
-- Automatic React state updates
+                     │
 
-Returns:
+      ┌──────────────┴──────────────┐
 
-```javascript
-{
-  (vehicles, connected, socket);
-}
+      ▼                             ▼
+
+REST API Socket.IO Events
+
+      │                             │
+
+      └──────────────┬──────────────┘
+
+                     ▼
+
+             React Frontend
+
+      ┌──────────────┴──────────────┐
+
+      ▼                             ▼
+
+```
+
+Commuter Interface          Operator Dashboard
+
+```
+
+      │                             │
+
+      ▼                             ▼
+
+```
+
+Passenger Decisions       Fleet Optimization
+
 ```
 
 ---
 
-## useRouteGeometry()
+# 🛠 Technology Stack
 
-Retrieves route geometry from the backend.
-
-Used primarily for:
-
-- Route polylines
-- Map visualization
-- Geofence rendering
+| Category                | Technology                          |
+| ----------------------- | ----------------------------------- |
+| Framework               | React 18                            |
+| Build Tool              | Vite                                |
+| Styling                 | CSS3                                |
+| Mapping                 | Google Maps JavaScript API          |
+| Real-Time Communication | Socket.IO Client                    |
+| Data Visualization      | Recharts                            |
+| Icons                   | Lucide React                        |
+| State Management        | React Hooks                         |
+| Backend Communication   | Fetch API                           |
+| Deployment              | Vercel                              |
+| PWA Support             | Web Manifest + Service Worker Ready |
 
 ---
 
-# 8. Data Flow
+# 📂 Project Structure
 
 ```
+
+src
+│
+├── api
+│   ├── alertApi.js
+│   ├── vehicleApi.js
+│   └── api.js
+│
+├── assets
+│   ├── busina-logo-full-transparent.png
+│   └── hero.png
+│
+├── components
+│
+│   ├── auth
+│   │   └── OperatorLoginGate.jsx
+│   │
+│   ├── commuter
+│   │   ├── BottomSheet.jsx
+│   │   └── SearchOverlay.jsx
+│   │
+│   ├── landing
+│   │   ├── Hero
+│   │   ├── Navbar
+│   │   ├── Impact
+│   │   ├── BusinessModel
+│   │   ├── Validation
+│   │   ├── ExperienceTeaser
+│   │   └── WhyNow
+│   │
+│   ├── map
+│   │   ├── LiveMap.jsx
+│   │   ├── VehicleMarker.jsx
+│   │   ├── UserMarker.jsx
+│   │   └── RoutePolylines.jsx
+│   │
+│   ├── operator
+│   │   ├── FleetMap.jsx
+│   │   ├── VehicleDetailsPanel.jsx
+│   │   └── AIRecommendationPanel.jsx
+│   │
+│   └── ui
+│       ├── Button.jsx
+│       ├── Card.jsx
+│       ├── Skeleton.jsx
+│       └── Reveal.jsx
+│
+├── data
+│   ├── demoData.js
+│   ├── fleetStats.json
+│   ├── demandHotspots.json
+│   └── hourlyTravelTime.json
+│
+├── hooks
+│   ├── useLiveVehicles.js
+│   ├── useBackendETA.js
+│   ├── useRouteGeometry.js
+│   ├── useConnectionStatus.js
+│   └── usePwaUpdate.js
+│
+├── pages
+│   ├── LandingPage.jsx
+│   ├── CommuterView.jsx
+│   ├── OperatorView.jsx
+│   ├── DeviceSetup.jsx
+│   └── SyncDemoView.jsx
+│
+├── services
+│   ├── backend.js
+│   └── socket.js
+│
+├── styles
+│   ├── variables.css
+│   ├── landing.css
+│   ├── commuter.css
+│   ├── layout.css
+│   └── motion-and-a11y.css
+│
+├── utils
+│   └── geolocation.js
+│
+├── App.jsx
+└── main.jsx
+
+```
+
+---
+
+# 🔄 Real-Time Data Flow
+
+BUSINA uses a hybrid REST + Socket.IO communication model.
+
+## Initial Data Loading
+
+The application retrieves initial vehicle information:
+
+```
+
+Frontend
+
+|
+
+GET Vehicle Data
+
+|
+
+React State Initialization
+
+```
+
+---
+
+## Live Updates
+
+After connection:
+
+```
+
 Backend
 
-       │
+|
 
-REST API
+Socket.IO Event
 
-       │
+|
 
-Fetch Initial Fleet
+useLiveVehicles Hook
 
-       │
+|
 
-React State
+React State Update
 
-       │
+|
 
-Socket.IO
+Map + Dashboard Refresh
 
-       │
+```
 
-Vehicle Updates
+This approach minimizes unnecessary polling while maintaining real-time synchronization.
 
-       │
+---
 
-useLiveVehicles()
+# 🗺 Mapping Architecture
 
-       │
+The map system is isolated into reusable components.
+
+```
 
 LiveMap
 
-       │
+├── VehicleMarker
 
-Google Maps
+├── UserMarker
+
+├── RoutePolylines
+
+├── VehiclePopup
+
+└── MapControls
+
+```
+
+Responsibilities:
+
+- Display live vehicles
+- Render route paths
+- Show commuter location
+- Handle selected vehicles
+- Update map state dynamically
+
+---
+
+# 🧠 Intelligent Features
+
+## ETA Estimation
+
+BUSINA estimates vehicle arrival time using transportation data.
+
+Inputs:
+
+- Vehicle GPS position
+- Route geometry
+- Current vehicle movement
+- Distance calculations
+
+Output:
+
+- Estimated arrival time
+
+---
+
+## AI Recommendation System
+
+The operator dashboard includes an AI-assisted recommendation module.
+
+Current implementation:
+
+- rule-based operational insights
+- fleet utilization analysis
+- demand hotspot evaluation
+- route condition assessment
+
+Future expansion:
+
+- machine learning prediction
+- demand forecasting
+- automated fleet optimization
+
+---
+
+# 🎨 BUSINA Design System
+
+BUSINA evolved into a modern smart mobility identity.
+
+## Brand Colors
+
+| Purpose       | Hex       |
+| ------------- | --------- |
+| Primary Navy  | `#052675` |
+| Deep Navy     | `#03164A` |
+| Action Orange | `#FCA307` |
+| Alert Coral   | `#FD4847` |
+| Warm Cream    | `#FBF4C6` |
+
+---
+
+## Typography
+
+| Font          | Usage                  |
+| ------------- | ---------------------- |
+| Bebas Neue    | Branding / Hero Titles |
+| Inter         | Interface Text         |
+| Space Grotesk | Supporting Headings    |
+
+---
+
+# 📱 Progressive Web Application
+
+BUSINA includes PWA-ready assets:
+
+```
+
+public
+
+├── icon-192.png
+
+├── icon-512.png
+
+├── icon-maskable-512.png
+
+├── favicon.svg
+
+└── manifest assets
+
+```
+
+Supported capabilities:
+
+- Installable application experience
+- Mobile optimized interface
+- Application icons
+- Offline preparation
+
+---
+
+# 🚀 Installation
+
+## Requirements
+
+- Node.js 18+
+- npm
+
+---
+
+## Clone Repository
+
+```bash
+git clone https://github.com/your-org/busina-frontend.git
+
+cd frontend
 ```
 
 ---
 
-# 9. Real-Time Communication
+## Install Dependencies
 
-BUSINA implements a hybrid communication model.
-
-### Initial Data
-
-```
-GET /vehicles
-```
-
-retrieves the current fleet snapshot.
-
-### Continuous Updates
-
-Socket.IO broadcasts:
-
-```
-vehicle-update
-
-fleet-update
-```
-
-allowing dashboards to remain synchronized without continuous polling.
-
----
-
-# 10. Responsive Design
-
-The frontend employs responsive layouts to support multiple device sizes.
-
-Supported platforms include:
-
-- Desktop
-- Laptop
-- Tablet
-- Mobile
-
-Media queries dynamically reorganize dashboard layouts while preserving functionality.
-
----
-
-# 11. Deployment
-
-The frontend is deployed on **Vercel**, while the backend is hosted on **Render**.
-
-Communication between both services is configured through environment variables.
-
-Required variables:
-
-```
-VITE_GOOGLE_MAPS_API_KEY
-
-VITE_BACKEND_URL
+```bash
+npm install
 ```
 
 ---
 
-# 12. Current System Status
+# ⚙ Environment Configuration
 
-| Module                  | Status              |
-| ----------------------- | ------------------- |
-| Landing Page            | Complete            |
-| Commuter Dashboard      | Complete            |
-| Operator Dashboard      | Complete            |
-| Live Vehicle Tracking   | Complete            |
-| Google Maps Integration | Complete            |
-| ETA Estimation          | Complete            |
-| Fleet Analytics         | Complete            |
-| Responsive Design       | Complete            |
-| Alerts                  | Mock Implementation |
-| Historical Playback     | Planned             |
+Create a `.env` file:
+
+```env
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+VITE_BACKEND_URL=your_backend_url
+
+```
 
 ---
 
-# 13. Current Limitations
+# ▶ Running the Application
 
-The current MVP includes several known limitations:
+Development:
 
-- Alert notifications currently utilize mock data.
-- Historical route playback is not yet connected to persistent storage.
-- Passenger waiting requests have not yet been integrated into the Operator Dashboard.
-- Google Maps currently relies on the legacy `Marker` API and is planned to migrate to `AdvancedMarkerElement`.
-- AI recommendations are heuristic-based and do not yet utilize machine learning models.
+```bash
+npm run dev
+```
+
+Production build:
+
+```bash
+npm run build
+```
+
+Preview:
+
+```bash
+npm run preview
+```
 
 ---
 
-# 14. Future Enhancements
+# 📊 Current Development Status
 
-Future development of the frontend includes:
+| Feature                        | Status       |
+| ------------------------------ | ------------ |
+| Landing Page                   | ✅ Complete  |
+| BUSINA Branding                | ✅ Complete  |
+| Responsive Design              | ✅ Complete  |
+| PWA Assets                     | ✅ Complete  |
+| Commuter Dashboard             | ✅ Complete  |
+| Operator Dashboard             | ✅ Complete  |
+| Google Maps Integration        | ✅ Complete  |
+| Live Vehicle Tracking          | ✅ Complete  |
+| Socket.IO Synchronization      | ✅ Complete  |
+| ETA Display                    | ✅ Complete  |
+| Fleet Analytics                | ✅ Complete  |
+| AI Recommendation Panel        | ✅ Prototype |
+| Operator Authentication        | 🟡 Prototype |
+| Historical Playback            | 🔵 Planned   |
+| Demand Forecasting             | 🔵 Planned   |
+| Full Role-Based Authentication | 🔵 Planned   |
 
-- Authentication and role-based access
-- Passenger waiting request integration
-- Historical route playback
+---
+
+# 🐛 Engineering Improvements
+
+During development, several frontend issues were identified and resolved:
+
+- Mobile navigation overflow
+- Responsive typography scaling
+- Fixed horizontal overflow layouts
+- Animation conflicts affecting fixed components
+- Incorrect theme variable mapping
+- UI alignment issues
+- Improved loading skeleton states
+- Improved synchronization indicators
+- Recovered stale-file inconsistencies
+
+---
+
+# 🔮 Future Roadmap
+
+## Platform
+
+- Full authentication
+- Role-based access control
+- Offline-first capabilities
 - Push notifications
-- Progressive Web App support
-- AI-powered demand forecasting
-- Passenger analytics dashboard
-- Offline functionality
-- Migration to Google Maps Advanced Marker API
+
+## Transportation Intelligence
+
+- Predictive ETA modeling
+- Passenger demand forecasting
+- Historical route playback
+- Fleet optimization algorithms
+
+## User Experience
+
+- Personalized commuter routes
+- Smart travel recommendations
+- Improved accessibility features
 
 ---
 
-# 15. Conclusion
+# 👥 Development
 
-The BUSINA frontend provides a responsive, real-time visualization platform that bridges commuters and transport operators through a unified web interface. By integrating Google Maps, Socket.IO, and React, the application delivers live fleet monitoring, ETA estimation, operational analytics, and intelligent decision support. The current implementation serves as a production-ready MVP while providing a scalable architecture for future enhancements such as predictive analytics, authentication, and advanced fleet optimization.
+BUSINA combines:
+
+- Frontend engineering
+- Real-time systems
+- Transportation analytics
+- Embedded GPS technology
+- Smart mobility solutions
+
+---
+
+# 📜 License
+
+This project is developed for educational, research, and innovation purposes.
+
+---
+
+# 🚌 Built for Smarter Mobility
+
+> BUSINA transforms public transportation from uncertainty into informed decision-making.
