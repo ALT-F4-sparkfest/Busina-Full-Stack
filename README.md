@@ -1,5 +1,7 @@
 # 🚌 BUSINA
 
+g
+
 > **Real-Time Smart Public Transportation Monitoring and Fleet Intelligence Platform**
 
 ![BUSINA Logo](./frontend/public/busina-logo-full-transparent.png)
@@ -8,7 +10,7 @@
 
 # 📌 Overview
 
-BUSINA (Bus Intelligent Navigation Assistant) is a full-stack smart transportation platform designed to modernize public utility vehicle operations through **real-time GPS monitoring, ETA prediction, fleet analytics, and commuter intelligence**.
+BUSINA is a full-stack smart transportation platform designed to modernize public utility vehicle operations through **real-time GPS monitoring, ETA prediction, fleet analytics, and commuter intelligence**.
 
 The system connects commuters and transport operators through a unified platform:
 
