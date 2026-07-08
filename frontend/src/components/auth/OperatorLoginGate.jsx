@@ -244,7 +244,7 @@ function OperatorLoginModal({ onSuccess }) {
             color: "#9CA3AF",
           }}
         >
-          Demo build — authentication wiring in progress.
+          Forget your password? Contact your TODA administrator.
         </div>
       </form>
     </div>
