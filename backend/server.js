@@ -12,16 +12,29 @@ const geofenceRoutes = require("./routes/geofenceRoutes");
 const app = express();
 const server = http.createServer(app);
 
-// Use FRONTEND_URL env var in production, fallback to local dev URL
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+// Allow both local dev and deployed Vercel frontend
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:5173", "https://busina-one.vercel.app"];
 
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use("/routes", geofenceRoutes);
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -33,8 +46,6 @@ io.on("connection", (socket) => {
     console.log("❌ Client disconnected:", socket.id);
   });
 });
-
-// --- YOUR EXISTING ROUTES (unchanged) ---
 
 // Friendly root route (health check / sanity check)
 app.get("/", (req, res) => {
@@ -92,19 +103,18 @@ app.get("/vehicles/:id/etas", async (req, res) => {
 // Start the MQTT subscriber in this same process, wired to io
 require("./subscriber")(io);
 
-// Optionally start the replay simulator (for demo/testing — publishes fake vehicle data over MQTT)
+// Optionally start the replay simulator (for demo/testing)
 if (process.env.ENABLE_REPLAY_SIM === "true") {
-  require("./replaySImulator"); // match exact filename casing
+  require("./replaySImulator");
   console.log("🔁 Replay simulator enabled");
 }
 
 // --- SERVER INITIALIZATION ---
 
-// Use Render's dynamic port in production, fallback to 3000 locally
 const PORT = process.env.PORT || 3000;
 startBunchingMonitor(30000);
 
 server.listen(PORT, () => {
   console.log(`✅ API running on port ${PORT}`);
-  console.log(`✅ Socket.IO attached, allowed origin: ${allowedOrigin}`);
+  console.log(`✅ Socket.IO attached, allowed origins: ${allowedOrigins.join(", ")}`);
 });
