@@ -2,11 +2,15 @@ import { useState } from "react";
 import { GitBranch, Bus, Building2, Menu, X } from "lucide-react";
 import businaIcon from "../../assets/busina-icon-transparent.png";
 
+// NOTE: hrefs for "experience-busina" and "impact" are best-guess IDs —
+// swap these to match whatever `id` attributes actually landed on those
+// sections in the new LandingPage.jsx once you share it.
 const NAV_LINKS = [
   { label: "Live Overview", href: "#live-overview" },
   { label: "The Problem", href: "#the-problem" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Everything You Need", href: "#everything-you-need" },
+  { label: "Experience", href: "#experience-busina" },
+  { label: "Impact", href: "#impact" },
   { label: "About Us", href: "#about-us" },
 ];
 

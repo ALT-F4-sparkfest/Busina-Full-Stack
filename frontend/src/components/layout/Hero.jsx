@@ -1,5 +1,5 @@
 // src/components/layout/Hero.jsx
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import {
   Bus,
   Building2,
@@ -11,9 +11,13 @@ import {
   Maximize2,
 } from "lucide-react";
 import Button from "../ui/Button";
-import LiveMap from "../map/LiveMap"; // ✅ fixed: removed /components/
 import useLiveVehicles from "../../hooks/useLiveVehicles";
-import LiveSyncBadge from "../LiveSyncBadge"; // ✅ fixed: removed /components/
+import LiveSyncBadge from "../LiveSyncBadge";
+import AudienceStrip from "../landing/AudienceStrip";
+import ProofStrip from "../landing/ProofStrip";
+import Skeleton from "../ui/Skeleton";
+
+const LiveMap = lazy(() => import("../map/LiveMap"));
 
 export default function Hero({ setActiveView, onDemoClick }) {
   const [paraPo, setParaPo] = useState(false);
@@ -44,7 +48,6 @@ export default function Hero({ setActiveView, onDemoClick }) {
         gridTemplateColumns: "1fr 1fr",
         gap: 32,
         minHeight: "80vh",
-        maxHeight: "90vh",
         background:
           "linear-gradient(135deg,#FAFAFA 0%,#FFFFFF 45%,#FBF4C6 100%)",
         alignItems: "start",
@@ -80,18 +83,17 @@ export default function Hero({ setActiveView, onDemoClick }) {
           Para sa mga Pilipinong Komyuter
         </div>
 
-        {/* Main headline */}
+        {/* Main headline — Hero scale (72px desktop, clamps down on mobile) */}
         <h1
           style={{
             color: "#052675",
-            fontSize: "clamp(1.8rem, 4.5vw, 3rem)",
-            lineHeight: 1.1,
+            fontSize: "var(--text-hero, clamp(2.4rem, 6vw, 4.5rem))",
+            lineHeight: 1.05,
             margin: "4px 0 4px",
             fontWeight: 800,
           }}
         >
-          The First Real-Time Fleet Intelligence Platform for Philippine Public
-          Transit.
+          Saan ang para mo?
         </h1>
 
         {/* Sub-tagline */}
@@ -104,7 +106,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
             margin: 0,
           }}
         >
-          Smarter commutes. Better journeys.
+          Smarter commutes, better journeys.
         </p>
 
         {/* Description */}
@@ -117,9 +119,13 @@ export default function Hero({ setActiveView, onDemoClick }) {
             margin: "2px 0 10px",
           }}
         >
-          Real‑time jeepney tracking and AI dispatch for Metro Manila —
-          commuters see accurate ETAs, operators see their whole fleet, live.
+          Your jeepney. Your route. Your arrival time — finally visible. Built
+          by Filipino commuters. Designed for Philippine transportation. Powered
+          by real-time GPS and AI.
         </p>
+
+        {/* Four-audience strip */}
+        <AudienceStrip />
 
         {/* CTA Buttons */}
         <div
@@ -127,12 +133,13 @@ export default function Hero({ setActiveView, onDemoClick }) {
             display: "flex",
             gap: 12,
             flexWrap: "wrap",
+            marginTop: 4,
           }}
         >
           <div>
             <Button onClick={() => setActiveView("commuter")} size="small">
               <Bus size={16} />
-              I'm a Commuter
+              Explore Commuter Portal
             </Button>
             <div
               style={{
@@ -153,7 +160,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
               size="small"
             >
               <Building2 size={16} />
-              I'm an Operator
+              View Operator Dashboard
             </Button>
             <div
               style={{
@@ -167,6 +174,9 @@ export default function Hero({ setActiveView, onDemoClick }) {
             </div>
           </div>
         </div>
+
+        {/* Proof strip — "LIVE TODAY" */}
+        <ProofStrip />
 
         {/* Feature chips */}
         <div
@@ -265,7 +275,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
         style={{
           background: "rgba(255,255,255,.92)",
           backdropFilter: "blur(18px)",
-          borderRadius: 20,
+          borderRadius: 24,
           overflow: "hidden",
           boxShadow: "0 16px 48px rgba(5,38,117,0.12)",
           border: "1px solid #D9D9D9",
@@ -301,13 +311,15 @@ export default function Hero({ setActiveView, onDemoClick }) {
         </div>
 
         <div style={{ position: "relative", flex: 1, minHeight: 200 }}>
-          <LiveMap
-            vehicles={vehicles}
-            userLocation={null}
-            mapId="hero-live-map"
-            selectedVehicleId={selectedVehicleId}
-            onVehicleSelect={setSelectedVehicleId}
-          />
+          <Suspense fallback={<Skeleton height="100%" radius={0} />}>
+            <LiveMap
+              vehicles={vehicles}
+              userLocation={null}
+              mapId="hero-live-map"
+              selectedVehicleId={selectedVehicleId}
+              onVehicleSelect={setSelectedVehicleId}
+            />
+          </Suspense>
 
           {!live.connected && vehicles.length === 0 && (
             <div
@@ -332,7 +344,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
           style={{
             margin: "10px 16px 14px",
             padding: "10px 16px",
-            borderRadius: 12,
+            borderRadius: 18,
             border: "none",
             background: "#052675",
             color: "#fff",
@@ -346,7 +358,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
           }}
         >
           <Maximize2 size={14} />
-          Bukas ang Full Map
+          Buksan ang Full Map
           <ArrowRight size={14} />
         </button>
       </div>

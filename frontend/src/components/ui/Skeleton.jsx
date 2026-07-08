@@ -6,6 +6,10 @@
 //
 // Ships with a few pre-built shapes for common cases (KPI card, vehicle row,
 // stat line) so you don't have to hand-roll the same 3 divs everywhere.
+//
+// IMPORTANT: SkeletonStyles() injects the @keyframes this component and all
+// pre-built shapes rely on. Mount it once near the root of any tree that uses
+// Skeleton (e.g. once in App.jsx, or once per page that uses it standalone).
 
 export default function Skeleton({
   width = "100%",

@@ -112,35 +112,54 @@ export default function CommuterView({ onBack }) {
       setRouteError(
         `"${target}" is outside our current coverage. BUSINA currently serves Cubao ↔ Divisoria, Marikina, Pasig, San Juan, and Makati.`,
       );
+
       setTimeout(() => setRouteError(null), 4000);
       return;
     }
 
     setLoadingEta(true);
+
     try {
-      if (!selectedVehicle) {
-        throw new Error("no-vehicle-selected");
+      // Automatically select nearest live vehicle
+      const targetVehicle = selectedVehicle ?? nearest[0];
+
+      if (!targetVehicle) {
+        throw new Error("no-live-vehicle");
       }
-      const res = await fetch(
-        `${API}/vehicles/${selectedVehicle.id}/eta/stop1`,
-      );
+
+      // Optional: update selected vehicle on map
+      if (!selectedVehicle) {
+        setSelectedVehicleId(targetVehicle.id);
+      }
+
+      const res = await fetch(`${API}/vehicles/${targetVehicle.id}/eta/stop1`);
+
+      if (!res.ok) {
+        throw new Error("eta-request-failed");
+      }
+
       const data = await res.json();
+
       setEta({
         eta_minutes: data.eta_minutes,
         destination: target,
-        route: selectedVehicle.route_id,
+        route: targetVehicle.route_id,
         status: data.status,
-        display_text: data.display_text,
+        display_text:
+          data.display_text || "Live ETA based on current vehicle location",
       });
-    } catch {
-      const mockEta = selectedVehicle?.eta ?? Math.round(Math.random() * 8 + 3);
-      setEta({
-        eta_minutes: mockEta,
-        destination: target,
-        route: selectedVehicle?.route_id ?? "Nearest route",
-        status: "on_route",
-        display_text: `~${mockEta} min estimated (offline estimate)`,
-      });
+    } catch (error) {
+      console.error("Live ETA error:", error);
+
+      if (error.message === "no-live-vehicle") {
+        setRouteError(
+          "No active jeepneys detected nearby. Please try again shortly.",
+        );
+      } else {
+        setRouteError("Unable to retrieve live ETA. Please try again.");
+      }
+
+      setTimeout(() => setRouteError(null), 4000);
     } finally {
       setLoadingEta(false);
     }

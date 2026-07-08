@@ -13,38 +13,26 @@ export default function Stats() {
   const stats = [
     {
       icon: <Bus size={28} />,
-      value: "18",
-      label: "Active Vehicles",
+      value: "10",
+      label: "Simulated Vehicles",
       color: "#052675",
     },
     {
-      icon: <Users size={28} />,
-      value: "245",
-      label: "Passengers Tracked",
+      icon: <TrendingUp size={28} />,
+      value: "5",
+      label: "Metro Manila Routes",
       color: "#FCA307",
     },
     {
       icon: <Clock3 size={28} />,
-      value: "5 min",
-      label: "Average ETA",
+      value: "<5 min",
+      label: "Target ETA accuracy",
       color: "#FCA307",
     },
     {
-      icon: <Brain size={28} />,
-      value: "97%",
-      label: "AI Confidence",
-      color: "#FD4847",
-    },
-    {
-      icon: <TrendingUp size={28} />,
-      value: "99.4%",
-      label: "Fleet Uptime",
-      color: "#052675",
-    },
-    {
       icon: <ShieldCheck size={28} />,
-      value: "Live",
-      label: "System Status",
+      value: "Realtime",
+      label: "GPS Streaming",
       color: "#FD4847",
     },
   ];
@@ -55,7 +43,6 @@ export default function Stats() {
         padding: "20px 8% 80px",
       }}
     >
-      {/* ── NEW: Section Heading & Description ── */}
       <div style={{ textAlign: "center", marginBottom: 40 }}>
         <div
           style={{
@@ -69,17 +56,17 @@ export default function Stats() {
             marginBottom: 16,
           }}
         >
-          LIVE OVERVIEW
+          LIVE PROTOTYPE FLEET
         </div>
         <h2
           style={{
-            fontSize: 34,
+            fontSize: "clamp(28px, 6vw, 48px)",
             fontWeight: 800,
             color: "#111111",
             margin: "0 0 12px",
           }}
         >
-          Real‑time fleet at a glance
+          Know the roads. Understand the commute.
         </h2>
         <p
           style={{
@@ -90,13 +77,12 @@ export default function Stats() {
             color: "#64748B",
           }}
         >
-          See the current status of jeepneys operating across Metro Manila —
-          live vehicle counts, passenger demand, ETA accuracy, and system
-          health.
+          BUSINA transforms everyday jeepney operations into real-time insights
+          — helping commuters find rides, operators manage fleets, and
+          communities move better.
         </p>
       </div>
 
-      {/* ── Existing stats grid ── */}
       <div
         style={{
           display: "grid",
@@ -118,24 +104,16 @@ function StatCard({ stat }) {
   return (
     <div
       ref={ref}
+      className="hover-lift"
       style={{
         background: "rgba(255,255,255,.82)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
-        borderRadius: 20,
+        borderRadius: 24,
         padding: 24,
         border: "1px solid rgba(255,255,255,.45)",
         boxShadow: "0 12px 32px rgba(17,17,17,.06)",
-        transition: "all .25s ease",
         cursor: "default",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-6px)";
-        e.currentTarget.style.boxShadow = "0 20px 48px rgba(5,38,117,0.14)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(17,17,17,.06)";
       }}
     >
       <div

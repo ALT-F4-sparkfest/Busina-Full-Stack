@@ -11,6 +11,8 @@ import "./styles/utilities.css";
 import "./styles/landing.css";
 import "./styles/commuter.css";
 import App from "./App.jsx";
+import "./styles/variables.css";
+import "./styles/motion-and-a11y.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

@@ -81,7 +81,7 @@ export default function Features() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(30px, 3.5vw, 44px)",
+            fontSize: "clamp(34px, 4.5vw, 48px)",
             fontWeight: 800,
             color: "#111111",
             marginBottom: 12,
@@ -99,8 +99,7 @@ export default function Features() {
             color: "#64748B",
           }}
         >
-          Binuo para sa mga jeepney commuter at TODA sa Metro Manila — hindi
-          generic na fleet‑management jargon.
+          Binuo para sa mga Jeepney commuter at Jeepney TODA sa Metro Manila.
         </p>
       </div>
 
@@ -114,25 +113,15 @@ export default function Features() {
         {features.map((feature) => (
           <div
             key={feature.title}
+            className="hover-lift"
             style={{
               background: "rgba(255,255,255,.85)",
               backdropFilter: "blur(18px)",
-              borderRadius: 22,
-              padding: 28,
+              borderRadius: 24,
+              padding: 32,
               border: "1px solid rgba(255,255,255,.45)",
               boxShadow: "0 16px 40px rgba(17,17,17,.06)",
-              transition: ".25s",
               cursor: "default",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-6px)";
-              e.currentTarget.style.boxShadow =
-                "0 24px 52px rgba(5,38,117,0.14)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 16px 40px rgba(17,17,17,.06)";
             }}
           >
             <div
@@ -153,7 +142,7 @@ export default function Features() {
 
             <h3
               style={{
-                fontSize: 20,
+                fontSize: 26,
                 marginBottom: 8,
                 color: "#111111",
                 fontWeight: 700,
@@ -166,7 +155,7 @@ export default function Features() {
               style={{
                 color: "#64748B",
                 lineHeight: 1.7,
-                fontSize: 15,
+                fontSize: 18,
                 marginBottom: 12,
               }}
             >

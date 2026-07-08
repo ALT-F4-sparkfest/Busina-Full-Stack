@@ -9,7 +9,7 @@
 
 :root {
   /* ============================================================
-     Brand — updated to BUSINA Navy + Orange + Coral identity
+     Brand — BUSINA Navy + Orange + Coral identity
      (names kept identical to avoid breaking components)
      ============================================================ */
   --primary: #052675; /* Navy — Trust, Reliability, Primary CTAs */
@@ -17,12 +17,12 @@
 
   --secondary: #fca307; /* Orange — ETA, KPIs, Active tabs, Optimism */
 
-  /* Status — now aligned to new brand */
+  /* Status — aligned to brand */
   --success: #052675; /* Navy — Confirmed/on‑track states (keeps UI calm) */
   --warning: #fca307; /* Orange — Moderation, Caution, Highlights */
   --danger: #fd4847; /* Coral Red — Critical alerts, Errors only */
 
-  /* New accent: Alert Orange (Smart Dispatch) */
+  /* Alert Orange (Smart Dispatch) */
   --alert: #fca307; /* Consolidated with secondary orange */
 
   /* Backgrounds */
@@ -38,24 +38,56 @@
   --border: #d9d9d9; /* Card borders, dividers */
 
   /* Tints (pill backgrounds, icon backgrounds) */
-  --primary-tint: #e7ecfb; /* Navy tint (was green tint) */
+  --primary-tint: #e7ecfb; /* Navy tint */
   --alert-tint: rgba(252, 163, 7, 0.15); /* Orange tint */
   --warning-tint: rgba(252, 163, 7, 0.15); /* Orange tint (unified) */
   --danger-tint: rgba(253, 72, 71, 0.15); /* Coral tint */
 
-  /* Radius — unchanged */
+  /* ============================================================
+     Typography Scale — Phase 4 (use these everywhere, no ad-hoc sizes)
+     Hero 72 / Section 48 / Card 26 / Metric 40 / Body 18 / Caption 14
+     ============================================================ */
+  --text-hero: clamp(2.4rem, 6vw, 4.5rem); /* 38px → 72px */
+  --text-section: clamp(2rem, 3.5vw, 3rem); /* 32px → 48px */
+  --text-card: 1.625rem; /* 26px */
+  --text-metric: 2.5rem; /* 40px */
+  --text-body: 1.125rem; /* 18px */
+  --text-caption: 0.875rem; /* 14px */
+
+  /* ============================================================
+     8-Point Spacing Scale — Phase 4
+     ============================================================ */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+  --sp-12: 96px;
+  --sp-16: 128px;
+
+  /* ============================================================
+     Unified Border Radius — Phase 4
+     ============================================================ */
+  --radius-card: 24px;
+  --radius-button: 18px;
+  --radius-input: 18px;
+  --radius-badge: 999px;
+  --radius-panel: 24px;
+
+  /* Radius — legacy, kept so older components don't break */
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
 
-  /* Shadows — updated to match brand colors */
+  /* Shadows — matched to brand colors */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
   --shadow-primary: 0 10px 24px rgba(5, 38, 117, 0.25); /* Navy shadow */
   --shadow-primary-glow: 0 10px 30px rgba(5, 38, 117, 0.35); /* Navy glow */
   --shadow-danger-glow: 0 0 18px rgba(253, 72, 71, 0.35); /* Coral glow */
 
-  /* Spacing — unchanged */
+  /* Spacing — legacy, kept so older components don't break */
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
@@ -69,6 +101,10 @@
   --duration-page-in: 1000ms;
   --anim-float: 8s;
   --anim-pulse: 2s;
+
+  /* Accessibility */
+  --focus-ring: 0 0 0 3px rgba(5, 38, 117, 0.35);
+  --min-tap-target: 44px; /* WCAG minimum */
 
   /* Safe-area insets — for notches / home indicators on mobile PWAs */
   --safe-top: env(safe-area-inset-top, 0px);
