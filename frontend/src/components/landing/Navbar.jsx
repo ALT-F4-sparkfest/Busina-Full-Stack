@@ -2,19 +2,16 @@ import { useState } from "react";
 import { GitBranch, Bus, Building2, Menu, X } from "lucide-react";
 import businaIcon from "../../assets/busina-icon-transparent.png";
 
-// NOTE: hrefs for "experience-busina" and "impact" are best-guess IDs —
-// swap these to match whatever `id` attributes actually landed on those
-// sections in the new LandingPage.jsx once you share it.
 const NAV_LINKS = [
   { label: "Live Overview", href: "#live-overview" },
   { label: "The Problem", href: "#the-problem" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Experience", href: "#experience-busina" },
+  { label: "Experience", href: "#experience" },
   { label: "Impact", href: "#impact" },
   { label: "About Us", href: "#about-us" },
 ];
 
-export default function Navbar({ setActiveView, currentView = "landing" }) {
+export default function Navbar({ setActiveView }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -22,37 +19,35 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
       <nav
         className="navbar-shell"
         style={{
-          position: "sticky",
-          top: 20,
-          zIndex: 1000,
-          width: "92%",
-          maxWidth: 1450,
-          margin: "20px auto",
-          padding: "14px 20px",
+          width: "min(94%, 1450px)",
+          margin: "0 auto",
+          padding: "12px 18px",
           borderRadius: 999,
-          background: "rgba(255,255,255,.82)",
+          background: "rgba(255,255,255,.86)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,.45)",
-          boxShadow: "0 20px 45px rgba(17,17,17,.12)",
+          border: "1px solid rgba(226,232,240,.8)",
+          boxShadow: "0 16px 40px rgba(17,17,17,.08)",
           display: "flex",
           alignItems: "center",
           gap: 12,
         }}
       >
         {/* LEFT — logo */}
-        <div
+        <a
+          href="#"
           style={{
             display: "flex",
             alignItems: "center",
             gap: 12,
             flexShrink: 0,
+            textDecoration: "none",
           }}
         >
           <div
             style={{
-              width: 44,
-              height: 44,
+              width: 42,
+              height: 42,
               borderRadius: 13,
               background: "linear-gradient(135deg,#03164A,#1B3E8F)",
               display: "flex",
@@ -80,7 +75,7 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
           >
             BUSINA
           </div>
-        </div>
+        </a>
 
         {/* CENTER — in-page navigation, hidden under 1024px (replaced by hamburger) */}
         <div
@@ -191,13 +186,14 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
             display: "none",
             border: "1px solid #D9D9D9",
             background: "white",
-            width: 42,
-            height: 42,
+            width: 44,
+            height: 44,
             borderRadius: 12,
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
             flexShrink: 0,
+            marginLeft: "auto",
           }}
         >
           <Menu size={20} color="#052675" />
@@ -212,6 +208,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
             inset: 0,
             zIndex: 1100,
             background: "rgba(17,17,17,.45)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
           }}
           onClick={() => setMobileOpen(false)}
         >
@@ -220,6 +218,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
             style={{
               background: "#FFFFFF",
               margin: "12px",
+              maxHeight: "calc(100dvh - 24px)",
+              overflowY: "auto",
               borderRadius: 24,
               padding: 22,
               boxShadow: "0 25px 60px rgba(17,17,17,.25)",
@@ -242,8 +242,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                 style={{
                   border: "none",
                   background: "#FBF4C6",
-                  width: 36,
-                  height: 36,
+                  width: 40,
+                  height: 40,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
@@ -251,7 +251,7 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                   cursor: "pointer",
                 }}
               >
-                <X size={17} />
+                <X size={18} />
               </button>
             </div>
 
@@ -282,6 +282,7 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                 marginTop: 16,
                 paddingTop: 16,
                 borderTop: "1px solid #D9D9D9",
+                flexWrap: "wrap",
               }}
             >
               <button
@@ -290,7 +291,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                   setMobileOpen(false);
                 }}
                 style={{
-                  flex: 1,
+                  flex: "1 1 130px",
+                  minHeight: 44,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -298,7 +300,7 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                   border: "none",
                   background: "#052675",
                   color: "white",
-                  padding: "13px",
+                  padding: "12px 14px",
                   borderRadius: 12,
                   fontWeight: 700,
                   fontSize: 14,
@@ -313,7 +315,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                   setMobileOpen(false);
                 }}
                 style={{
-                  flex: 1,
+                  flex: "1 1 130px",
+                  minHeight: 44,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -321,7 +324,7 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                   border: "1px solid #D9D9D9",
                   background: "#FBF4C6",
                   color: "#052675",
-                  padding: "13px",
+                  padding: "12px 14px",
                   borderRadius: 12,
                   fontWeight: 700,
                   fontSize: 14,
@@ -342,10 +345,11 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
                 justifyContent: "center",
                 gap: 8,
                 marginTop: 10,
+                minHeight: 44,
                 border: "none",
                 background: "#FBF4C6",
                 color: "#111111",
-                padding: "13px",
+                padding: "12px 14px",
                 borderRadius: 12,
                 fontWeight: 700,
                 fontSize: 14,
@@ -365,8 +369,8 @@ export default function Navbar({ setActiveView, currentView = "landing" }) {
           .navbar-right-desktop { display: none !important; }
           .navbar-hamburger { display: flex !important; }
         }
-        @media (max-width: 400px) {
-          .navbar-wordmark { display: none; }
+        @media (max-width: 360px) {
+          .navbar-wordmark { font-size: 18px !important; }
         }
       `}</style>
     </>

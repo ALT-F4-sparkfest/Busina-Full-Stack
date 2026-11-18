@@ -1,158 +1,20 @@
 /* ==========================================
-   COMMUTER HEADER
+   COMMUTER VIEW SHELL & OVERLAYS
 ========================================== */
 
-.commuter-header-modern {
-  height: 72px;
-
-  padding: 0 24px;
-
+.commuter-shell {
+  height: 100vh;
+  height: 100dvh;
+  background: #fbf4c6;
   display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  border-bottom: 1px solid var(--border);
-
-  background: white;
-
-  position: sticky;
-
-  top: 0;
-
-  z-index: 100;
-}
-
-.header-brand {
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-}
-
-.header-brand h1 {
-  font-size: 20px;
-
-  margin: 0;
-}
-
-.header-brand span {
-  font-size: 13px;
-
-  color: var(--text-light);
-}
-
-.header-right {
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-}
-
-.header-icon-btn {
-  width: 42px;
-
-  height: 42px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  background: #f4f6fa;
-
-  cursor: pointer;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  transition: 0.25s;
-}
-
-.header-icon-btn:hover {
-  background: #e6eeff;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.9;
-  }
-
-  70% {
-    transform: scale(1.6);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scale(1.6);
-    opacity: 0;
-  }
-}
-/* ============================
-   Floating Map Controls
-============================= */
-
-.map-floating-controls {
-  position: absolute;
-
-  right: 20px;
-
-  bottom: 20px;
-
-  display: flex;
-
   flex-direction: column;
-
-  gap: 12px;
-
-  z-index: 20;
+  overflow: hidden;
 }
-
-.floating-btn {
-  width: 52px;
-
-  height: 52px;
-
-  border: none;
-
-  border-radius: 16px;
-
-  background: white;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  cursor: pointer;
-
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-
-  transition: 0.2s;
-}
-
-.floating-btn:hover {
-  transform: translateY(-2px);
-
-  background: #eef4ff;
-}
-
-/* ==========================================
-   MOBILE RESPONSIVE — CommuterView overlays
-   Breakpoint matches layout.css (640px)
-========================================== */
 
 .todays-commute-strip {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px 20px;
   flex-wrap: wrap;
 }
 
@@ -165,17 +27,17 @@
 
 .commuter-route-filter {
   position: absolute;
-  top: 172px;
+  top: 148px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
+  z-index: 60;
 }
 
 .commuter-floating-controls {
   position: absolute;
   right: 16px;
-  bottom: calc(195px + var(--safe-bottom));
-  z-index: 100;
+  bottom: calc(210px + var(--safe-bottom));
+  z-index: 60;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -184,33 +46,46 @@
 .commuter-selected-vehicle-card {
   position: absolute;
   left: 16px;
-  bottom: calc(195px + var(--safe-bottom));
-  z-index: 100;
-  max-width: 300px;
+  bottom: calc(210px + var(--safe-bottom));
+  z-index: 70;
+  width: min(320px, calc(100vw - 88px));
 }
 
 .commuter-eta-card {
   position: absolute;
   right: 16px;
-  top: 130px;
-  z-index: 100;
+  top: 148px;
+  z-index: 65;
+  max-width: min(260px, calc(100vw - 32px));
 }
 
 @media (max-width: 640px) {
+  .todays-commute-strip {
+    gap: 6px 12px;
+    padding: 8px 12px !important;
+  }
+
+  .tcs-divider {
+    display: none;
+  }
+
+  .commuter-route-filter {
+    top: 122px;
+  }
+
   .commuter-floating-controls {
-    bottom: calc(260px + var(--safe-bottom));
+    right: 12px;
+    bottom: calc(236px + var(--safe-bottom));
   }
 
   .commuter-selected-vehicle-card {
     left: 12px;
-    right: 12px;
-    max-width: none;
-    bottom: calc(260px + var(--safe-bottom));
+    bottom: calc(236px + var(--safe-bottom));
+    width: calc(100vw - 76px);
   }
 
   .commuter-eta-card {
-    top: auto;
-    bottom: calc(260px + var(--safe-bottom));
+    top: 122px;
     right: 12px;
   }
 }

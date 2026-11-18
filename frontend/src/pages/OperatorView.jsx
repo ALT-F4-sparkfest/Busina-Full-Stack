@@ -1,6 +1,5 @@
 // src/pages/OperatorView.jsx
-
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { AlertCircle, Bus, MapPin, Clock, BarChart3 } from "lucide-react";
 import useLiveVehicles from "../hooks/useLiveVehicles";
 import LiveMap from "../components/map/LiveMap";
@@ -17,9 +16,9 @@ import Skeleton, {
 } from "../components/ui/Skeleton";
 
 const sectionSubtitleStyle = {
-  margin: "-8px 0 16px",
+  margin: "-4px 0 14px",
   fontSize: 13,
-  color: "#94A3B8",
+  color: "#64748B",
   lineHeight: 1.4,
 };
 
@@ -44,8 +43,6 @@ export default function OperatorView({ onBack }) {
     ...new Set(vehicleList.map((v) => v.route_id).filter(Boolean)),
   ];
 
-  // True only during the initial connect — once we've ever seen a vehicle,
-  // an empty list means "genuinely no vehicles," not "still loading."
   const isLoading = !live.connected && vehicleList.length === 0;
 
   const filteredVehicles =
@@ -53,14 +50,13 @@ export default function OperatorView({ onBack }) {
       ? vehicleList
       : vehicleList.filter((v) => v.route_id === filterRoute);
 
-  useEffect(() => {
-    if (filteredVehicles.length > 0 && !selectedVehicleId) {
-      setSelectedVehicleId(filteredVehicles[0].id);
-    }
-  }, [filteredVehicles, selectedVehicleId]);
+  const effectiveSelectedId =
+    selectedVehicleId && filteredVehicles.some((v) => v.id === selectedVehicleId)
+      ? selectedVehicleId
+      : (filteredVehicles[0]?.id ?? null);
 
   const selectedVehicle = filteredVehicles.find(
-    (v) => v.id === selectedVehicleId,
+    (v) => v.id === effectiveSelectedId,
   );
 
   const getStatus = (speed) => {
@@ -75,54 +71,58 @@ export default function OperatorView({ onBack }) {
       <SkeletonStyles />
       {/* Header */}
       <header className="operator-header">
-        <button
-          onClick={onBack}
-          style={{
-            border: "none",
-            background: "none",
-            fontSize: 20,
-            cursor: "pointer",
-            color: "#64748B",
-          }}
-        >
-          ←
-        </button>
-        <span
-          style={{
-            fontWeight: 700,
-            fontSize: 22,
-            letterSpacing: "-0.5px",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <BarChart3 size={20} color="#03164A" /> Operator Dashboard
-        </span>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            onClick={onBack}
+            aria-label="Back to landing page"
+            style={{
+              border: "none",
+              background: "#FBF4C6",
+              width: 38,
+              height: 38,
+              borderRadius: 10,
+              fontSize: 18,
+              cursor: "pointer",
+              color: "#03164A",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            ←
+          </button>
+          <span
+            style={{
+              fontWeight: 700,
+              fontSize: "clamp(17px, 2vw, 22px)",
+              letterSpacing: "-0.5px",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <BarChart3 size={20} color="#03164A" /> Operator Dashboard
+          </span>
+        </div>
+
+        <div className="operator-header-controls">
           <LiveSyncBadge
             vehicles={filteredVehicles}
             connected={live.connected}
           />
           <ConnectionStatusPill status={live.connected ? "live" : "offline"} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <MapPin size={16} color="#64748B" />
             <select
               value={filterRoute}
               onChange={(e) => setFilterRoute(e.target.value)}
+              aria-label="Filter by route"
               style={{
-                padding: "6px 14px",
+                padding: "7px 14px",
                 borderRadius: 20,
                 border: "1px solid #D9D9D9",
                 background: "white",
-                fontSize: 14,
+                fontSize: 13.5,
                 fontWeight: 500,
                 color: "#111111",
                 outline: "none",
@@ -140,13 +140,13 @@ export default function OperatorView({ onBack }) {
         </div>
       </header>
 
-      {/* Today's Commute strip — top bar, always visible */}
-      <div style={{ padding: "12px 32px 0" }}>
+      {/* Today's Commute strip */}
+      <div className="operator-section-pad">
         <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
       </div>
 
-      {/* KPI Cards — live snapshot of the fleet */}
-      <div style={{ padding: "16px 32px", flexShrink: 0 }}>
+      {/* KPI Cards */}
+      <div className="operator-kpi-pad">
         <KPICards vehicles={filteredVehicles} alerts={alerts} />
       </div>
 
@@ -171,7 +171,7 @@ export default function OperatorView({ onBack }) {
                   : null
               }
               routeId={selectedVehicle?.route_id}
-              selectedVehicleId={selectedVehicleId}
+              selectedVehicleId={effectiveSelectedId}
               onVehicleSelect={setSelectedVehicleId}
             />
             {isLoading && (
@@ -198,12 +198,11 @@ export default function OperatorView({ onBack }) {
         </div>
 
         <div className="operator-side">
-          {/* Vehicle details — full detail on whatever is selected */}
           <p
             style={{
-              margin: "0 0 -8px",
+              margin: "0 0 -6px",
               fontSize: 13,
-              color: "#94A3B8",
+              color: "#64748B",
               lineHeight: 1.4,
             }}
           >
@@ -220,7 +219,7 @@ export default function OperatorView({ onBack }) {
             style={{
               background: "white",
               borderRadius: 22,
-              padding: "20px 24px",
+              padding: "clamp(16px, 3vw, 22px)",
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
             }}
@@ -283,28 +282,27 @@ export default function OperatorView({ onBack }) {
               {!isLoading &&
                 filteredVehicles.map((v) => {
                   const status = getStatus(v.speed);
+                  const isSelected = v.id === effectiveSelectedId;
                   return (
                     <div
                       key={v.id}
                       onClick={() => setSelectedVehicleId(v.id)}
                       style={{
-                        padding: "12px 16px",
+                        padding: "12px 14px",
                         borderRadius: 12,
-                        background:
-                          v.id === selectedVehicleId ? "#E7ECFB" : "#FBF4C6",
-                        border:
-                          v.id === selectedVehicleId
-                            ? "2px solid #03164A"
-                            : "1px solid #D9D9D9",
+                        background: isSelected ? "#E7ECFB" : "#FBF4C6",
+                        border: isSelected
+                          ? "2px solid #03164A"
+                          : "1px solid #D9D9D9",
                         cursor: "pointer",
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        gap: 10,
                         transition: "all 0.2s",
-                        boxShadow:
-                          v.id === selectedVehicleId
-                            ? "0 4px 12px rgba(5,38,117,0.15)"
-                            : "none",
+                        boxShadow: isSelected
+                          ? "0 4px 12px rgba(5,38,117,0.15)"
+                          : "none",
                       }}
                     >
                       <div
@@ -312,18 +310,22 @@ export default function OperatorView({ onBack }) {
                           display: "flex",
                           flexDirection: "column",
                           gap: 2,
+                          minWidth: 0,
                         }}
                       >
                         <div
                           style={{
                             fontWeight: 600,
-                            fontSize: 16,
+                            fontSize: 15,
                             color: "#111111",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {v.id}
                         </div>
-                        <div style={{ fontSize: 13, color: "#64748B" }}>
+                        <div style={{ fontSize: 12.5, color: "#64748B" }}>
                           {v.route_id}
                         </div>
                       </div>
@@ -333,13 +335,14 @@ export default function OperatorView({ onBack }) {
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "flex-end",
-                          gap: 4,
+                          gap: 3,
+                          flexShrink: 0,
                         }}
                       >
                         <div
                           style={{
                             fontSize: 14,
-                            fontWeight: 500,
+                            fontWeight: 600,
                             color: "#111111",
                           }}
                         >
@@ -348,7 +351,7 @@ export default function OperatorView({ onBack }) {
                         <div
                           style={{
                             fontSize: 12,
-                            color: "#94A3B8",
+                            color: "#64748B",
                             display: "flex",
                             alignItems: "center",
                             gap: 4,
@@ -388,7 +391,7 @@ export default function OperatorView({ onBack }) {
             style={{
               background: "white",
               borderRadius: 22,
-              padding: "20px 24px",
+              padding: "clamp(16px, 3vw, 22px)",
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
             }}
@@ -453,7 +456,7 @@ export default function OperatorView({ onBack }) {
                   const isCritical = alert.severity === "critical";
                   return (
                     <div
-                      key={idx}
+                      key={alert.alert_id || idx}
                       style={{
                         padding: "12px 16px",
                         borderRadius: 12,
@@ -469,6 +472,7 @@ export default function OperatorView({ onBack }) {
                           display: "flex",
                           alignItems: "center",
                           gap: 8,
+                          flexWrap: "wrap",
                         }}
                       >
                         <span
@@ -482,7 +486,7 @@ export default function OperatorView({ onBack }) {
                             borderRadius: 999,
                           }}
                         >
-                          {alert.severity || "info"}
+                          {alert.severity || alert.status || "info"}
                         </span>
                         <span
                           style={{
@@ -491,18 +495,22 @@ export default function OperatorView({ onBack }) {
                             color: "#111111",
                           }}
                         >
-                          {alert.vehicle_id || "System"}
+                          {alert.vehicle_id || alert.route_id || "System"}
                         </span>
                       </div>
                       <div style={{ fontSize: 14, color: "#475569" }}>
                         {alert.message}
                       </div>
-                      <div style={{ fontSize: 12, color: "#94A3B8" }}>
-                        {new Date(alert.timestamp).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
+                      {(alert.timestamp || alert.detected_at) && (
+                        <div style={{ fontSize: 12, color: "#94A3B8" }}>
+                          {new Date(
+                            alert.timestamp || alert.detected_at,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

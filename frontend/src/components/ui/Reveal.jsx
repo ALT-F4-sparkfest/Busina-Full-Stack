@@ -1,29 +1,21 @@
 // src/components/ui/Reveal.jsx
-//
-// Wrap any section in <Reveal> to fade+slide it in the first time it enters
-// the viewport. No animation library — just IntersectionObserver + CSS.
-//
-//   <Reveal><Stats /></Reveal>
-//   <Reveal delay={150}><Features /></Reveal>
-//
-// Fires once (unobserves after first reveal) so scrolling back up/down
-// doesn't repeatedly re-trigger it — that gets distracting fast.
-
 import { useEffect, useRef, useState } from "react";
+
+function prefersReducedMotion() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
 
 export default function Reveal({ children, delay = 0, threshold = 0.15 }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(prefersReducedMotion);
 
   useEffect(() => {
+    if (visible) return;
     const el = ref.current;
     if (!el) return;
-
-    // Respect reduced-motion: show immediately, no observer needed
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(true);
-      return;
-    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -37,7 +29,7 @@ export default function Reveal({ children, delay = 0, threshold = 0.15 }) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, visible]);
 
   return (
     <div

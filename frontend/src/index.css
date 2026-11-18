@@ -4,62 +4,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 /* ===========================
-   GLOBAL DESIGN SYSTEM
+   TYPOGRAPHY & TOKENS
 =========================== */
-
 :root {
-  --primary: #052675;
-  --primary-dark: #03164a;
-
-  --success: #052675;
-  --warning: #fca307;
-  --danger: #fd4847;
-
-  --background: #fbf4c6;
-  --surface: #ffffff;
-
-  --text: #111111;
-  --muted: #64748b;
-
-  --radius: 20px;
-
-  --shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.06);
-  --shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
-
-  --transition: 0.25s ease;
-
-  /* Typography */
   --font-display: "Bebas Neue", "Archivo Black", sans-serif;
   --font-body:
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-numeric: "Space Grotesk", "Inter", sans-serif;
 }
 
-/* Headings use the display font, wide letter-spacing to counter
-   Bebas Neue's tight condensed default */
-h1,
-h2,
-h3,
-h4,
 .font-display {
   font-family: var(--font-display);
   letter-spacing: 0.5px;
-  font-weight: 400; /* Bebas Neue has no weight variance, don't force 700/800 */
+  font-weight: 400;
   line-height: 1.05;
 }
 
-/* Numbers/metrics/KPIs — anywhere a big stat is displayed */
 .font-numeric {
   font-family: var(--font-numeric);
   font-weight: 700;
 }
 
 /* ===========================
-   LIVE PULSE — one canonical animation used everywhere something
-   is marked "live." Keeps that visual language consistent across
-   Landing, Hero, Operator, Commuter instead of every component
-   reinventing its own pulse timing/easing.
+   LIVE PULSE ANIMATIONS
 =========================== */
 @keyframes busina-live-pulse {
   0%,
@@ -79,8 +46,6 @@ h4,
   animation: busina-live-pulse 2s ease-in-out infinite;
 }
 
-/* For text/icon-based live badges (no dot shape) — a gentler opacity
-   breathe instead of a scale pulse, so text doesn't visually jitter */
 @keyframes busina-live-breathe {
   0%,
   100% {
@@ -90,15 +55,17 @@ h4,
     opacity: 0.55;
   }
 }
+
 .busina-live-breathe {
   animation: busina-live-breathe 2s ease-in-out infinite;
 }
 
 /* ===========================
-   RESET
+   BASE & RESET
 =========================== */
-
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -118,141 +85,91 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
 }
 
 /* ===========================
-   GLOBAL ELEMENTS
+   PWA UPDATE TOAST
 =========================== */
-
-button {
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-input {
-  border: 1px solid #d9d9d9;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 15px;
-  outline: none;
-  transition: 0.2s;
-}
-
-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(5, 38, 117, 0.15);
-}
-
-.card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px;
-  transition: var(--transition);
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-/* ===========================
-   COMMUTER
-=========================== */
-
-.bottom-sheet {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 10;
-}
-
-.sheet-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 12px 0;
-  font-size: 15px;
-}
-
-.search-overlay {
-  position: absolute;
-  top: 20px;
+.pwa-toast {
+  position: fixed;
+  bottom: calc(20px + var(--safe-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20;
-
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  background: white;
-
-  width: min(650px, 90%);
-
-  padding: 12px 18px;
-
-  border-radius: 999px;
-
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-}
-
-.search-overlay input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
-  box-shadow: none;
-}
-
-.search-overlay input:focus {
-  box-shadow: none;
-}
-
-.search-overlay button {
-  width: 42px;
-  height: 42px;
-
-  border-radius: 50%;
-
-  background: var(--primary);
+  background: #111111;
   color: white;
-
+  padding: 14px 20px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.search-overlay button:hover {
-  background: var(--primary-dark);
-  transform: scale(1.08);
-}
-
-/* ===========================
-   POPUPS
-=========================== */
-
-.popup-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 12px 0;
+  gap: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  max-width: min(92vw, 440px);
+  width: max-content;
   font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pwa-toast-muted {
+  background: #052675;
+}
+
+.pwa-toast-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.pwa-toast-text strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pwa-toast-text span {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+.pwa-toast-btn {
+  background: #fca307;
+  border: none;
+  color: #03164a;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pwa-toast-btn:hover {
+  background: #e69200;
+}
+
+.pwa-toast-dismiss {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
 }
 
 /* ===========================
    SCROLLBAR
 =========================== */
-
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {

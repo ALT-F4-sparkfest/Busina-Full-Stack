@@ -1,10 +1,10 @@
 // src/components/landing/ProofStrip.jsx
-import { Bus, Users, Target, Wifi, Cpu } from "lucide-react";
+import { Bus, Route, Target, Wifi, Cpu } from "lucide-react";
 import useCountUp from "../../hooks/useCountUp";
 
 const PROOF = [
   { icon: <Bus size={16} />, value: "10", label: "Vehicles" },
-  { icon: <Users size={16} />, value: "X", label: "Riders" },
+  { icon: <Route size={16} />, value: "5", label: "Routes" },
   { icon: <Target size={16} />, value: "97%", label: "ETA Accuracy" },
   { icon: <Wifi size={16} />, value: "MQTT", label: "Streaming" },
   { icon: <Cpu size={16} />, value: "ESP32", label: "Hardware Ready" },
@@ -34,12 +34,12 @@ export default function ProofStrip() {
       style={{
         display: "flex",
         flexWrap: "wrap",
-        gap: 20,
+        gap: "12px 20px",
         padding: "14px 18px",
-        background: "rgba(255,255,255,.7)",
+        background: "rgba(255,255,255,.75)",
         border: "1px solid #D9D9D9",
         borderRadius: 16,
-        marginTop: 8,
+        marginTop: 6,
       }}
     >
       {PROOF.map((item) => (

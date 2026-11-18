@@ -1,35 +1,31 @@
 // src/components/map/VehicleMarker.jsx
-
 import { Marker } from "@react-google-maps/api";
 import useAnimatedPosition from "../../hooks/useAnimatedPosition";
 
-// Bus icon (same as before)
 const busIcon = (isSelected) => ({
-  path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+  path: window.google?.maps?.SymbolPath?.FORWARD_CLOSED_ARROW ?? 1,
   fillColor: isSelected ? "#EF4444" : "#2563EB",
   fillOpacity: 1,
   strokeColor: "#FFFFFF",
   strokeWeight: 2,
   scale: isSelected ? 7 : 6,
-  rotation: 0, // actual heading is set by Marker
+  rotation: 0,
 });
+
 export default function VehicleMarker({ vehicle, isSelected, onClick }) {
-  // Validate vehicle
-  if (
-    !vehicle ||
-    typeof vehicle.lat !== "number" ||
-    typeof vehicle.lng !== "number"
-  ) {
+  const isValid =
+    Boolean(vehicle) &&
+    typeof vehicle.lat === "number" &&
+    typeof vehicle.lng === "number";
+
+  const animatedPos = useAnimatedPosition(
+    isValid ? { lat: vehicle.lat, lng: vehicle.lng } : null,
+  );
+
+  if (!isValid) {
     return null;
   }
 
-  // Get interpolated position
-  const animatedPos = useAnimatedPosition({
-    lat: vehicle.lat,
-    lng: vehicle.lng,
-  });
-
-  // If no animated position yet, fallback to vehicle's raw position
   const position = animatedPos || { lat: vehicle.lat, lng: vehicle.lng };
 
   const handleClick = () => {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { fetchVehicles } from "../api/vehicleApi";
 import { useDemoSimulation } from "./useDemoSimulation";
 
@@ -21,7 +20,7 @@ export default function useBackendVehicles() {
 
         setVehicles(backendVehicles);
         setConnected(true);
-      } catch (error) {
+      } catch {
         console.warn("Backend unavailable. Falling back to Demo Mode.");
 
         if (cancelled) return;

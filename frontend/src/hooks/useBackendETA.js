@@ -1,34 +1,27 @@
 import { useEffect, useState } from "react";
-
 import { fetchVehicleETAs } from "../api/vehicleApi";
 
 export default function useBackendETA(vehicleId) {
-  const [etas, setEtas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [state, setState] = useState({
+    vehicleId: null,
+    etas: [],
+    loading: false,
+  });
 
   useEffect(() => {
-    if (!vehicleId) {
-      setEtas([]);
-      setLoading(false);
-      return;
-    }
+    if (!vehicleId) return;
 
     let cancelled = false;
 
     async function loadETA() {
       try {
         const data = await fetchVehicleETAs(vehicleId);
-
         if (!cancelled) {
-          setEtas(data);
+          setState({ vehicleId, etas: data || [], loading: false });
         }
-      } catch (error) {
+      } catch {
         if (!cancelled) {
-          setEtas([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
+          setState({ vehicleId, etas: [], loading: false });
         }
       }
     }
@@ -40,8 +33,9 @@ export default function useBackendETA(vehicleId) {
     };
   }, [vehicleId]);
 
+  const isCurrent = Boolean(vehicleId) && state.vehicleId === vehicleId;
   return {
-    etas,
-    loading,
+    etas: isCurrent ? state.etas : [],
+    loading: Boolean(vehicleId) && !isCurrent,
   };
 }

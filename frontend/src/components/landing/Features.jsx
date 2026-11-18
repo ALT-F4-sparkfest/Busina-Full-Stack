@@ -54,11 +54,7 @@ export default function Features() {
   ];
 
   return (
-    <section
-      style={{
-        padding: "40px 8% 60px",
-      }}
-    >
+    <div>
       <div
         style={{
           textAlign: "center",
@@ -81,7 +77,7 @@ export default function Features() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(34px, 4.5vw, 48px)",
+            fontSize: "clamp(28px, 4.5vw, 48px)",
             fontWeight: 800,
             color: "#111111",
             marginBottom: 12,
@@ -115,11 +111,11 @@ export default function Features() {
             key={feature.title}
             className="hover-lift"
             style={{
-              background: "rgba(255,255,255,.85)",
+              background: "rgba(255,255,255,.88)",
               backdropFilter: "blur(18px)",
               borderRadius: 24,
-              padding: 32,
-              border: "1px solid rgba(255,255,255,.45)",
+              padding: "clamp(22px, 4vw, 32px)",
+              border: "1px solid #E2E8F0",
               boxShadow: "0 16px 40px rgba(17,17,17,.06)",
               cursor: "default",
             }}
@@ -142,7 +138,7 @@ export default function Features() {
 
             <h3
               style={{
-                fontSize: 26,
+                fontSize: "clamp(20px, 2.5vw, 24px)",
                 marginBottom: 8,
                 color: "#111111",
                 fontWeight: 700,
@@ -154,9 +150,9 @@ export default function Features() {
             <p
               style={{
                 color: "#64748B",
-                lineHeight: 1.7,
-                fontSize: 18,
-                marginBottom: 12,
+                lineHeight: 1.65,
+                fontSize: "clamp(15px, 1.1vw, 17px)",
+                marginBottom: 14,
               }}
             >
               {feature.description}
@@ -165,9 +161,9 @@ export default function Features() {
             <div
               style={{
                 display: "inline-block",
-                background: `${feature.color}12`,
+                background: `${feature.color}14`,
                 color: feature.color,
-                padding: "2px 14px",
+                padding: "4px 14px",
                 borderRadius: 999,
                 fontSize: 12,
                 fontWeight: 600,
@@ -178,6 +174,6 @@ export default function Features() {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

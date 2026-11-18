@@ -1,29 +1,18 @@
 // src/components/auth/OperatorLoginGate.jsx
-//
-// Wraps OperatorView so it can't be reached without logging in first.
-// Commuter view is completely untouched — this only gates the operator side.
-//
-// HOW TO WIRE IT UP (in App.jsx, wherever you currently render OperatorView):
-//
-//   import OperatorLoginGate from "./components/auth/OperatorLoginGate";
-//   ...
-//   {activeView === "operator" && (
-//     <OperatorLoginGate onLogout={() => setActiveView("landing")}>
-//       <OperatorView />
-//     </OperatorLoginGate>
-//   )}
-//
-// AUTH IS CURRENTLY A STUB — see `verifyLogin` below. Swap that one function
-// for a real Supabase/Express call later; nothing else needs to change.
-
 import { useState } from "react";
-import { Bus, Lock, Mail, Eye, EyeOff, ArrowRight, LogOut } from "lucide-react";
+import {
+  Bus,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  LogOut,
+  ArrowLeft,
+} from "lucide-react";
 
-// ── Stub verification — replace with real auth later ───────────────────────
 async function verifyLogin(email, password) {
-  await new Promise((r) => setTimeout(r, 600)); // fake network delay
-  // TEMP: accept anything non-empty so the flow is demoable.
-  // Swap this block for: const { data, error } = await supabase.auth.signInWithPassword(...)
+  await new Promise((r) => setTimeout(r, 600));
   if (!email || !password) {
     return { ok: false, message: "Enter both email and password." };
   }
@@ -34,7 +23,12 @@ export default function OperatorLoginGate({ children, onLogout }) {
   const [authed, setAuthed] = useState(false);
 
   if (!authed) {
-    return <OperatorLoginModal onSuccess={() => setAuthed(true)} />;
+    return (
+      <OperatorLoginModal
+        onSuccess={() => setAuthed(true)}
+        onCancel={onLogout}
+      />
+    );
   }
 
   return (
@@ -48,11 +42,11 @@ export default function OperatorLoginGate({ children, onLogout }) {
       {children}
       <style>{`
         .operator-gate-reveal {
-          animation: busina-gate-fade 0.35s ease-out;
+          animation: busina-gate-fade 0.3s ease-out;
         }
         @keyframes busina-gate-fade {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
     </div>
@@ -60,7 +54,7 @@ export default function OperatorLoginGate({ children, onLogout }) {
 }
 
 /* ── Login Modal ──────────────────────────────────────────────────────────── */
-function OperatorLoginModal({ onSuccess }) {
+function OperatorLoginModal({ onSuccess, onCancel }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -92,7 +86,8 @@ function OperatorLoginModal({ onSuccess }) {
         background: "rgba(17,17,17,.55)",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
-        padding: 20,
+        padding: 16,
+        overflowY: "auto",
       }}
     >
       <form
@@ -102,11 +97,33 @@ function OperatorLoginModal({ onSuccess }) {
           maxWidth: 420,
           background: "#FFFFFF",
           borderRadius: 24,
-          padding: "40px 36px",
+          padding: "clamp(24px, 5vw, 40px) clamp(20px, 5vw, 36px)",
           boxShadow: "0 30px 80px rgba(17,17,17,.35)",
           border: "1px solid #D9D9D9",
         }}
       >
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "none",
+              border: "none",
+              color: "#64748B",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              marginBottom: 16,
+              padding: 0,
+            }}
+          >
+            <ArrowLeft size={15} /> Back to Home
+          </button>
+        )}
+
         {/* Header */}
         <div
           style={{
@@ -122,7 +139,7 @@ function OperatorLoginModal({ onSuccess }) {
               height: 48,
               borderRadius: 14,
               background: "linear-gradient(135deg,#052675,#1B3E8F)",
-              color: "#111111",
+              color: "#FFFFFF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -146,7 +163,7 @@ function OperatorLoginModal({ onSuccess }) {
           style={{
             height: 1,
             background: "#D9D9D9",
-            margin: "24px 0",
+            margin: "20px 0",
           }}
         />
 
@@ -165,7 +182,7 @@ function OperatorLoginModal({ onSuccess }) {
         </div>
 
         {/* Password */}
-        <label style={{ ...fieldLabel, marginTop: 18 }}>Password</label>
+        <label style={{ ...fieldLabel, marginTop: 16 }}>Password</label>
         <div style={inputWrap}>
           <Lock size={17} color="#64748B" />
           <input
@@ -185,7 +202,7 @@ function OperatorLoginModal({ onSuccess }) {
               color: "#64748B",
               display: "flex",
               alignItems: "center",
-              padding: 0,
+              padding: 4,
             }}
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
@@ -216,8 +233,9 @@ function OperatorLoginModal({ onSuccess }) {
           disabled={loading}
           style={{
             width: "100%",
-            marginTop: 24,
+            marginTop: 22,
             padding: 15,
+            minHeight: 48,
             borderRadius: 14,
             border: "none",
             background: loading ? "#9CA3AF" : "#03164A",
@@ -244,14 +262,14 @@ function OperatorLoginModal({ onSuccess }) {
             color: "#9CA3AF",
           }}
         >
-          Forget your password? Contact your TODA administrator.
+          Forgot your password? Contact your TODA administrator.
         </div>
       </form>
     </div>
   );
 }
 
-/* ── Session bar shown once logged in (adds a way to log out) ──────────────── */
+/* ── Session bar shown once logged in ─────────────────────────────────────── */
 function OperatorSessionBar({ onLogout }) {
   return (
     <div
@@ -259,12 +277,14 @@ function OperatorSessionBar({ onLogout }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "12px 24px",
+        padding: "10px 20px",
         background: "#E7ECFB",
         borderBottom: "1px solid #D9D9D9",
         fontSize: 13,
         fontWeight: 600,
         color: "#052675",
+        flexWrap: "wrap",
+        gap: 8,
       }}
     >
       <span>🔒 Operator session active</span>
@@ -289,7 +309,6 @@ function OperatorSessionBar({ onLogout }) {
   );
 }
 
-/* ── shared field styles ─────────────────────────────────────────────────── */
 const fieldLabel = {
   display: "block",
   fontSize: 13,
@@ -310,6 +329,7 @@ const inputWrap = {
 
 const inputStyle = {
   flex: 1,
+  minWidth: 0,
   border: "none",
   outline: "none",
   background: "transparent",

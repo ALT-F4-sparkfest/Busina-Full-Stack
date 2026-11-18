@@ -1,12 +1,5 @@
 // src/components/landing/Stats.jsx
-import {
-  Bus,
-  Users,
-  Clock3,
-  Brain,
-  TrendingUp,
-  ShieldCheck,
-} from "lucide-react";
+import { Bus, Clock3, TrendingUp, ShieldCheck } from "lucide-react";
 import useCountUp from "../../hooks/useCountUp";
 
 export default function Stats() {
@@ -38,12 +31,8 @@ export default function Stats() {
   ];
 
   return (
-    <section
-      style={{
-        padding: "20px 8% 80px",
-      }}
-    >
-      <div style={{ textAlign: "center", marginBottom: 40 }}>
+    <div>
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
         <div
           style={{
             display: "inline-block",
@@ -60,7 +49,7 @@ export default function Stats() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 6vw, 48px)",
+            fontSize: "clamp(26px, 5vw, 46px)",
             fontWeight: 800,
             color: "#111111",
             margin: "0 0 12px",
@@ -72,7 +61,7 @@ export default function Stats() {
           style={{
             maxWidth: 640,
             margin: "0 auto",
-            fontSize: 17,
+            fontSize: "clamp(15px, 1.1vw, 17px)",
             lineHeight: 1.7,
             color: "#64748B",
           }}
@@ -94,7 +83,7 @@ export default function Stats() {
           <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -106,12 +95,12 @@ function StatCard({ stat }) {
       ref={ref}
       className="hover-lift"
       style={{
-        background: "rgba(255,255,255,.82)",
+        background: "rgba(255,255,255,.88)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
         borderRadius: 24,
         padding: 24,
-        border: "1px solid rgba(255,255,255,.45)",
+        border: "1px solid #E2E8F0",
         boxShadow: "0 12px 32px rgba(17,17,17,.06)",
         cursor: "default",
       }}

@@ -1,20 +1,27 @@
 // src/components/PwaUpdateToast.jsx
 export default function PwaUpdateToast({
   updateAvailable,
+  needRefresh,
   applyUpdate,
+  onUpdate,
   offlineReady,
   dismissOfflineReady,
+  onDismissOffline,
 }) {
-  if (!updateAvailable && !offlineReady) return null;
+  const hasUpdate = updateAvailable ?? needRefresh;
+  const handleUpdate = applyUpdate ?? onUpdate;
+  const handleDismiss = dismissOfflineReady ?? onDismissOffline;
 
-  if (updateAvailable) {
+  if (!hasUpdate && !offlineReady) return null;
+
+  if (hasUpdate) {
     return (
       <div className="pwa-toast">
         <div className="pwa-toast-text">
           <strong>New version available</strong>
           <span>Reload to get the latest BUSINA.</span>
         </div>
-        <button className="pwa-toast-btn" onClick={applyUpdate}>
+        <button className="pwa-toast-btn" onClick={handleUpdate}>
           Reload
         </button>
       </div>
@@ -29,7 +36,7 @@ export default function PwaUpdateToast({
       </div>
       <button
         className="pwa-toast-dismiss"
-        onClick={dismissOfflineReady}
+        onClick={handleDismiss}
         aria-label="Dismiss"
       >
         ✕

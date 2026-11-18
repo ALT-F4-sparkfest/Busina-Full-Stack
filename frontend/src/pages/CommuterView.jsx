@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Bus, Clock3, MapPin, RefreshCw, LocateFixed } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
 import BottomSheet from "../components/commuter/BottomSheet";
@@ -9,6 +9,7 @@ import useLiveVehicles from "../hooks/useLiveVehicles";
 import businaIcon from "../assets/busina-icon-transparent.png";
 import TodaysCommuteStrip from "../components/landing/TodaysCommuteStrip";
 import "../styles/commuter.css";
+
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -32,14 +33,6 @@ const SERVICE_POINTS = [
   "Pasig",
   "San Juan",
   "Makati",
-];
-
-const VALID_ROUTES = [
-  ["Cubao", "Divisoria"],
-  ["Cubao", "Marikina"],
-  ["Cubao", "Pasig"],
-  ["Cubao", "San Juan"],
-  ["Cubao", "Makati"],
 ];
 
 function isDestinationInScope(text) {
@@ -103,7 +96,7 @@ export default function CommuterView({ onBack }) {
   const selectedVehicle = nearest.find((v) => v.id === selectedVehicleId);
 
   const handleDestinationSubmit = async (dest) => {
-    const target = (dest || destination).trim();
+    const target = (dest ?? destination).trim();
     if (!target) return;
 
     setRouteError(null);
@@ -120,14 +113,12 @@ export default function CommuterView({ onBack }) {
     setLoadingEta(true);
 
     try {
-      // Automatically select nearest live vehicle
       const targetVehicle = selectedVehicle ?? nearest[0];
 
       if (!targetVehicle) {
         throw new Error("no-live-vehicle");
       }
 
-      // Optional: update selected vehicle on map
       if (!selectedVehicle) {
         setSelectedVehicleId(targetVehicle.id);
       }
@@ -169,7 +160,7 @@ export default function CommuterView({ onBack }) {
     setIsWaiting((prev) => {
       const next = !prev;
       if (next) {
-        live.socket?.emit?.("commuter-waiting", {
+        live.emit?.("commuter-waiting", {
           lat: userLocation.lat,
           lng: userLocation.lng,
           route: selectedVehicle?.route_id,
@@ -196,23 +187,16 @@ export default function CommuterView({ onBack }) {
   const refresh = () => setMapKey((k) => k + 1);
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        background: "#FBF4C6",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="commuter-shell">
       {/* Header */}
       <header
         style={{
-          minHeight: 64,
+          minHeight: 60,
           background: "white",
           borderBottom: "1px solid #D9D9D9",
           display: "flex",
           alignItems: "center",
-          padding: "10px 16px",
+          padding: "8px 14px",
           gap: 10,
           zIndex: 100,
           flexShrink: 0,
@@ -221,11 +205,12 @@ export default function CommuterView({ onBack }) {
       >
         <button
           onClick={onBack}
+          aria-label="Back to landing page"
           style={{
             border: "none",
             background: "#FBF4C6",
-            width: 38,
-            height: 38,
+            width: 40,
+            height: 40,
             borderRadius: 10,
             cursor: "pointer",
             fontSize: 16,
@@ -241,7 +226,7 @@ export default function CommuterView({ onBack }) {
               alignItems: "center",
               gap: 8,
               fontWeight: 800,
-              fontSize: 18,
+              fontSize: 17,
               color: "#111111",
             }}
           >
@@ -260,10 +245,34 @@ export default function CommuterView({ onBack }) {
             marginLeft: "auto",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 8,
             flexWrap: "wrap",
           }}
         >
+          <select
+            value={routeFilter}
+            onChange={(e) => setRouteFilter(e.target.value)}
+            aria-label="Filter route"
+            style={{
+              border: "1px solid #D9D9D9",
+              outline: "none",
+              padding: "7px 12px",
+              borderRadius: 999,
+              background: "#FBF4C6",
+              fontWeight: 600,
+              fontSize: 12.5,
+              color: "#111111",
+              cursor: "pointer",
+              maxWidth: 165,
+            }}
+          >
+            <option value="all">All Routes</option>
+            {routes.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
           <span className="commuter-sync-badge">
             <LiveSyncBadge vehicles={vehicleList} connected={live.connected} />
           </span>
@@ -271,13 +280,13 @@ export default function CommuterView({ onBack }) {
         </div>
       </header>
 
-      {/* Today's Commute strip — always visible now, no toggle */}
-      <div style={{ padding: "10px 16px 0", flexShrink: 0 }}>
+      {/* Today's Commute strip */}
+      <div style={{ padding: "8px 14px 0", flexShrink: 0 }}>
         <TodaysCommuteStrip activeVehicleCount={vehicleList.length} />
       </div>
 
       <style>{`
-        @media (max-width: 480px) {
+        @media (max-width: 640px) {
           .commuter-sync-badge { display: none; }
         }
       `}</style>
@@ -297,41 +306,15 @@ export default function CommuterView({ onBack }) {
         <SearchOverlay
           destination={destination}
           setDestination={setDestination}
-          onSearch={() => handleDestinationSubmit()}
+          onSearch={(dest) => handleDestinationSubmit(dest)}
           loading={loadingEta}
-          connected={live.connected}
         />
-
-        <div className="commuter-route-filter">
-          <select
-            value={routeFilter}
-            onChange={(e) => setRouteFilter(e.target.value)}
-            style={{
-              border: "1px solid #D9D9D9",
-              outline: "none",
-              padding: "10px 16px",
-              borderRadius: 14,
-              background: "white",
-              boxShadow: "0 4px 16px rgba(0,0,0,.10)",
-              fontWeight: 600,
-              fontSize: 13,
-              color: "#111111",
-              cursor: "pointer",
-            }}
-          >
-            <option value="all">All Routes</option>
-            {routes.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
 
         <div className="commuter-floating-controls">
           <button
             onClick={recenter}
             title="Recenter map"
+            aria-label="Recenter map"
             style={{
               width: 44,
               height: 44,
@@ -350,6 +333,7 @@ export default function CommuterView({ onBack }) {
           <button
             onClick={refresh}
             title="Refresh vehicles"
+            aria-label="Refresh vehicles"
             style={{
               width: 44,
               height: 44,
@@ -371,30 +355,39 @@ export default function CommuterView({ onBack }) {
           <div className="commuter-selected-vehicle-card">
             <div
               style={{
-                background: "rgba(255,255,255,.95)",
+                background: "rgba(255,255,255,.96)",
                 backdropFilter: "blur(18px)",
                 borderRadius: 20,
-                padding: 16,
-                boxShadow: "0 12px 32px rgba(0,0,0,.12)",
-                border: "1px solid rgba(255,255,255,.4)",
+                padding: 14,
+                boxShadow: "0 12px 32px rgba(0,0,0,.14)",
+                border: "1px solid rgba(226,232,240,.8)",
               }}
             >
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
+                    width: 40,
+                    height: 40,
                     borderRadius: 12,
                     background: "#E7ECFB",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    flexShrink: 0,
                   }}
                 >
-                  <Bus size={22} color="#03164A" />
+                  <Bus size={20} color="#03164A" />
                 </div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 16 }}>
+                <div style={{ minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: 15,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {selectedVehicle.id}
                   </div>
                   <div style={{ color: "#64748B", fontSize: 12 }}>
@@ -403,13 +396,15 @@ export default function CommuterView({ onBack }) {
                 </div>
                 <button
                   onClick={() => setSelectedVehicleId(null)}
+                  aria-label="Close vehicle details"
                   style={{
                     marginLeft: "auto",
                     background: "none",
                     border: "none",
                     cursor: "pointer",
                     color: "#94A3B8",
-                    fontSize: 18,
+                    fontSize: 20,
+                    padding: "4px 8px",
                   }}
                 >
                   ×
@@ -420,7 +415,7 @@ export default function CommuterView({ onBack }) {
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
                   gap: 8,
-                  marginTop: 12,
+                  marginTop: 10,
                 }}
               >
                 <MiniInfo
@@ -470,13 +465,13 @@ export default function CommuterView({ onBack }) {
           <div className="commuter-eta-card">
             <div
               style={{
-                background: "rgba(255,255,255,.95)",
+                background: "rgba(255,255,255,.96)",
                 backdropFilter: "blur(18px)",
-                borderRadius: 20,
-                padding: 16,
-                boxShadow: "0 12px 32px rgba(0,0,0,.12)",
-                border: "1px solid rgba(255,255,255,.4)",
-                minWidth: 160,
+                borderRadius: 18,
+                padding: 14,
+                boxShadow: "0 12px 32px rgba(0,0,0,.14)",
+                border: "1px solid rgba(226,232,240,.8)",
+                minWidth: 150,
               }}
             >
               <div
@@ -493,7 +488,7 @@ export default function CommuterView({ onBack }) {
               <div
                 className="font-numeric"
                 style={{
-                  fontSize: 38,
+                  fontSize: 34,
                   color: "#111111",
                   lineHeight: 1.1,
                   marginTop: 4,
@@ -510,7 +505,7 @@ export default function CommuterView({ onBack }) {
               <button
                 onClick={() => setEta(null)}
                 style={{
-                  marginTop: 8,
+                  marginTop: 6,
                   background: "none",
                   border: "none",
                   color: "#94A3B8",
@@ -591,14 +586,14 @@ function MiniInfo({ label, value }) {
       style={{
         background: "#FBF4C6",
         borderRadius: 10,
-        padding: "8px 10px",
+        padding: "7px 8px",
         textAlign: "center",
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>
+      <div style={{ fontSize: 12.5, fontWeight: 600, color: "#111111" }}>
         {value}
       </div>
-      <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 2 }}>
+      <div style={{ fontSize: 10, color: "#64748B", marginTop: 2 }}>
         {label}
       </div>
     </div>

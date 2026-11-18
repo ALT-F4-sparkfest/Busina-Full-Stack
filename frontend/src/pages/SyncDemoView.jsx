@@ -1,18 +1,4 @@
 // src/pages/SyncDemoView.jsx
-//
-// Built specifically for the judging moment. Instead of switching between
-// tabs/devices and asking judges to trust that commuter + operator are in
-// sync, this renders both live maps side-by-side from the SAME useLiveVehicles
-// hook call. When a vehicle moves, both panes move at the same instant —
-// because they're not two data sources, they're one.
-//
-// Clicking a vehicle on either side highlights it on both — that click-to-highlight
-// is the concrete, undeniable "yes this is really connected" moment.
-//
-// Wire up: add a case in App.jsx, e.g.
-//   case "sync-demo": return <SyncDemoView onBack={goLanding} />;
-// and a button somewhere reachable (Landing page footer, or ?mode=sync-demo)
-
 import { useState } from "react";
 import { Radio, ArrowLeftRight } from "lucide-react";
 import LiveMap from "../components/map/LiveMap";
@@ -39,7 +25,8 @@ export default function SyncDemoView({ onBack }) {
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100dvh",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         background: "#111111",
@@ -48,18 +35,20 @@ export default function SyncDemoView({ onBack }) {
       {/* Header */}
       <header
         style={{
-          height: 64,
+          minHeight: 60,
           background: "#111111",
           borderBottom: "1px solid #2A2A2A",
           display: "flex",
           alignItems: "center",
-          padding: "0 24px",
-          gap: 16,
+          padding: "10px 16px",
+          gap: 12,
           flexShrink: 0,
+          flexWrap: "wrap",
         }}
       >
         <button
           onClick={onBack}
+          aria-label="Back to landing page"
           style={{
             border: "none",
             background: "#2A2A2A",
@@ -69,11 +58,18 @@ export default function SyncDemoView({ onBack }) {
             borderRadius: 10,
             cursor: "pointer",
             fontSize: 16,
+            flexShrink: 0,
           }}
         >
           ←
         </button>
-        <div style={{ color: "white", fontWeight: 800, fontSize: 18 }}>
+        <div
+          style={{
+            color: "white",
+            fontWeight: 800,
+            fontSize: "clamp(15px, 2vw, 18px)",
+          }}
+        >
           🚌 BUSINA — Live Sync Demo
         </div>
         <div
@@ -93,17 +89,19 @@ export default function SyncDemoView({ onBack }) {
         style={{
           background: "#1A1A1A",
           color: "#9CA3AF",
-          fontSize: 13,
-          padding: "10px 24px",
+          fontSize: 12.5,
+          padding: "10px 16px",
           display: "flex",
           alignItems: "center",
           gap: 8,
           flexShrink: 0,
         }}
       >
-        <ArrowLeftRight size={14} color="#052675" />
-        Same live feed, two views — click any vehicle to highlight it on both
-        sides at once.
+        <ArrowLeftRight size={14} color="#FCA307" style={{ flexShrink: 0 }} />
+        <span>
+          Same live feed, two views — click any vehicle to highlight it on both
+          sides at once.
+        </span>
       </div>
 
       {/* Split panes */}
@@ -117,13 +115,13 @@ export default function SyncDemoView({ onBack }) {
       >
         <Pane
           label="Commuter View"
-          color="#052675"
+          color="#60A5FA"
           vehicles={vehicleList}
           selectedVehicleId={selectedVehicleId}
           onVehicleSelect={setSelectedVehicleId}
           mapId="sync-demo-commuter"
         />
-        <div style={{ width: 1, background: "#2A2A2A", flexShrink: 0 }} />
+        <div className="sync-demo-divider" />
         <Pane
           label="Operator View"
           color="#FCA307"
@@ -134,15 +132,15 @@ export default function SyncDemoView({ onBack }) {
         />
       </div>
 
-      {/* Selected vehicle proof strip — shows identical data reflected from one shared source */}
+      {/* Selected vehicle proof strip */}
       {selectedVehicle && (
         <div
           style={{
             background: "#1A1A1A",
             borderTop: "1px solid #2A2A2A",
-            padding: "14px 24px",
+            padding: "12px 16px",
             display: "flex",
-            gap: 32,
+            gap: "12px 24px",
             flexWrap: "wrap",
             flexShrink: 0,
           }}
@@ -164,8 +162,8 @@ export default function SyncDemoView({ onBack }) {
           <div
             style={{
               marginLeft: "auto",
-              color: "#052675",
-              fontSize: 12.5,
+              color: "#FCA307",
+              fontSize: 12,
               fontWeight: 700,
               display: "flex",
               alignItems: "center",
@@ -179,8 +177,17 @@ export default function SyncDemoView({ onBack }) {
       )}
 
       <style>{`
+        .sync-demo-divider {
+          width: 1px;
+          background: #2A2A2A;
+          flex-shrink: 0;
+        }
         @media (max-width: 900px) {
           .sync-demo-panes { flex-direction: column; }
+          .sync-demo-divider {
+            width: 100%;
+            height: 1px;
+          }
         }
       `}</style>
     </div>
@@ -197,22 +204,29 @@ function Pane({
 }) {
   return (
     <div
-      style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        minWidth: 0,
+        minHeight: 0,
+      }}
     >
       <div
         style={{
-          padding: "10px 20px",
+          padding: "8px 16px",
           color,
           fontWeight: 700,
-          fontSize: 13,
+          fontSize: 12.5,
           letterSpacing: 0.5,
           textTransform: "uppercase",
           background: "#161616",
+          flexShrink: 0,
         }}
       >
         {label}
       </div>
-      <div style={{ flex: 1, position: "relative" }}>
+      <div style={{ flex: 1, position: "relative", minHeight: 0 }}>
         <LiveMap
           vehicles={vehicles}
           userLocation={null}
@@ -230,7 +244,7 @@ function ProofStat({ label, value }) {
     <div>
       <div
         style={{
-          fontSize: 11,
+          fontSize: 10.5,
           color: "#6B7280",
           textTransform: "uppercase",
           letterSpacing: 0.5,
@@ -240,7 +254,7 @@ function ProofStat({ label, value }) {
       </div>
       <div
         className="font-numeric"
-        style={{ fontSize: 16, color: "white", marginTop: 2 }}
+        style={{ fontSize: 15, color: "white", marginTop: 2 }}
       >
         {value}
       </div>

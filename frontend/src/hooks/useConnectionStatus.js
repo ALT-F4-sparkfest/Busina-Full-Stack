@@ -4,11 +4,14 @@ import { useEffect, useState, useRef, useCallback } from "react";
 const STALE_AFTER_MS = 15000;
 
 export function useConnectionStatus(socketConnected) {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [isStale, setIsStale] = useState(false);
-  const lastUpdateRef = useRef(Date.now());
+  const [isOnline, setIsOnline] = useState(() =>
+    typeof navigator !== "undefined" ? navigator.onLine : true,
+  );
+  const [timedOut, setTimedOut] = useState(false);
+  const lastUpdateRef = useRef(0);
 
   useEffect(() => {
+    lastUpdateRef.current = Date.now();
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     window.addEventListener("online", handleOnline);
@@ -22,21 +25,17 @@ export function useConnectionStatus(socketConnected) {
   useEffect(() => {
     const interval = setInterval(() => {
       const age = Date.now() - lastUpdateRef.current;
-      setIsStale(age > STALE_AFTER_MS);
+      setTimedOut(age > STALE_AFTER_MS);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!socketConnected) setIsStale(true);
-  }, [socketConnected]);
-
-  // ✅ Stable function reference
   const markUpdated = useCallback(() => {
     lastUpdateRef.current = Date.now();
-    setIsStale(false);
+    setTimedOut(false);
   }, []);
 
+  const isStale = !socketConnected || timedOut;
   const status = !isOnline ? "offline" : isStale ? "stale" : "live";
 
   return { status, isOnline, isStale, markUpdated };

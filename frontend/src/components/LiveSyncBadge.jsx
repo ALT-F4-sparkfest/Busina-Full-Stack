@@ -1,20 +1,12 @@
 // src/components/LiveSyncBadge.jsx
-//
-// Drop this in both CommuterView and OperatorView headers. It renders the
-// exact same numbers from the exact same data source (useLiveVehicles), so
-// a judge looking at both screens side-by-side sees them tick in unison —
-// that's the visible proof of sync, not just an architecture claim.
-
 import { useEffect, useState } from "react";
 import { Radio } from "lucide-react";
 
 export default function LiveSyncBadge({ vehicles = [], connected }) {
-  const [, forceTick] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
 
-  // Re-render every second so "updated Xs ago" stays live without
-  // needing its own socket subscription.
   useEffect(() => {
-    const id = setInterval(() => forceTick((t) => t + 1), 1000);
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -24,7 +16,7 @@ export default function LiveSyncBadge({ vehicles = [], connected }) {
   }, 0);
 
   const secondsAgo = lastUpdate
-    ? Math.max(0, Math.round((Date.now() - lastUpdate) / 1000))
+    ? Math.max(0, Math.round((now - lastUpdate) / 1000))
     : null;
 
   const freshnessLabel = !connected

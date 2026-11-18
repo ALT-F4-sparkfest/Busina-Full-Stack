@@ -1,6 +1,5 @@
 // src/pages/LandingPage.jsx
-import { useEffect, useState } from "react";
-import { Radio, Cpu, Smartphone, BarChart3, Wrench } from "lucide-react";
+import { Radio, Cpu, Smartphone, BarChart3 } from "lucide-react";
 import Navbar from "../components/landing/Navbar";
 import Hero from "../components/layout/Hero";
 import Stats from "../components/landing/Stats";
@@ -17,56 +16,16 @@ import businaIcon from "../assets/busina-icon-transparent.png";
 import Reveal from "../components/ui/Reveal";
 
 export default function LandingPage({ setActiveView }) {
-  const [loaded, setLoaded] = useState(false);
-  const [toast, setToast] = useState(null);
-
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
-
   return (
     <div
       style={{
         minHeight: "100vh",
-        overflowX: "hidden",
+        overflowX: "clip",
         background:
           "linear-gradient(180deg,#FAFAFA 0%,#FBF4C6 40%,#FFFFFF 100%)",
         position: "relative",
       }}
     >
-      {/* Toast */}
-      {toast && (
-        <div
-          style={{
-            position: "fixed",
-            top: 24,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 9999,
-            background: "#111111",
-            color: "white",
-            padding: "12px 24px",
-            borderRadius: 14,
-            fontSize: 14,
-            fontWeight: 500,
-            boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
-            animation: "fadeInDown 0.3s ease",
-          }}
-        >
-          <Wrench
-            size={15}
-            style={{ display: "inline", marginRight: 6, verticalAlign: -2 }}
-          />
-          {toast}
-          <style>{`@keyframes fadeInDown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}`}</style>
-        </div>
-      )}
-
       {/* Background glows */}
       <div
         style={{
@@ -114,54 +73,35 @@ export default function LandingPage({ setActiveView }) {
         opacity={0.12}
       />
 
-      {/* Navbar */}
+      {/* Sticky Navbar wrapper */}
       <div
         style={{
           position: "sticky",
-          top: 0,
+          top: 12,
           zIndex: 999,
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          background: "rgba(255,255,255,.72)",
-          borderBottom: "1px solid rgba(226,232,240,.55)",
+          paddingTop: 12,
         }}
       >
-        <Navbar setActiveView={setActiveView} currentView="landing" />
+        <Navbar setActiveView={setActiveView} />
       </div>
 
       <main style={{ position: "relative", zIndex: 2, width: "100%" }}>
-        {/* NOTE: GlassBanner (LIVE / Real-Time / AI Enabled / Online chips)
-            has been intentionally removed per Phase 1 audit — those chips
-            communicated nothing concrete to judges. Hero now carries a
-            proof strip with real numbers instead (see ProofStrip inside
-            Hero.jsx). */}
-
         {/* Hero — includes the live map, proof strip, and audience strip */}
         <section
           style={{
             maxWidth: 1550,
             margin: "0 auto",
-            padding: "28px 6% 20px",
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(30px)",
-            transition: "1s",
+            padding: "20px clamp(16px, 5%, 64px) 16px",
           }}
         >
-          <Hero
-            setActiveView={setActiveView}
-            onDemoClick={() => showToast("Feature coming in a future update")}
-          />
+          <Hero setActiveView={setActiveView} />
         </section>
 
         {/* Live Overview stats */}
         <section
           id="live-overview"
-          style={{
-            maxWidth: 1500,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1500 }}
         >
           <Reveal>
             <Stats />
@@ -171,27 +111,19 @@ export default function LandingPage({ setActiveView }) {
         {/* The Problem */}
         <section
           id="the-problem"
-          style={{
-            maxWidth: 1500,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1500 }}
         >
           <Reveal>
             <ProblemSpace />
           </Reveal>
         </section>
 
-        {/* Why Now — timeline, right after the problem per Phase 5 */}
+        {/* Why Now */}
         <section
           id="why-now"
-          style={{
-            maxWidth: 1300,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1300 }}
         >
           <Reveal delay={50}>
             <WhyNow />
@@ -201,12 +133,8 @@ export default function LandingPage({ setActiveView }) {
         {/* Why Existing Solutions Fail */}
         <section
           id="why-others-fail"
-          style={{
-            maxWidth: 1400,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1400 }}
         >
           <Reveal delay={50}>
             <WhyOthersFail />
@@ -216,42 +144,30 @@ export default function LandingPage({ setActiveView }) {
         {/* How BUSINA Solves It */}
         <section
           id="how-it-works"
-          style={{
-            maxWidth: 1100,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1100 }}
         >
           <Reveal delay={100}>
             <HowItWorks />
           </Reveal>
         </section>
 
-        {/* Experience BUSINA — teaser panels routing into the real Commuter/Operator pages */}
+        {/* Experience BUSINA */}
         <section
           id="experience"
-          style={{
-            maxWidth: 1300,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1300 }}
         >
           <Reveal delay={100}>
             <ExperienceTeaser setActiveView={setActiveView} />
           </Reveal>
         </section>
 
-        {/* Impact — outcomes, dark blue chapter */}
+        {/* Impact */}
         <section
           id="impact"
-          style={{
-            maxWidth: 1400,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1400 }}
         >
           <Reveal delay={100}>
             <Impact />
@@ -261,12 +177,8 @@ export default function LandingPage({ setActiveView }) {
         {/* Business Model */}
         <section
           id="business-model"
-          style={{
-            maxWidth: 1100,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1100 }}
         >
           <Reveal delay={100}>
             <BusinessModel />
@@ -276,12 +188,8 @@ export default function LandingPage({ setActiveView }) {
         {/* Validation */}
         <section
           id="validation"
-          style={{
-            maxWidth: 1100,
-            margin: "48px auto",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1100 }}
         >
           <Reveal delay={100}>
             <Validation />
@@ -291,12 +199,8 @@ export default function LandingPage({ setActiveView }) {
         {/* Features */}
         <section
           id="everything-you-need"
-          style={{
-            maxWidth: 1500,
-            margin: "0 auto 48px",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1500 }}
         >
           <Reveal delay={100}>
             <Features />
@@ -306,26 +210,19 @@ export default function LandingPage({ setActiveView }) {
         {/* About the Team */}
         <section
           id="about-us"
-          style={{
-            maxWidth: 1100,
-            margin: "0 auto 48px",
-            padding: "0 8%",
-            scrollMarginTop: 110,
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1100 }}
         >
           <Reveal delay={100}>
             <AboutUs />
           </Reveal>
         </section>
 
-        {/* Final CTA — three equal buttons */}
+        {/* Final CTA */}
         <section
           id="final-cta"
-          style={{
-            maxWidth: 1100,
-            margin: "0 auto 70px",
-            padding: "0 8%",
-          }}
+          className="landing-section-wrap"
+          style={{ maxWidth: 1100, marginBottom: 64 }}
         >
           <Reveal delay={100}>
             <FinalCTA setActiveView={setActiveView} />
@@ -335,22 +232,13 @@ export default function LandingPage({ setActiveView }) {
         {/* Footer */}
         <footer
           style={{
-            marginTop: 60,
-            padding: "60px 8%",
+            marginTop: 48,
+            padding: "48px clamp(16px, 6%, 80px)",
             borderTop: "1px solid #D9D9D9",
             background: "linear-gradient(180deg,#FFFFFF,#FBF4C6)",
           }}
         >
-          <div
-            style={{
-              maxWidth: 1450,
-              margin: "0 auto",
-              display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 30,
-            }}
-          >
+          <div className="landing-footer-inner">
             <div>
               <div
                 style={{
@@ -381,7 +269,7 @@ export default function LandingPage({ setActiveView }) {
                 visible jeepney.
               </div>
             </div>
-            <div style={{ textAlign: "right", color: "#64748B" }}>
+            <div className="landing-footer-meta">
               <div
                 style={{ fontWeight: 700, color: "#111111", marginBottom: 10 }}
               >
@@ -445,7 +333,7 @@ function HowItWorks() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 6vw, 48px)",
+            fontSize: "clamp(26px, 5vw, 46px)",
             fontWeight: 800,
             color: "#111111",
             margin: 0,
@@ -469,7 +357,7 @@ function HowItWorks() {
             style={{
               background: "white",
               borderRadius: 24,
-              padding: 32,
+              padding: "clamp(22px, 4vw, 32px)",
               border: "1px solid #D9D9D9",
               boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
               position: "relative",
@@ -499,14 +387,20 @@ function HowItWorks() {
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 26,
+                fontSize: "clamp(20px, 2.5vw, 26px)",
                 color: "#111111",
                 marginBottom: 8,
               }}
             >
               {step.title}
             </div>
-            <div style={{ fontSize: 18, color: "#64748B", lineHeight: 1.6 }}>
+            <div
+              style={{
+                fontSize: "clamp(15px, 1.1vw, 18px)",
+                color: "#64748B",
+                lineHeight: 1.6,
+              }}
+            >
               {step.body}
             </div>
           </div>
@@ -529,16 +423,16 @@ function AboutUs() {
       style={{
         background: "white",
         borderRadius: 28,
-        padding: "clamp(28px, 6vw, 64px) clamp(20px, 5vw, 48px)",
+        padding: "clamp(24px, 5vw, 64px) clamp(18px, 4vw, 48px)",
         border: "1px solid #D9D9D9",
         boxShadow: "0 8px 32px rgba(0,0,0,0.05)",
         display: "flex",
-        gap: 48,
+        gap: 36,
         flexWrap: "wrap",
         alignItems: "center",
       }}
     >
-      <div style={{ flex: "1 1 320px" }}>
+      <div style={{ flex: "1 1 300px", minWidth: 0 }}>
         <div
           style={{
             display: "inline-block",
@@ -555,7 +449,7 @@ function AboutUs() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 6vw, 48px)",
+            fontSize: "clamp(26px, 5vw, 44px)",
             fontWeight: 800,
             color: "#111111",
             margin: "0 0 18px",
@@ -566,9 +460,9 @@ function AboutUs() {
         <p
           style={{
             color: "#64748B",
-            lineHeight: 1.8,
+            lineHeight: 1.75,
             margin: "0 0 16px",
-            fontSize: 18,
+            fontSize: "clamp(15px, 1.1vw, 18px)",
           }}
         >
           BUSINA started as a hackathon project with one goal: make jeepney
@@ -579,17 +473,15 @@ function AboutUs() {
         <p
           style={{
             color: "#64748B",
-            lineHeight: 1.8,
-            margin: "0 0 28px",
-            fontSize: 18,
+            lineHeight: 1.75,
+            margin: "0 0 24px",
+            fontSize: "clamp(15px, 1.1vw, 18px)",
           }}
         >
           We believe public infrastructure data should be public.
         </p>
 
-        {/* Team links — replace the href placeholders below with each
-            member's real GitHub/LinkedIn URLs */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           {[
             {
               name: "AI and Data",
@@ -640,8 +532,8 @@ function AboutUs() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 26,
-                  height: 26,
+                  width: 28,
+                  height: 28,
                   borderRadius: "50%",
                   background: "white",
                   color: "#111111",
@@ -658,8 +550,8 @@ function AboutUs() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 26,
-                  height: 26,
+                  width: 28,
+                  height: 28,
                   borderRadius: "50%",
                   background: "white",
                   color: "#0A66C2",
@@ -675,7 +567,7 @@ function AboutUs() {
       {/* Quick facts panel */}
       <div
         style={{
-          flex: "1 1 260px",
+          flex: "1 1 240px",
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: 14,
@@ -684,7 +576,7 @@ function AboutUs() {
         {[
           { value: "4", label: "Team Members" },
           { value: "5", label: "Routes Tracked" },
-          { value: "8", label: "Vehicles Live" },
+          { value: "10", label: "Vehicles Live" },
           { value: "200hrs", label: "Built In" },
         ].map((s) => (
           <div
@@ -740,10 +632,6 @@ function FloatingCircle({ size, top, left, right, bottom, delay, opacity }) {
   );
 }
 
-/* ── Inline brand icons ───────────────────────────────────────────────────
-   lucide-react deprecated logo/brand icons (GitHub, LinkedIn, etc.) since
-   they're trademarked marks, not generic icons — so these are plain inline
-   SVGs instead of a lucide import, immune to future package version churn. */
 function GithubIcon({ size = 14 }) {
   return (
     <svg

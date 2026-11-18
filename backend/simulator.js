@@ -20,7 +20,7 @@ client.on('connect', () => {
   console.log('Simulator connected to MQTT');
 
   setInterval(() => {
-    const point = route[index % route.length];``
+    const point = route[index % route.length];
     const payload = {
       vehicleId,
       lat: point.lat + (Math.random() - 0.5) * 0.0005, // small jitter

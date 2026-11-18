@@ -26,13 +26,13 @@ export default function FinalCTA({ setActiveView }) {
       style={{
         background: "linear-gradient(135deg,#03164A,#052675)",
         borderRadius: 32,
-        padding: "56px 40px",
+        padding: "clamp(32px, 6vw, 56px) clamp(20px, 5vw, 40px)",
         textAlign: "center",
       }}
     >
       <h2
         style={{
-          fontSize: 40,
+          fontSize: "clamp(28px, 5vw, 40px)",
           fontWeight: 800,
           color: "#FFFFFF",
           margin: "0 0 8px",
@@ -42,19 +42,20 @@ export default function FinalCTA({ setActiveView }) {
       </h2>
       <p
         style={{
-          color: "rgba(255,255,255,.7)",
-          fontSize: 18,
-          margin: "0 0 32px",
+          color: "rgba(255,255,255,.75)",
+          fontSize: "clamp(15px, 2vw, 18px)",
+          margin: "0 0 28px",
         }}
       >
         Every jeepney visible. Every commuter informed.
       </p>
 
       <div
+        className="final-cta-buttons"
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: 16,
+          gap: 14,
           flexWrap: "wrap",
         }}
       >
@@ -62,14 +63,17 @@ export default function FinalCTA({ setActiveView }) {
           <button
             key={item.label}
             onClick={item.onClick}
+            className="final-cta-btn"
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 10,
+              minHeight: 48,
               background: "rgba(255,255,255,.1)",
               border: "1px solid rgba(255,255,255,.2)",
               color: "#FFFFFF",
-              padding: "16px 28px",
+              padding: "14px 26px",
               borderRadius: 999,
               fontWeight: 700,
               fontSize: 15,
@@ -91,6 +95,17 @@ export default function FinalCTA({ setActiveView }) {
           </button>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 540px) {
+          .final-cta-buttons {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .final-cta-btn {
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,7 +1,5 @@
 # 🚌 BUSINA
 
-g
-
 > **Real-Time Smart Public Transportation Monitoring and Fleet Intelligence Platform**
 
 ![BUSINA Logo](./frontend/public/busina-logo-full-transparent.png)

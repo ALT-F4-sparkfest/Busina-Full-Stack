@@ -1,5 +1,5 @@
 // src/hooks/useLiveVehicles.js
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import io from "socket.io-client";
 
 const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
@@ -12,20 +12,15 @@ function normaliseVehicle(v) {
     const stoppedMs = Date.now() - new Date(v.stationary_since).getTime();
     status = stoppedMs > 3 * 60 * 1000 ? "Delayed" : "Stopped";
   } else if (v.on_route === false) {
-    // Only flag "Off Route" when the backend explicitly says so.
-    // Treating missing/undefined on_route as "off route" was the bug —
-    // most vehicles never had this field set, so they were mislabeled.
     status = "Off Route";
   }
 
-  // Occupancy – generate stable demo data
   const seed = (v.id || "").charCodeAt(v.id?.length - 1) || 5;
   const occupancyCount = ((seed * 3) % 28) + 4;
   const capacity = 32;
   const passengersDisplay = `${occupancyCount} / ${capacity}`;
   const occupancyPercent = (occupancyCount / capacity) * 100;
 
-  // ETA from speed
   const eta =
     v.eta ?? (speed > 2 ? Math.round((30 / Math.max(speed, 5)) * 10) : "--");
 
@@ -38,7 +33,7 @@ function normaliseVehicle(v) {
     speed,
     status,
     passengers: passengersDisplay,
-    occupancyPercent, // ← new numeric field for progress bars
+    occupancyPercent,
     eta,
     driver: v.driver ?? "Driver",
     plate: v.plate ?? (v.id ?? "").toUpperCase(),
@@ -50,6 +45,7 @@ export default function useLiveVehicles() {
   const [vehicles, setVehicles] = useState([]);
   const [connected, setConnected] = useState(false);
   const [alerts, setAlerts] = useState([]);
+  const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -65,29 +61,32 @@ export default function useLiveVehicles() {
       .then(setAlerts)
       .catch(() => setAlerts([]));
 
-    socketRef.current = io(API, {
+    const sock = io(API, {
       transports: ["websocket"],
       reconnectionDelay: 2000,
       reconnectionAttempts: 10,
     });
+    socketRef.current = sock;
 
-    socketRef.current.on("connect", () => {
-      console.log("🟢 Connected", socketRef.current.id);
+    sock.on("connect", () => {
+      console.log("🟢 Connected", sock.id);
       setConnected(true);
+      setSocket(sock);
     });
 
-    socketRef.current.on("disconnect", () => {
+    sock.on("disconnect", () => {
       console.log("🔴 Disconnected");
       setConnected(false);
+      setSocket(null);
     });
 
-    socketRef.current.on("vehicle_snapshot", (snapshot) => {
+    sock.on("vehicle_snapshot", (snapshot) => {
       if (Array.isArray(snapshot)) {
         setVehicles(snapshot.map(normaliseVehicle));
       }
     });
 
-    socketRef.current.on("vehicle_update", (vehicle) => {
+    sock.on("vehicle_update", (vehicle) => {
       const norm = normaliseVehicle(vehicle);
       setVehicles((prev) => {
         const idx = prev.findIndex((v) => v.id === norm.id);
@@ -98,17 +97,25 @@ export default function useLiveVehicles() {
       });
     });
 
-    socketRef.current.on("alert", (alert) => {
+    sock.on("alert", (alert) => {
       setAlerts((prev) => [alert, ...prev].slice(0, 20));
     });
 
-    return () => socketRef.current?.disconnect();
+    return () => {
+      sock.disconnect();
+      socketRef.current = null;
+    };
+  }, []);
+
+  const emit = useCallback((event, payload) => {
+    socketRef.current?.emit?.(event, payload);
   }, []);
 
   return {
     vehicles,
     alerts,
     connected,
-    socket: socketRef.current,
+    socket,
+    emit,
   };
 }

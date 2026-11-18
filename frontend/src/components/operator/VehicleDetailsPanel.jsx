@@ -1,5 +1,4 @@
-//VehicleDetailsPanel.jsx
-
+// src/components/operator/VehicleDetailsPanel.jsx
 import {
   Bus,
   Gauge,
@@ -18,7 +17,7 @@ export default function VehicleDetailsPanel({ vehicle }) {
         style={{
           background: "#fff",
           borderRadius: 24,
-          padding: 30,
+          padding: "clamp(20px, 4vw, 30px)",
           border: "1px solid #E2E8F0",
           boxShadow: "0 16px 40px rgba(15,23,42,.08)",
         }}
@@ -26,8 +25,9 @@ export default function VehicleDetailsPanel({ vehicle }) {
         <h2
           style={{
             marginTop: 0,
-            marginBottom: 28,
+            marginBottom: 24,
             color: "#0F172A",
+            fontSize: 20,
           }}
         >
           Vehicle Details
@@ -35,20 +35,21 @@ export default function VehicleDetailsPanel({ vehicle }) {
 
         <div
           style={{
-            height: 280,
+            height: 240,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             color: "#94A3B8",
+            textAlign: "center",
           }}
         >
-          <Bus size={64} />
+          <Bus size={56} />
 
           <h3
             style={{
-              marginTop: 22,
-              marginBottom: 8,
+              marginTop: 18,
+              marginBottom: 6,
             }}
           >
             No Vehicle Selected
@@ -60,14 +61,29 @@ export default function VehicleDetailsPanel({ vehicle }) {
     );
   }
 
-  const passengers = vehicle.passengers ?? 18;
-  const capacity = vehicle.capacity ?? 30;
+  let occupancy = 60;
+  let passengersText = "18 / 32";
 
-  const occupancy = Math.min(Math.round((passengers / capacity) * 100), 100);
+  if (typeof vehicle.occupancyPercent === "number") {
+    occupancy = Math.min(Math.round(vehicle.occupancyPercent), 100);
+    passengersText = String(vehicle.passengers || "18 / 32");
+  } else if (typeof vehicle.passengers === "string" && vehicle.passengers.includes("/")) {
+    const [cur, cap] = vehicle.passengers
+      .split("/")
+      .map((s) => parseInt(s.trim(), 10));
+    if (!isNaN(cur) && !isNaN(cap) && cap > 0) {
+      occupancy = Math.min(Math.round((cur / cap) * 100), 100);
+      passengersText = `${cur}/${cap}`;
+    }
+  } else {
+    const passengers = Number(vehicle.passengers ?? 18);
+    const capacity = Number(vehicle.capacity ?? 30);
+    occupancy = Math.min(Math.round((passengers / capacity) * 100), 100);
+    passengersText = `${passengers}/${capacity}`;
+  }
 
-  const delayed = (vehicle.delay ?? 0) > 5;
+  const delayed = (vehicle.delay ?? 0) > 5 || vehicle.status === "Delayed";
 
-  // Backend compatibility
   const route =
     vehicle.route || vehicle.route_id || vehicle.routeId || "Unknown Route";
 
@@ -84,31 +100,33 @@ export default function VehicleDetailsPanel({ vehicle }) {
       style={{
         background: "#fff",
         borderRadius: 24,
-        padding: 28,
+        padding: "clamp(18px, 3.5vw, 28px)",
         border: "1px solid #E2E8F0",
         boxShadow: "0 16px 40px rgba(15,23,42,.08)",
       }}
     >
       {/* HEADER */}
-
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
         }}
       >
         <div
           style={{
             display: "flex",
-            gap: 16,
+            gap: 14,
             alignItems: "center",
+            minWidth: 0,
           }}
         >
           <div
             style={{
-              width: 64,
-              height: 64,
+              width: 52,
+              height: 52,
               borderRadius: "50%",
               background: "linear-gradient(135deg,#2563EB,#60A5FA)",
               color: "white",
@@ -116,17 +134,22 @@ export default function VehicleDetailsPanel({ vehicle }) {
               justifyContent: "center",
               alignItems: "center",
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: 20,
+              flexShrink: 0,
             }}
           >
             {driver.charAt(0)}
           </div>
 
-          <div>
+          <div style={{ minWidth: 0 }}>
             <h2
               style={{
                 margin: 0,
                 color: "#0F172A",
+                fontSize: "clamp(17px, 2.2vw, 22px)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
               {vehicle.id}
@@ -134,8 +157,9 @@ export default function VehicleDetailsPanel({ vehicle }) {
 
             <div
               style={{
-                marginTop: 6,
+                marginTop: 4,
                 color: "#64748B",
+                fontSize: 13.5,
               }}
             >
               {driver}
@@ -147,22 +171,23 @@ export default function VehicleDetailsPanel({ vehicle }) {
           style={{
             background: delayed ? "#FEF2F2" : "#DCFCE7",
             color: delayed ? "#DC2626" : "#15803D",
-            padding: "10px 16px",
+            padding: "8px 14px",
             borderRadius: 999,
             display: "flex",
-            gap: 8,
+            gap: 6,
             alignItems: "center",
             fontWeight: 700,
+            fontSize: 13,
           }}
         >
           {delayed ? (
             <>
-              <AlertTriangle size={16} />
+              <AlertTriangle size={15} />
               Delayed
             </>
           ) : (
             <>
-              <CheckCircle2 size={16} />
+              <CheckCircle2 size={15} />
               Online
             </>
           )}
@@ -170,27 +195,22 @@ export default function VehicleDetailsPanel({ vehicle }) {
       </div>
 
       {/* OCCUPANCY */}
-
-      <div
-        style={{
-          marginTop: 28,
-        }}
-      >
+      <div style={{ marginTop: 22 }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             marginBottom: 8,
+            fontSize: 14,
           }}
         >
           <strong>Occupancy</strong>
-
           <span>{occupancy}%</span>
         </div>
 
         <div
           style={{
-            height: 12,
+            height: 10,
             borderRadius: 999,
             background: "#E2E8F0",
             overflow: "hidden",
@@ -212,62 +232,49 @@ export default function VehicleDetailsPanel({ vehicle }) {
       </div>
 
       {/* INFO */}
-
-      <div
-        style={{
-          marginTop: 28,
-        }}
-      >
-        <Info icon={<Route size={18} />} label="Route" value={route} />
-
+      <div style={{ marginTop: 20 }}>
+        <Info icon={<Route size={17} />} label="Route" value={route} />
         <Info
-          icon={<Gauge size={18} />}
+          icon={<Gauge size={17} />}
           label="Speed"
           value={`${speed} km/h`}
         />
-
         <Info
-          icon={<Users size={18} />}
+          icon={<Users size={17} />}
           label="Passengers"
-          value={`${passengers}/${capacity}`}
+          value={passengersText}
         />
-
-        <Info icon={<Clock3 size={18} />} label="ETA" value={`${eta} min`} />
-
+        <Info icon={<Clock3 size={17} />} label="ETA" value={`${eta} min`} />
         <Info
-          icon={<MapPinned size={18} />}
+          icon={<MapPinned size={17} />}
           label="Nearest Stop"
           value={destination}
         />
-
         <Info
-          icon={<MapPinned size={18} />}
+          icon={<MapPinned size={17} />}
           label="GPS"
           value={`${Number(vehicle.lat).toFixed(5)}, ${Number(vehicle.lng).toFixed(5)}`}
         />
       </div>
 
       {/* METRICS */}
-
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3,1fr)",
-          gap: 14,
-          marginTop: 28,
+          gap: 10,
+          marginTop: 22,
         }}
       >
         <MiniCard title="Speed" value={speed} color="#DBEAFE" />
-
         <MiniCard
           title="Heading"
           value={`${Math.round(vehicle.heading ?? 0)}°`}
           color="#FEF3C7"
         />
-
         <MiniCard
           title="On Route"
-          value={vehicle.onRoute ? "YES" : "NO"}
+          value={vehicle.on_route === false ? "NO" : "YES"}
           color="#DCFCE7"
         />
       </div>
@@ -282,24 +289,36 @@ function Info({ icon, label, value }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "14px 0",
+        gap: 12,
+        padding: "12px 0",
         borderBottom: "1px solid #F1F5F9",
+        fontSize: 14,
       }}
     >
       <div
         style={{
           display: "flex",
-          gap: 10,
+          gap: 8,
           alignItems: "center",
           color: "#475569",
           fontWeight: 600,
+          flexShrink: 0,
         }}
       >
         {icon}
         {label}
       </div>
 
-      <strong>{value}</strong>
+      <strong
+        style={{
+          textAlign: "right",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {value}
+      </strong>
     </div>
   );
 }
@@ -309,14 +328,15 @@ function MiniCard({ title, value, color }) {
     <div
       style={{
         background: color,
-        borderRadius: 16,
-        padding: 18,
+        borderRadius: 14,
+        padding: "14px 10px",
         textAlign: "center",
       }}
     >
       <div
+        className="font-numeric"
         style={{
-          fontSize: 28,
+          fontSize: "clamp(18px, 2.5vw, 24px)",
           fontWeight: 700,
           color: "#0F172A",
         }}
@@ -326,8 +346,8 @@ function MiniCard({ title, value, color }) {
 
       <div
         style={{
-          marginTop: 6,
-          fontSize: 13,
+          marginTop: 4,
+          fontSize: 12,
           color: "#475569",
         }}
       >

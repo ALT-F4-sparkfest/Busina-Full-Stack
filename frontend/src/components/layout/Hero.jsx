@@ -19,7 +19,7 @@ import Skeleton from "../ui/Skeleton";
 
 const LiveMap = lazy(() => import("../map/LiveMap"));
 
-export default function Hero({ setActiveView, onDemoClick }) {
+export default function Hero({ setActiveView }) {
   const [paraPo, setParaPo] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const live = useLiveVehicles();
@@ -41,16 +41,17 @@ export default function Hero({ setActiveView, onDemoClick }) {
   };
 
   return (
-    <section
+    <div
       style={{
-        padding: "30px 5% 40px",
+        padding: "clamp(20px, 4vw, 36px) clamp(16px, 4%, 40px)",
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
         gap: 32,
-        minHeight: "80vh",
+        minHeight: "76vh",
+        borderRadius: 28,
         background:
           "linear-gradient(135deg,#FAFAFA 0%,#FFFFFF 45%,#FBF4C6 100%)",
-        alignItems: "start",
+        alignItems: "stretch",
       }}
       className="hero-grid-responsive"
     >
@@ -59,9 +60,9 @@ export default function Hero({ setActiveView, onDemoClick }) {
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: 10,
+          gap: 12,
           justifyContent: "center",
-          height: "100%",
+          minWidth: 0,
         }}
       >
         {/* Badge */}
@@ -83,13 +84,13 @@ export default function Hero({ setActiveView, onDemoClick }) {
           Para sa mga Pilipinong Komyuter
         </div>
 
-        {/* Main headline — Hero scale (72px desktop, clamps down on mobile) */}
+        {/* Main headline */}
         <h1
           style={{
             color: "#052675",
-            fontSize: "var(--text-hero, clamp(2.4rem, 6vw, 4.5rem))",
-            lineHeight: 1.05,
-            margin: "4px 0 4px",
+            fontSize: "var(--text-hero, clamp(2.1rem, 5.5vw, 4.2rem))",
+            lineHeight: 1.06,
+            margin: "2px 0",
             fontWeight: 800,
           }}
         >
@@ -112,11 +113,11 @@ export default function Hero({ setActiveView, onDemoClick }) {
         {/* Description */}
         <p
           style={{
-            fontSize: "clamp(14px, 1vw, 16px)",
+            fontSize: "clamp(14px, 1.05vw, 16px)",
             color: "#374151",
-            lineHeight: 1.5,
+            lineHeight: 1.55,
             maxWidth: 540,
-            margin: "2px 0 10px",
+            margin: "0 0 6px",
           }}
         >
           Your jeepney. Your route. Your arrival time — finally visible. Built
@@ -129,23 +130,28 @@ export default function Hero({ setActiveView, onDemoClick }) {
 
         {/* CTA Buttons */}
         <div
+          className="hero-cta-row"
           style={{
             display: "flex",
             gap: 12,
             flexWrap: "wrap",
-            marginTop: 4,
+            marginTop: 6,
           }}
         >
-          <div>
-            <Button onClick={() => setActiveView("commuter")} size="small">
+          <div className="hero-cta-item">
+            <Button
+              onClick={() => setActiveView("commuter")}
+              size="small"
+              fullWidth
+            >
               <Bus size={16} />
               Explore Commuter Portal
             </Button>
             <div
               style={{
-                fontSize: 10,
-                color: "#9CA3AF",
-                marginTop: 3,
+                fontSize: 11,
+                color: "#64748B",
+                marginTop: 4,
                 marginLeft: 4,
               }}
             >
@@ -153,20 +159,21 @@ export default function Hero({ setActiveView, onDemoClick }) {
             </div>
           </div>
 
-          <div>
+          <div className="hero-cta-item">
             <Button
               variant="secondary"
               onClick={() => setActiveView("operator")}
               size="small"
+              fullWidth
             >
               <Building2 size={16} />
               View Operator Dashboard
             </Button>
             <div
               style={{
-                fontSize: 10,
-                color: "#9CA3AF",
-                marginTop: 3,
+                fontSize: 11,
+                color: "#64748B",
+                marginTop: 4,
                 marginLeft: 4,
               }}
             >
@@ -187,7 +194,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
             color: "#64748B",
             fontWeight: 500,
             flexWrap: "wrap",
-            fontSize: "clamp(11px, 0.8vw, 13px)",
+            fontSize: "clamp(12px, 0.9vw, 13px)",
           }}
         >
           <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -202,45 +209,14 @@ export default function Hero({ setActiveView, onDemoClick }) {
         </div>
 
         {/* Jeepney Road Strip */}
-        <div
-          className="hero-road"
-          style={{
-            marginTop: 6,
-            position: "relative",
-            width: "100%",
-            height: 48,
-            overflow: "visible",
-          }}
-        >
-          <div
-            className="hero-road-line"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: 0,
-              right: 0,
-              height: 3,
-              background:
-                "repeating-linear-gradient(90deg, #052675 0px, #052675 8px, transparent 8px, transparent 16px)",
-              transform: "translateY(-50%)",
-              borderRadius: 2,
-              opacity: 0.4,
-            }}
-          />
+        <div className="hero-road">
+          <div className="hero-road-line" />
           <button
             type="button"
             className={`hero-road-jeepney${paraPo ? " is-stopped" : ""}`}
             onClick={handleJeepneyClick}
             aria-label="Honk the jeepney"
             style={{
-              position: "absolute",
-              top: "50%",
-              left: 0,
-              transform: "translateY(-50%)",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: 4,
               animation: "drive 6s linear infinite",
               animationPlayState: paraPo ? "paused" : "running",
             }}
@@ -249,7 +225,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
               <span
                 style={{
                   position: "absolute",
-                  top: -32,
+                  top: -30,
                   left: "50%",
                   transform: "translateX(-50%)",
                   background: "#052675",
@@ -272,6 +248,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
 
       {/* RIGHT – Live Map */}
       <div
+        className="hero-map-panel"
         style={{
           background: "rgba(255,255,255,.92)",
           backdropFilter: "blur(18px)",
@@ -281,8 +258,8 @@ export default function Hero({ setActiveView, onDemoClick }) {
           border: "1px solid #D9D9D9",
           display: "flex",
           flexDirection: "column",
-          height: "100%",
-          minHeight: 340,
+          minHeight: 380,
+          minWidth: 0,
         }}
       >
         <div
@@ -290,15 +267,15 @@ export default function Hero({ setActiveView, onDemoClick }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "10px 16px",
+            padding: "12px 16px",
             flexWrap: "wrap",
-            gap: 6,
+            gap: 8,
           }}
         >
           <h2
             style={{
               margin: 0,
-              fontSize: "clamp(13px, 1vw, 16px)",
+              fontSize: "clamp(14px, 1.05vw, 16px)",
               color: "#111111",
               display: "flex",
               alignItems: "center",
@@ -310,7 +287,7 @@ export default function Hero({ setActiveView, onDemoClick }) {
           <LiveSyncBadge vehicles={vehicles} connected={live.connected} />
         </div>
 
-        <div style={{ position: "relative", flex: 1, minHeight: 200 }}>
+        <div style={{ position: "relative", flex: 1, minHeight: 240 }}>
           <Suspense fallback={<Skeleton height="100%" radius={0} />}>
             <LiveMap
               vehicles={vehicles}
@@ -343,8 +320,9 @@ export default function Hero({ setActiveView, onDemoClick }) {
           onClick={() => setActiveView("commuter")}
           style={{
             margin: "10px 16px 14px",
-            padding: "10px 16px",
-            borderRadius: 18,
+            padding: "12px 16px",
+            minHeight: 44,
+            borderRadius: 16,
             border: "none",
             background: "#052675",
             color: "#fff",
@@ -374,44 +352,29 @@ export default function Hero({ setActiveView, onDemoClick }) {
           50% { transform: translateX(-50%) scale(1.1); }
           100% { transform: translateX(-50%) scale(1); opacity: 1; }
         }
-        .hero-road-jeepney.is-stopped {
-          animation-play-state: paused !important;
-        }
 
-        @media (max-width: 820px) {
+        @media (max-width: 960px) {
           .hero-grid-responsive {
             grid-template-columns: 1fr !important;
-            padding: 16px 4% 30px !important;
             min-height: auto !important;
-            max-height: none !important;
-            gap: 20px !important;
+            gap: 24px !important;
           }
-          .hide-mobile {
-            display: none;
-          }
-          .hero-road {
-            height: 40px !important;
-          }
-          .hero-grid-responsive > div:last-child {
-            min-height: 280px !important;
+          .hero-map-panel {
+            min-height: 360px !important;
           }
         }
-        @media (max-width: 480px) {
-          .hero-grid-responsive {
-            padding: 12px 4% 24px !important;
-            gap: 16px !important;
+        @media (max-width: 540px) {
+          .hero-cta-row {
+            flex-direction: column;
           }
-          .hero-grid-responsive h1 {
-            font-size: 1.6rem !important;
+          .hero-cta-item {
+            width: 100%;
           }
-          .hero-grid-responsive > div:last-child {
-            min-height: 220px !important;
-          }
-          .hero-road {
-            height: 36px !important;
+          .hero-map-panel {
+            min-height: 320px !important;
           }
         }
       `}</style>
-    </section>
+    </div>
   );
 }
